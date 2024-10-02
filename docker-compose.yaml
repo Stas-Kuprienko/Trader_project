@@ -1,0 +1,73 @@
+version: '4.3'
+
+networks:
+  my-networks:
+    driver: bridge
+
+services:
+
+  postgres:
+    image: postgres:15.3-alpine
+    restart: always
+    networks:
+      - my-networks
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=trade_project
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./volumes/postgresql/data:/var/lib/postgresql/data
+      - ./create-db.sql:/docker-entrypoint-initdb.d/create_database.sql
+
+  kafka:
+    image: bitnami/kafka:latest
+    networks:
+      - my-networks
+    ports:
+      - "9092:9092"
+    volumes:
+      - "kafka_data:/bitnami"
+    environment:
+      # KRaft settings
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      # Listeners
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9091,CONTROLLER://:9093,EXTERNAL://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9091,EXTERNAL://localhost:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+
+
+  mysql:
+    image: mysql:8
+    restart: always
+    networks:
+      - my-networks
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: trade_project
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1234
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./volumes/mysql/data:/var/lib/mysql/
+
+  redis:
+    image: redis:latest
+    restart: always
+    networks:
+      - my-networks
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+#      --requirepass 12345
+
+volumes:
+  kafka_data:
+    driver: local
