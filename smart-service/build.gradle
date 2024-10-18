@@ -28,7 +28,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation "net.devh:grpc-spring-boot-starter:$grpc_starter"
+	implementation "net.devh:grpc-spring-boot-starter:$grpc_starter_version"
 
     //grpc framework
 	implementation "io.grpc:grpc-netty-shaded:$rpc_version"
@@ -38,11 +38,6 @@ dependencies {
 
     //annotations
 	implementation "javax.annotation:javax.annotation-api:$javax_annotations"
-
-    //jwt
-    implementation "io.jsonwebtoken:jjwt-api:$jwt_version"
-    implementation "io.jsonwebtoken:jjwt-impl:$jwt_version"
-    implementation "io.jsonwebtoken:jjwt-jackson:$jwt_version"
 
     //tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

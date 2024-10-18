@@ -24,13 +24,13 @@ dependencies {
     implementation "org.telegram:telegrambots-spring-boot-starter:$telegram_version"
 
 	//messaging
-	implementation 'org.springframework.kafka:spring-kafka'
+	implementation "org.springframework.kafka:spring-kafka:$spring_kafka_version"
 
     //database
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     //jdbc driver
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly "com.mysql:mysql-connector-j:$mysql_version"
 
 	//tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
