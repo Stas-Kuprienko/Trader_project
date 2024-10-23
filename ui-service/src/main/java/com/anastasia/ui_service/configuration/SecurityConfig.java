@@ -12,14 +12,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SecurityConfig extends AbstractSecurityWebApplicationInitializer implements WebMvcConfigurer {
 
-    //    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests(customizer -> customizer
-//                        .requestMatchers("/", "/login", "/css/**", "/js/**").permitAll())
-//                .oauth2Login()
-//                .loginPage("/login")
-//                .defaultSuccessUrl("/", true)
-//                .failureUrl("/login?error=true");
-//    }
+
+        @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            http
+                    .authorizeHttpRequests(exchange -> exchange
+                            .requestMatchers("/v1/auth/login", "/v1/auth/registrations").permitAll()
+                            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").authenticated()
+                            .anyRequest().authenticated()
+                    ).oauth2Login(
+                            login -> login.loginPage("/login")
+                                    .defaultSuccessUrl("/", true)
+                                    .failureUrl("/login?error=true")
+                    ).logout(logout -> logout.logoutSuccessUrl("/"));
+
+            return http.build();
+        }
 }

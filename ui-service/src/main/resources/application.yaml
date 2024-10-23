@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: ui-service
+  port: 8080
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ${project.variables.keycloak.client-id}
+            client-secret: ${project.variables.keycloak.client-secret}
+            scope: openid, profile, email
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://${project.variables.keycloak.url}/auth/realms/myrealm
+
+
+
+project:
+  variables:
+    keycloak:
+      url: <?>
+      client-id: <?>
+      client-secret: <?>

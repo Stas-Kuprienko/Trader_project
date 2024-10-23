@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: core-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${project.variables.keycloak.url}/auth/realms/myrealm
+
+
+
+project:
+  variables:
+    keycloak:
+      url: <?>

@@ -1,13 +1,13 @@
-package com.anastasia.core_service;
+package com.anastasia.telegram_bot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Application {
+public class TelegramBotApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(TelegramBotApplication.class, args);
 	}
 
 }
