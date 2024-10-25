@@ -1,4 +1,4 @@
-<a href=https://github.com/Stas-Kuprienko/Anastasia_trader_project#>RU</a>
+<a href=https://github.com/Stas-Kuprienko/Anastasia_trader_project#>EN</a>
 # ANASTASIA TRADER PROJECT
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Spring_Framework-green?style=flat-square&logo=Spring&logoColor=green&label=%7C)
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Gradle-blue?style=flat-square&logo=Gradle&logoColor=darkgreen&label=%7C&labelColor=white&color=grey)
@@ -15,16 +15,16 @@
 
 <img src="project_files/hello.webp" style="max-width: 96px; width: 96px;">
 
-## The exchange trading service that provides support for automated transactions based on trading strategies.
-### Service features:
-- Connection of brokerage accounts by API keys
-- Access to a variety of stock quotes
-- Ability to execute trades manually
-- Subscription to automatic trading strategies
-- Trading history access in XLSX files
-- Management via Telegram bot
+## Сервис биржевой торговли, обеспечивающий поддержку автоматических сделок на основе торговых стратегий.
+### Возможности сервиса:
+- Подключение брокерских счетов с помощью API-ключей
+- Доступ к различным биржевым котировкам
+- Возможность совершать сделки вручную
+- Подписка на автоматические торговые стратегии
+- Доступ к торговой истории в XLSX-файлах
+- Управление с помощью Telegram-бота
 ***
-## Technology stack:
+## Стек технологий:
 + #### Java 21
 + #### Spring Framework
 + #### Gradle
@@ -35,21 +35,21 @@
 + #### Keycloak
 + #### Docker
 ***
-## Project structure:
-### The components of the project is 4 main applications (so-called microservices):
+## Структура проекта:
+### Компоненты проекта - это 4 основных приложения (так называемые микросервисы):
 ***
 + ### Core Service:
-+ The main application of the project. There is orchestrator between the other components.
-  Performs the basic logic of the service, except market analytics and trading automation.
-  The main tasks -
-  service administration,
-  user authentication,
-  user data management,
-  access to market data,
-  execution of trade transactions,
-  saving trade history in xlsx files,
-  sending notifications about transactions.
-  Technologies used:
++ Основное приложение проекта. Является оркестратором между остальными компонентами.
+  Выполняет основную логику работы сервиса, за исключением анализа рынка и автоматизации торговли.
+  Основные задачи -
+  администрирование сервиса,
+  аутентификация пользователей,
+  управление пользовательскими данными,
+  доступ к рыночным данным,
+  выполнение торговых операций,
+  сохранение истории торговли в xlsx-файлах,
+  отправка уведомлений о сделках.
+  Используемые технологии:
   + Spring Boot 3
       + WebFlux
       + Web Security OAuth2
@@ -64,18 +64,18 @@
   + Keycloak
 ***
 + ### Smart Service:
-+ The application for analytics and automated trading.
-  There is responsible for market analysis, identifying potential opportunities, and storing analytical data.
-  It also enables the trading of financial instruments based on predefined strategies.
-  Technologies used:
++ Приложение для аналитики и автоматической торговли.
+  Отвечает за анализ рынка, выявление потенциальных направлений и хранение аналитических данных.
+  Оно также позволяет торговать финансовыми инструментами на основе выбранных стратегий.
+  Используемые технологии:
   + Spring Boot 3
   + Spring gRPC starter
   + gRPC Framework
   + Redis storage
 ***
 + ### Telegram Bot:
-+ The telegram bot application. Provides easy service management.
-  Technologies used:
++ Приложение Telegram бота. Обеспечивает простое управление сервисами.
+  Используемые технологии:
   + Spring Boot 3
   + Telegram bots 6
   + Spring JDBC
@@ -83,9 +83,9 @@
   + Apache Kafka
 ***
 + ### UI Service
-+ The frontend application for browser access.
-  There has a simple interface and functionality.
-  Technologies used:
++ Интерфейсное приложение для доступа к браузеру.
+  Имеет простой дизайн и функциональность.
+  Используемые технологии:
   + Spring Boot 3
     + WebMVC
     + Web Security OAuth2
