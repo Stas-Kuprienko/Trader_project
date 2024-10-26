@@ -21,6 +21,7 @@
 - Access to a variety of stock quotes
 - Ability to execute trades manually
 - Subscription to automatic trading strategies
+- Setting up a custom risk profile or choosing from the defaults
 - Trading history access in XLSX files
 - Management via Telegram bot
 ***
@@ -94,7 +95,7 @@
   + Keycloak
   + Redis storage
 ***
-<img src="project_files/laptop.webp" style="max-width: 96px; width: 96px;">
+<img src="project_files/structurizr-EN.png" style="max-width: 75%;">
 
 ***
  
