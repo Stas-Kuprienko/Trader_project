@@ -36,7 +36,7 @@ dependencies {
 	implementation "io.grpc:grpc-netty-shaded:$rpc_version"
 	implementation "io.grpc:grpc-protobuf:$rpc_version"
 	implementation "io.grpc:grpc-stub:$rpc_version"
-	implementation 'com.google.protobuf:protobuf-java:3.25.2'
+	implementation "net.devh:grpc-spring-boot-starter:$grpc_starter_version"
 
     //migration
 	implementation "org.flywaydb:flyway-core:$flyway_version"
@@ -70,6 +70,15 @@ protobuf {
     generateProtoTasks {
         all()*.plugins {
             grpc {}
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/java'
+            srcDirs 'build/generated/source/proto/main/grpc'
         }
     }
 }

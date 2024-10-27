@@ -6,10 +6,41 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://${project.variables.keycloak.url}/auth/realms/myrealm
+  r2dbc:
+    url: r2dbc:postgresql://${project.variables.datasource.url}/trade_project
+    username: ${project.variables.datasource.username}
+    password: ${project.variables.datasource.password}
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://${project.variables.datasource.url}/trade_project
+    user: ${project.variables.datasource.username}
+    password: ${project.variables.datasource.password}
+  kafka:
+    bootstrap-servers: ${project.variables.kafka.url}
+    consumer:
+      group-id: core-service-group
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
+grpc:
+  client:
+    analytical-service:
+      address: static://${project.variables.smart-service.url}
+      enableKeepAlive: true
+      negotiationType: "PLAINTEXT"
 
 
 project:
   variables:
     keycloak:
+      url: <?>
+    datasource:
+      url: <?>
+      username: <?>
+      password: <?>
+    kafka:
+      url: <?>
+    smart-service:
       url: <?>
