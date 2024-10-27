@@ -33,10 +33,17 @@ dependencies {
 	//datasource
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    //development
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
 	//tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 tasks.named('test') {

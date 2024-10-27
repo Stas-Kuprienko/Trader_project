@@ -1,7 +1,9 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: ui-service
-  port: 8080
   security:
     oauth2:
       client:
@@ -15,13 +17,25 @@ spring:
             provider: keycloak
         provider:
           keycloak:
-            issuer-uri: http://${project.variables.keycloak.url}/auth/realms/myrealm
-
+            issuer-uri: http://${project.variables.keycloak.url}/auth/realms/trade_project
+  redis:
+    host: ${project.variables.redis.host}
+    port: ${project.variables.redis.port}
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+    remote:
+      secret: changeme
 
 
 project:
   variables:
     keycloak:
-      url: <?>
-      client-id: <?>
-      client-secret: <?>
+      url: localhost:8080
+      client-id: client_id
+      client-secret: client_secret
+    redis:
+      host: localhost
+      port: 6379

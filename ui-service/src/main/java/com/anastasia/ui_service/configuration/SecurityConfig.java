@@ -17,8 +17,8 @@ public class SecurityConfig extends AbstractSecurityWebApplicationInitializer im
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             http
                     .authorizeHttpRequests(exchange -> exchange
-                            .requestMatchers("/v1/auth/login", "/v1/auth/registrations").permitAll()
-                            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").authenticated()
+                            .requestMatchers("/auth/login", "/auth/registrations").permitAll()
+                            .requestMatchers("/**").authenticated()
                             .anyRequest().authenticated()
                     ).oauth2Login(
                             login -> login.loginPage("/login")
