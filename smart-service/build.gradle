@@ -27,17 +27,22 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation "net.devh:grpc-spring-boot-starter:$grpc_starter_version"
 
     //grpc framework
 	implementation "io.grpc:grpc-netty-shaded:$rpc_version"
 	implementation "io.grpc:grpc-protobuf:$rpc_version"
 	implementation "io.grpc:grpc-stub:$rpc_version"
-	implementation 'com.google.protobuf:protobuf-java:3.25.2'
 
-    //annotations
-	implementation "javax.annotation:javax.annotation-api:$javax_annotations"
+    //analytics
+    implementation "org.apache.commons:commons-math4-core:$apache_math_version"
+
+    //machine learning
+    implementation "org.deeplearning4j:deeplearning4j-core:$dl4j_version"
+    implementation "org.nd4j:nd4j-native-platform:$dl4j_version"
+
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
 
     //tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -56,6 +61,15 @@ protobuf {
     generateProtoTasks {
         all()*.plugins {
             grpc {}
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/java'
+            srcDirs 'build/generated/source/proto/main/grpc'
         }
     }
 }

@@ -1,6 +1,7 @@
 spring:
   application:
     name: core-service
+  port: 8081
   security:
     oauth2:
       resourceserver:
@@ -35,12 +36,12 @@ grpc:
 project:
   variables:
     keycloak:
-      url: <?>
+      url: localhost:8080
     datasource:
-      url: <?>
-      username: <?>
-      password: <?>
+      url: localhost:5432
+      username: postgres
+      password: postgres
     kafka:
-      url: <?>
+      url: localhost:9092
     smart-service:
-      url: <?>
+      url: localhost:9090

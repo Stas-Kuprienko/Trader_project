@@ -1,3 +1,17 @@
 spring:
   application:
     name: smart-service
+  redis:
+    host: ${project.variables.redis.host}
+    port: ${project.variables.redis.port}
+
+grpc:
+  server:
+    port: 9090
+
+
+project:
+  variables:
+    redis:
+      host: localhost
+      port: 6379
