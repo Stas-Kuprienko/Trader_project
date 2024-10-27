@@ -1,3 +1,29 @@
 spring:
   application:
     name: telegram-bot
+
+  datasource:
+    url: jdbc:mysql://${project.variables.datasource.url}/trade_project
+    username: ${project.variables.datasource.username}
+    password: ${project.variables.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  kafka:
+    consumer:
+      bootstrap-servers: ${project.variables.kafka.url}
+      group-id: telegram-bot-group
+      auto-offset-reset: earliest
+
+telegrambots:
+  bot:
+    token: ???
+    username: ???
+
+
+project:
+  variables:
+    datasource:
+      url: localhost:3306
+      username: user
+      password: 1234
+    kafka:
+      url: localhost:9092
