@@ -41,8 +41,14 @@ dependencies {
     implementation "org.deeplearning4j:deeplearning4j-core:$dl4j_version"
     implementation "org.nd4j:nd4j-native-platform:$dl4j_version"
 
-    //redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+    //migration
+	implementation "org.flywaydb:flyway-core:$flyway_version"
+	implementation "org.flywaydb:flyway-database-postgresql:$flyway_version"
+
+    //datasource
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+	runtimeOnly "org.postgresql:postgresql:$postgresql_version"
+	runtimeOnly "org.postgresql:r2dbc-postgresql:$r2dbc_postgresql_version"
 
     //tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

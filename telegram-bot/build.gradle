@@ -29,11 +29,8 @@ dependencies {
 	//messaging
 	implementation "org.springframework.kafka:spring-kafka:$spring_kafka_version"
 
-    //database
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-
-    //jdbc driver
-	runtimeOnly "com.mysql:mysql-connector-j:$mysql_version"
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	//tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

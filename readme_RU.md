@@ -5,7 +5,6 @@
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Docker-blue?style=flat-square&logo=Docker&logoColor=%233399ff&label=%7C&labelColor=white&color=grey)
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-PostgreSQL-blue?style=flat-square&logo=postgresql&logoColor=white&label=%7C&labelColor=blue&color=grey)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Hibernate-steelblue?style=flat-square&logo=Hibernate&logoColor=yellow&label=%7C&labelColor=grey)
-![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-MySQL-lightblue?style=flat-square&logo=mysql&logoSize=auto&logoColor=white&label=%7C&labelColor=grey)
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-gRPC-mediumturquoise?style=flat-square&logo=java&logoColor=mediumturquoise&label=%3C-%3E|&labelColor=grey)
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Telegram_API-blue?logo=telegram&label=%7C)
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Apache_Kafka-blue?style=flat-square&logo=Apache%20Kafka&logoColor=black&label=%7C&labelColor=white&color=darkblue)
@@ -30,7 +29,6 @@
 + #### Spring Framework
 + #### Gradle
 + #### Postgresql
-+ #### MySQL
 + #### Redis
 + #### Kafka
 + #### Keycloak
@@ -74,15 +72,14 @@
   + Spring Boot 3
   + Spring gRPC starter
   + gRPC Framework
-  + Redis storage
+  + Postgresql database
 ***
 + ### Telegram Bot:
 + Приложение Telegram бота. Обеспечивает простое управление сервисами.
   Используемые технологии:
   + Spring Boot 3
   + Telegram bots 6
-  + Spring JDBC
-  + MySQL 8
+  + Redis storage
   + Apache Kafka
 ***
 + ### UI Service
