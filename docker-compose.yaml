@@ -22,7 +22,6 @@ services:
       - ./create-db.sql:/docker-entrypoint-initdb.d/create_database.sql
 
   keycloak:
-    container_name: keycloak
     image: quay.io/keycloak/keycloak:24.0.1
     command: start
     networks:
@@ -65,6 +64,14 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
 
+  redis:
+    image: redis:latest
+    networks:
+      - my-networks
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+  #      --requirepass 12345
 
   mysql:
     image: mysql:8
@@ -80,14 +87,6 @@ services:
     volumes:
       - ./volumes/mysql/data:/var/lib/mysql/
 
-  redis:
-    image: redis:latest
-    networks:
-      - my-networks
-    ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
-#      --requirepass 12345
 
 volumes:
   kafka_data:

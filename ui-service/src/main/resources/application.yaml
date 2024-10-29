@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: ui-service
+  profiles:
+    active:
+      - local
   security:
     oauth2:
       client:

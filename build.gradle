@@ -1,22 +1,30 @@
 plugins {
-    id 'java'
+	id 'java'
 }
 
 group = 'com.anastasia'
 version = '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
-	mavenLocal()
+allprojects {
+    repositories {
+        mavenCentral()
+    	mavenLocal()
+    }
 }
 
-dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-log4j2:$springframework_boot_version"
+subprojects {
+    apply plugin: 'java'
 
-	compileOnly "org.projectlombok:lombok:$lombok_version"
-	annotationProcessor "org.projectlombok:lombok:$lombok_version"
-}
+    group = 'com.anastasia'
+    version = '1.0-SNAPSHOT'
 
-test {
-    useJUnitPlatform()
+    sourceCompatibility = '21'
+
+    dependencies {
+    	compileOnly "org.projectlombok:lombok:$lombok_version"
+    	annotationProcessor "org.projectlombok:lombok:$lombok_version"
+
+    	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
 }

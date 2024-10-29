@@ -38,3 +38,4 @@ bin/
 .DS_Store
 /volumes/
 /.idea/
+/telegram-bot/src/main/resources/application-local.yaml
