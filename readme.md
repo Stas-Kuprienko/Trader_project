@@ -92,7 +92,28 @@
   + Keycloak
   + Redis storage
 ***
-<img src="project_files/structurizr-EN.png" style="max-width: 75%;">
+
+## Project structure
+
+### Applications context
+
+<img src="project_files/project_EN.png">
+
+### Core Service
+
+<img src="project_files/core-service_EN.png">
+
+### Smart Service
+
+<img src="project_files/smart-service_EN.png">
+
+### UI Service
+
+<img src="project_files/ui-service_EN.png">
+
+### Telegram Bot
+
+<img src="project_files/telegram-bot_EN.png">
 
 ***
  
