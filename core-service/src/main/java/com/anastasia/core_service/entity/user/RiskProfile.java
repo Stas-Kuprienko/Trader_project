@@ -5,6 +5,9 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -30,6 +33,12 @@ public class RiskProfile {
     @Column("risk_type")
     private RiskType riskType;
 
+    @Column("created_at")
+    private LocalDate createdAt;
+
+    @Column("updated_at")
+    private LocalDateTime updatedAt;
+
 
     @Builder
     public RiskProfile(UUID id,
@@ -37,13 +46,17 @@ public class RiskProfile {
                        byte accountLossPercentage,
                        byte futuresInAccountPercentage,
                        byte stockInAccountPercentage,
-                       RiskType riskType) {
+                       RiskType riskType,
+                       LocalDate createdAt,
+                       LocalDateTime updatedAt) {
         this.id = id;
         this.dealLossPercentage = dealLossPercentage;
         this.accountLossPercentage = accountLossPercentage;
         this.futuresInAccountPercentage = futuresInAccountPercentage;
         StockInAccountPercentage = stockInAccountPercentage;
         this.riskType = riskType;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public RiskProfile() {}
@@ -65,7 +78,8 @@ public class RiskProfile {
                 accountLossPercentage == that.accountLossPercentage &&
                 futuresInAccountPercentage == that.futuresInAccountPercentage &&
                 StockInAccountPercentage == that.StockInAccountPercentage &&
-                riskType == that.riskType;
+                riskType == that.riskType &&
+                createdAt.equals(that.createdAt);
     }
 
     @Override
@@ -73,7 +87,8 @@ public class RiskProfile {
         return Objects.hash(dealLossPercentage,
                 accountLossPercentage,
                 futuresInAccountPercentage,
-                StockInAccountPercentage, riskType);
+                StockInAccountPercentage,
+                riskType, createdAt);
     }
 
     @Override
@@ -85,6 +100,8 @@ public class RiskProfile {
                 ", futuresInAccountPercentage=" + futuresInAccountPercentage +
                 ", StockInAccountPercentage=" + StockInAccountPercentage +
                 ", riskType=" + riskType +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

@@ -6,7 +6,11 @@ import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +33,12 @@ public class User {
 
     private List<Account> accounts = new ArrayList<>();
 
+    @Column("created_at")
+    private LocalDate createdAt;
+
+    @Column("updated_at")
+    private LocalDateTime updatedAt;
+
 
     @Builder
     public User(Long id,
@@ -36,13 +46,17 @@ public class User {
                 Role role,
                 Language language,
                 String name,
-                List<Account> accounts) {
+                List<Account> accounts,
+                LocalDate createdAt,
+                LocalDateTime updatedAt) {
         this.id = id;
         this.login = login;
         this.role = role;
         this.language = language;
         this.name = name;
         this.accounts = accounts;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public User() {}
@@ -55,12 +69,13 @@ public class User {
         return Objects.equals(login, user.login)&&
                 role == user.role &&
                 language == user.language &&
-                Objects.equals(name, user.name);
+                Objects.equals(name, user.name) &&
+                Objects.equals(createdAt, user.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(login, role, language, name);
+        return Objects.hash(login, role, language, name, createdAt);
     }
 
     @Override
@@ -71,6 +86,8 @@ public class User {
                 ", role=" + role +
                 ", language=" + language +
                 ", name='" + name + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
                 '}';
     }
 }

@@ -1,8 +1,13 @@
 package com.anastasia.core_service.entity.user;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Data
@@ -10,14 +15,27 @@ import java.util.Objects;
 public class TelegramChat {
 
     @Id
+    @Column("chat_id")
     private Long chatId;
 
     private User user;
 
+    @Column("created_at")
+    private LocalDate createdAt;
 
-    public TelegramChat(Long chatId, User user) {
+    @Column("updated_at")
+    private LocalDateTime updatedAt;
+
+
+    @Builder
+    public TelegramChat(Long chatId,
+                        User user,
+                        LocalDate createdAt,
+                        LocalDateTime updatedAt) {
         this.chatId = chatId;
         this.user = user;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public TelegramChat() {}
@@ -40,6 +58,8 @@ public class TelegramChat {
         return "TelegramChat{" +
                 "chatId=" + chatId +
                 ", user=" + user +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
                 '}';
     }
 }

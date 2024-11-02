@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,6 +33,12 @@ public class Account {
     @Column("risk_profile_id")
     private RiskProfile riskProfile;
 
+    @Column("created_at")
+    private LocalDate createdAt;
+
+    @Column("updated_at")
+    private LocalDateTime updatedAt;
+
 
     @Builder
     public Account(UUID id,
@@ -40,7 +47,9 @@ public class Account {
                    Broker broker,
                    String token,
                    LocalDate tokenExpiresAt,
-                   RiskProfile riskProfile) {
+                   RiskProfile riskProfile,
+                   LocalDate createdAt,
+                   LocalDateTime updatedAt) {
         this.id = id;
         this.user = user;
         this.clientId = clientId;
@@ -48,6 +57,8 @@ public class Account {
         this.token = token;
         this.tokenExpiresAt = tokenExpiresAt;
         this.riskProfile = riskProfile;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Account() {}
@@ -59,12 +70,13 @@ public class Account {
         if (!(o instanceof Account account)) return false;
         return Objects.equals(user, account.user) &&
                 Objects.equals(clientId, account.clientId) &&
-                Objects.equals(broker, account.broker);
+                broker == account.broker &&
+                Objects.equals(createdAt, account.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clientId, user, broker);
+        return Objects.hash(clientId, user, broker, createdAt);
     }
 
     @Override
@@ -75,6 +87,8 @@ public class Account {
                 ", clientId='" + clientId + '\'' +
                 ", broker='" + broker + '\'' +
                 ", riskProfile='" + riskProfile + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
                 '}';
     }
 }

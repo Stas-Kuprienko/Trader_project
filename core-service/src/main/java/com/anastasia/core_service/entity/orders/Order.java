@@ -17,7 +17,7 @@ public class Order {
     private String ticker;
     private Board board;
     private BigDecimal price;
-    private long quantity;
+    private int quantity;
     private Direction direction;
     private String status;
     private LocalDateTime created;
@@ -30,7 +30,7 @@ public class Order {
                  String ticker,
                  Board board,
                  BigDecimal price,
-                 long quantity,
+                 int quantity,
                  Direction direction,
                  String status,
                  LocalDateTime created) {

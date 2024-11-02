@@ -1,5 +1,3 @@
-<a href=https://github.com/Stas-Kuprienko/Anastasia_trader_project/blob/master/readme_RU.md>RU</a>
-
 [RU](readme_RU.md)
 
 # ANASTASIA TRADER PROJECT
