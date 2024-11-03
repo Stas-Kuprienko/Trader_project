@@ -13,10 +13,9 @@ spring:
     host: ${project.variables.redis.host}
     port: ${project.variables.redis.port}
 
-telegrambots:
-  bot:
-    username: ${project.telegram.botToken}
-    token: ${project.telegram.username}
+telegram:
+  username: ${project.telegram.username}
+  botToken: ${project.telegram.botToken}
 
 
 project:

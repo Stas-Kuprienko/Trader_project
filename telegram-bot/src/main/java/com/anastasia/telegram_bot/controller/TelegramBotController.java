@@ -17,8 +17,8 @@ public class TelegramBotController extends TelegramLongPollingBot {
 
 
     @Autowired
-    public TelegramBotController(@Value("${telegrambots.bot.username}") String username,
-                                 @Value("${telegrambots.bot.token}") String botToken) {
+    public TelegramBotController(@Value("${telegram.username}") String username,
+                                 @Value("${telegram.botToken}") String botToken) {
         super(botToken);
         this.username = username;
     }
