@@ -1,11 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS person;
 
 CREATE TABLE person.users (
-    id BIGSERIAL    PRIMARY KEY,
-    login VARCHAR(255)  NOT NULL    UNIQUE,
-    role VARCHAR(31)    NOT NULL    DEFAULT 'USER',
-    language VARCHAR(2) NOT NULL    DEFAULT 'EN',
-    name VARCHAR(127)   NOT NULL    DEFAULT 'default_username'
+    id BIGSERIAL            PRIMARY KEY,
+    login VARCHAR(255)      NOT NULL    UNIQUE,
+    role VARCHAR(31)        NOT NULL    DEFAULT 'USER',
+    language VARCHAR(2)     NOT NULL    DEFAULT 'EN',
+    name VARCHAR(127)       NOT NULL    DEFAULT 'default_username',
+    created_at DATE         NOT NULL    DEFAULT now(),
+    updated_at TIMESTAMP    NOT NULL    DEFAULT now()
 );
 
 CREATE TABLE person.risk_profile (
@@ -15,6 +17,8 @@ CREATE TABLE person.risk_profile (
     futures_in_account_percentage TINYINT,
     stocks_in_account_percentage TINYINT,
     risk_type VARCHAR(127)  DEFAULT 'medium'  CHECK (risk_type IN('conservative', 'medium', 'aggressive'))
+    created_at DATE         NOT NULL    DEFAULT now(),
+    updated_at TIMESTAMP    NOT NULL    DEFAULT now()
 );
 
 CREATE TABLE person.account (
@@ -25,6 +29,13 @@ CREATE TABLE person.account (
     token VARCHAR(255)      NOT NULL,
     token_expires_at DATE,
     risk_profile_id UUID                REFERENCES person.risk_profile,
+    created_at DATE         NOT NULL    DEFAULT now(),
+    updated_at TIMESTAMP    NOT NULL    DEFAULT now()
     UNIQUE(client_id, broker)
 );
 
+CREATE TABLE person.telegram (
+    chat_id BIGINT  PRIMARY KEY,
+    user_id BIGINT  NOT NULL    REFERENCES person.users ON DELETE CASCADE,
+    created_at DATE NOT NULL    DEFAULT now()
+);

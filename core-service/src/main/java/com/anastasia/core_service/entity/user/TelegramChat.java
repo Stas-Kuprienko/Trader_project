@@ -5,9 +5,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Data
@@ -23,19 +21,14 @@ public class TelegramChat {
     @Column("created_at")
     private LocalDate createdAt;
 
-    @Column("updated_at")
-    private LocalDateTime updatedAt;
-
 
     @Builder
     public TelegramChat(Long chatId,
                         User user,
-                        LocalDate createdAt,
-                        LocalDateTime updatedAt) {
+                        LocalDate createdAt) {
         this.chatId = chatId;
         this.user = user;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public TelegramChat() {}
@@ -59,7 +52,6 @@ public class TelegramChat {
                 "chatId=" + chatId +
                 ", user=" + user +
                 ", createdAt='" + createdAt + '\'' +
-                ", updatedAt='" + updatedAt + '\'' +
                 '}';
     }
 }
