@@ -23,6 +23,7 @@ spring:
     password: ${project.variables.datasource.password}
   kafka:
     bootstrap-servers: ${project.variables.kafka.url}
+    topic: transactions
     consumer:
       group-id: core-service-group
       auto-offset-reset: earliest
