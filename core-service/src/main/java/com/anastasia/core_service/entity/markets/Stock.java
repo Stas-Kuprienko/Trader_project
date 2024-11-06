@@ -1,9 +1,9 @@
 package com.anastasia.core_service.entity.markets;
 
-import com.anastasia.core_service.entity.enums.Board;
-import com.anastasia.core_service.entity.enums.Currency;
-import com.anastasia.core_service.entity.enums.ExchangeMarket;
-import com.anastasia.core_service.entity.enums.Market;
+import com.anastasia.trade_project.enums.Board;
+import com.anastasia.trade_project.enums.Currency;
+import com.anastasia.trade_project.enums.ExchangeMarket;
+import com.anastasia.trade_project.enums.Market;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.redis.core.RedisHash;

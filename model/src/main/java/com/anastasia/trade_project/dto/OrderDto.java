@@ -1,5 +1,9 @@
 package com.anastasia.trade_project.dto;
 
+import com.anastasia.trade_project.enums.Board;
+import com.anastasia.trade_project.enums.Broker;
+import com.anastasia.trade_project.enums.Direction;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
@@ -14,33 +18,33 @@ public class OrderDto {
     @JsonProperty("client_id")
     private String clientId;
 
-    private String broker;
+    private Broker broker;
 
     private String ticker;
 
-    private String board;
+    private Board board;
 
     private double price;
 
     private int quantity;
 
-    private String direction;
+    private Direction direction;
 
     private String status;
 
-    @Pattern(regexp = "^(0[1-9]|1\\d|2[0-8]|29(?=/\\d\\d/(?!1[01345789]00|2[1235679]00)\\d\\d(?:[02468][048]|[13579][26]))|30(?!/02)|31(?=/0[13578]|/1[02]))-(0[1-9]|1[0-2])-([12]\\d{3})$")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String created;
 
 
     @Builder
     public OrderDto(int orderId,
                     String clientId,
-                    String broker,
+                    Broker broker,
                     String ticker,
-                    String board,
+                    Board board,
                     double price,
                     int quantity,
-                    String direction,
+                    Direction direction,
                     String status,
                     String created) {
         this.orderId = orderId;

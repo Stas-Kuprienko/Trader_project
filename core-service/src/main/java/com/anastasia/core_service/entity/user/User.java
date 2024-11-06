@@ -1,7 +1,7 @@
 package com.anastasia.core_service.entity.user;
 
-import com.anastasia.core_service.entity.enums.Language;
-import com.anastasia.core_service.entity.enums.Role;
+import com.anastasia.trade_project.enums.Language;
+import com.anastasia.trade_project.enums.Role;
 import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Data;

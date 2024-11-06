@@ -1,14 +1,12 @@
 package com.anastasia.core_service.entity.user;
 
-import com.anastasia.core_service.entity.enums.Broker;
-import com.anastasia.core_service.entity.enums.Market;
-import com.anastasia.core_service.entity.enums.Currency;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.anastasia.trade_project.enums.Broker;
+import com.anastasia.trade_project.enums.Market;
+import com.anastasia.trade_project.enums.Currency;
 import lombok.Builder;
 import lombok.Data;
-import java.math.BigDecimal;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

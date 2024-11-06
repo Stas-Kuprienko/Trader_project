@@ -1,6 +1,6 @@
 package com.anastasia.core_service.entity.user;
 
-import com.anastasia.core_service.entity.enums.Broker;
+import com.anastasia.trade_project.enums.Broker;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;

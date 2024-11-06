@@ -1,8 +1,8 @@
 package com.anastasia.core_service.entity.orders;
 
-import com.anastasia.core_service.entity.enums.Board;
-import com.anastasia.core_service.entity.enums.Broker;
-import com.anastasia.core_service.entity.enums.Direction;
+import com.anastasia.trade_project.enums.Board;
+import com.anastasia.trade_project.enums.Broker;
+import com.anastasia.trade_project.enums.Direction;
 import lombok.Builder;
 import lombok.Data;
 import java.math.BigDecimal;

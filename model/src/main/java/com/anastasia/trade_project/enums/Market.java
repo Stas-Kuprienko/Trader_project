@@ -1,4 +1,4 @@
-package com.anastasia.core_service.entity.enums;
+package com.anastasia.trade_project.enums;
 
 public enum Market {
 
