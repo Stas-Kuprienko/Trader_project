@@ -1,0 +1,20 @@
+plugins {}
+
+dependencies {
+    //web
+    implementation "org.springframework:spring-web:$spring_version"
+
+    //json
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
+
+	//project
+	implementation project(':model')
+
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}

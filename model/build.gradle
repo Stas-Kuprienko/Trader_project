@@ -7,9 +7,5 @@ dependencies {
     implementation "jakarta.validation:jakarta.validation-api:$jakarta_valid_version"
 
     // redis
-    implementation "org.springframework.data:spring-data-redis:$springframework_boot_version"
-
-    // lombok
-    compileOnly "org.projectlombok:lombok:$lombok_version"
-    annotationProcessor "org.projectlombok:lombok:$lombok_version"
+    compileOnly "org.springframework.data:spring-data-redis:$springframework_boot_version"
 }
