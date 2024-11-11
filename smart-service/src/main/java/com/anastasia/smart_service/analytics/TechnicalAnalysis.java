@@ -1,4 +1,4 @@
-package com.anastasia.smart_service.analysis;
+package com.anastasia.smart_service.analytics;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
