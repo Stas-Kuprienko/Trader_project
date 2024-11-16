@@ -1,4 +1,4 @@
-package com.anastasia.core_service.domain;
+package com.anastasia.core_service.domain.smart;
 
 //@Service
 public class SmartServiceGrpcController {

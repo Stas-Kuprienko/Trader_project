@@ -1,4 +1,4 @@
-package com.anastasia.core_service.domain;
+package com.anastasia.core_service.domain.notification;
 
 import com.anastasia.trade_project.dto.TradeNotification;
 import lombok.extern.slf4j.Slf4j;
