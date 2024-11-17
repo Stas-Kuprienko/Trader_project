@@ -1,5 +1,6 @@
 package com.anastasia.core_service.configuration;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,4 +56,11 @@ public class CoreServiceConfig {
     }
     // /\ **************** /\
 
+    // \/ UTILITIES ****** \/
+
+    @Bean
+    public XmlMapper xmlMapper() {
+        return new XmlMapper();
+    }
+    // /\ **************** /\
 }

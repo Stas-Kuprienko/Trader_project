@@ -60,3 +60,6 @@ project:
   encryption:
     secret-key: ???
     iv-value: ???
+  exchange:
+    moex:
+      url: https://iss.moex.com/iss
