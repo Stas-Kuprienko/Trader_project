@@ -15,14 +15,18 @@ import reactor.core.publisher.Mono;
 @Component
 public class MoexMarketProvider implements MarketProvider {
 
-    private final MoexUrlDraft urlDraft;
+    private static final String STOCK_URL = "/engines/stock/markets/shares/boards/tqbr/securities/%s";
+    private static final String STOCK_LIST_URL = "/engines/stock/markets/shares/boards/tqbr/securities";
+    private static final String FUTURES_URL = "/engines/futures/markets/forts/securities/%s";
+    private static final String FUTURES_LIST_URL = "/engines/futures/markets/forts/securities";
+
     private final MoexXmlUtility xmlParser;
     private final WebClient webClient;
 
+
     @Autowired
-    public MoexMarketProvider(MoexUrlDraft urlDraft, MoexXmlUtility xmlParser,
+    public MoexMarketProvider(MoexXmlUtility xmlParser,
                               @Value("${project.exchange.moex.url}") String moexBaseUrl) {
-        this.urlDraft = urlDraft;
         this.xmlParser = xmlParser;
         this.webClient = WebClient.builder()
                 .baseUrl(moexBaseUrl)
@@ -43,8 +47,15 @@ public class MoexMarketProvider implements MarketProvider {
 
     @Override
     public Mono<Stock> getStock(String ticker) {
-
-        return null;
+        return webClient
+                .get()
+                .uri(STOCK_URL.formatted(ticker))
+                .retrieve()
+                .bodyToMono(String.class)
+                .map(xmlParser::parse)
+                .map(document -> xmlParser.stock(
+                        document.securitiesData().getFirst(),
+                        document.marketData().getFirst()));
     }
 
     @Override

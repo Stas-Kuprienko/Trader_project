@@ -17,10 +17,10 @@ public class DocumentData {
 
     @JacksonXmlElementWrapper(localName = "rows")
     @JacksonXmlProperty(localName = "row")
-    private List<Map<String, String>> rows;
+    private List<Map<String, Object>> rows;
 
 
-    public DocumentData(String id, Metadata metadata, List<Map<String, String>> rows) {
+    public DocumentData(String id, Metadata metadata, List<Map<String, Object>> rows) {
         this.id = id;
         this.metadata = metadata;
         this.rows = rows;
@@ -29,7 +29,7 @@ public class DocumentData {
     public DocumentData() {}
 
 
-    public Optional<Map<String, String>> singleData() {
+    public Optional<Map<String, Object>> singleData() {
         if (rows.isEmpty()) {
             return Optional.empty();
         } else {
