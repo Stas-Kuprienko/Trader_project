@@ -1,6 +1,6 @@
 package com.anastasia.core_service.domain.notification;
 
-import com.anastasia.trade_project.dto.TradeNotification;
+import com.anastasia.trade_project.notification.TradeNotification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

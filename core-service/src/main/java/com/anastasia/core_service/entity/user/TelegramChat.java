@@ -2,13 +2,15 @@ package com.anastasia.core_service.entity.user;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Data
+@Getter @Setter
 @Table("telegram_chat")
 public class TelegramChat {
 
@@ -50,7 +52,6 @@ public class TelegramChat {
     public String toString() {
         return "TelegramChat{" +
                 "chatId=" + chatId +
-                ", user=" + user +
                 ", createdAt='" + createdAt + '\'' +
                 '}';
     }

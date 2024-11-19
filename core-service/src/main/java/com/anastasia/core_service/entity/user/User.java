@@ -2,9 +2,12 @@ package com.anastasia.core_service.entity.user;
 
 import com.anastasia.trade_project.enums.Language;
 import com.anastasia.trade_project.enums.Role;
+import com.anastasia.trade_project.enums.Status;
 import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -15,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Data
+@Getter @Setter
 @Table("users")
 public class User {
 
@@ -30,6 +33,8 @@ public class User {
     private Language language;
 
     private String name;
+
+    private Status status;
 
     private List<Account> accounts = new ArrayList<>();
 

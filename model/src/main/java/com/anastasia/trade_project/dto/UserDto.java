@@ -2,8 +2,7 @@ package com.anastasia.trade_project.dto;
 
 import com.anastasia.trade_project.enums.Language;
 import com.anastasia.trade_project.enums.Role;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.anastasia.trade_project.enums.Status;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -23,13 +22,7 @@ public class UserDto {
 
     private String name;
 
-    @JsonProperty("created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private String createdAt;
-
-    @JsonProperty("updated_at")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String updatedAt;
+    private Status status;
 
 
     @Builder
@@ -37,16 +30,12 @@ public class UserDto {
                    String login,
                    Role role,
                    Language language,
-                   String name,
-                   String createdAt,
-                   String updatedAt) {
+                   String name) {
         this.id = id;
         this.login = login;
         this.role = role;
         this.language = language;
         this.name = name;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public UserDto() {}

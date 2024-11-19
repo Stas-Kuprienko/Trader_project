@@ -1,7 +1,8 @@
 package com.anastasia.core_service.entity.user;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-@Data
+@Getter @Setter
 @Table("risk_profile")
 public class RiskProfile {
 
@@ -28,7 +29,7 @@ public class RiskProfile {
     private byte futuresInAccountPercentage;
 
     @Column("stocks_in_account_percentage")
-    private byte StockInAccountPercentage;
+    private byte stockInAccountPercentage;
 
     @Column("risk_type")
     private RiskType riskType;
@@ -53,7 +54,7 @@ public class RiskProfile {
         this.dealLossPercentage = dealLossPercentage;
         this.accountLossPercentage = accountLossPercentage;
         this.futuresInAccountPercentage = futuresInAccountPercentage;
-        StockInAccountPercentage = stockInAccountPercentage;
+        this.stockInAccountPercentage = stockInAccountPercentage;
         this.riskType = riskType;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -77,7 +78,7 @@ public class RiskProfile {
         return dealLossPercentage == that.dealLossPercentage &&
                 accountLossPercentage == that.accountLossPercentage &&
                 futuresInAccountPercentage == that.futuresInAccountPercentage &&
-                StockInAccountPercentage == that.StockInAccountPercentage &&
+                stockInAccountPercentage == that.stockInAccountPercentage &&
                 riskType == that.riskType &&
                 createdAt.equals(that.createdAt);
     }
@@ -87,7 +88,7 @@ public class RiskProfile {
         return Objects.hash(dealLossPercentage,
                 accountLossPercentage,
                 futuresInAccountPercentage,
-                StockInAccountPercentage,
+                stockInAccountPercentage,
                 riskType, createdAt);
     }
 
@@ -98,7 +99,7 @@ public class RiskProfile {
                 ", dealLossPercentage=" + dealLossPercentage +
                 ", accountLossPercentage=" + accountLossPercentage +
                 ", futuresInAccountPercentage=" + futuresInAccountPercentage +
-                ", StockInAccountPercentage=" + StockInAccountPercentage +
+                ", StockInAccountPercentage=" + stockInAccountPercentage +
                 ", riskType=" + riskType +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +

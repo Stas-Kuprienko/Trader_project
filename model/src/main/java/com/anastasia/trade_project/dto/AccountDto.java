@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
+import java.time.LocalDate;
 
 @Data
 public class AccountDto {
@@ -25,19 +26,11 @@ public class AccountDto {
 
     @JsonProperty("token_expires_at")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private String tokenExpiresAt;
+    private LocalDate tokenExpiresAt;
 
     @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     @JsonProperty("risk_profile_id")
     private String riskProfileId;
-
-    @JsonProperty("created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private String createdAt;
-
-    @JsonProperty("updated_at")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String updatedAt;
 
 
     @Builder
@@ -46,10 +39,8 @@ public class AccountDto {
                       String clientId,
                       Broker broker,
                       String token,
-                      String tokenExpiresAt,
-                      String riskProfileId,
-                      String createdAt,
-                      String updatedAt) {
+                      LocalDate tokenExpiresAt,
+                      String riskProfileId) {
         this.id = id;
         this.userId = userId;
         this.clientId = clientId;
@@ -57,8 +48,6 @@ public class AccountDto {
         this.token = token;
         this.tokenExpiresAt = tokenExpiresAt;
         this.riskProfileId = riskProfileId;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public AccountDto() {}

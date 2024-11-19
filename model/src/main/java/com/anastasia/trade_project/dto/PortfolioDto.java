@@ -3,9 +3,9 @@ package com.anastasia.trade_project.dto;
 import com.anastasia.trade_project.enums.Broker;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -22,7 +22,7 @@ public class PortfolioDto {
 
     @JsonProperty("relevance_at")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String relevanceAt;
+    private LocalDateTime relevanceAt;
 
 
     @Builder

@@ -1,7 +1,7 @@
 package com.anastasia.telegram_bot.configuration;
 
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
-import com.anastasia.trade_project.dto.TradeNotification;
+import com.anastasia.trade_project.notification.TradeNotification;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.beans.BeansException;

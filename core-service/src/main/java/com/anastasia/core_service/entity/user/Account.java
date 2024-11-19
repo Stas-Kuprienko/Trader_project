@@ -3,6 +3,8 @@ package com.anastasia.core_service.entity.user;
 import com.anastasia.trade_project.enums.Broker;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-@Data
+@Getter @Setter
 @Table("account")
 public class Account {
 
@@ -68,25 +70,22 @@ public class Account {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Account account)) return false;
-        return Objects.equals(user, account.user) &&
-                Objects.equals(clientId, account.clientId) &&
+        return Objects.equals(clientId, account.clientId) &&
                 broker == account.broker &&
                 Objects.equals(createdAt, account.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clientId, user, broker, createdAt);
+        return Objects.hash(clientId, broker, createdAt);
     }
 
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
-                ", userId=" + user.getLogin() +
                 ", clientId='" + clientId + '\'' +
                 ", broker='" + broker + '\'' +
-                ", riskProfile='" + riskProfile + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", updatedAt='" + updatedAt + '\'' +
                 '}';

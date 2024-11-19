@@ -6,6 +6,7 @@ CREATE TABLE person.users (
     role VARCHAR(31)        NOT NULL    DEFAULT 'USER',
     language VARCHAR(2)     NOT NULL    DEFAULT 'EN',
     name VARCHAR(127)       NOT NULL    DEFAULT 'default_username',
+    status VARCHAR(63)      NOT NULL    DEFAULT 'ACTIVE' CHECK (status IN('ACTIVE', 'BLOCKED', 'DISABLED')
     created_at DATE         NOT NULL    DEFAULT now(),
     updated_at TIMESTAMP    NOT NULL    DEFAULT now()
 );

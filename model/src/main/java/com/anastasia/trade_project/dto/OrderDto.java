@@ -5,9 +5,9 @@ import com.anastasia.trade_project.enums.Broker;
 import com.anastasia.trade_project.enums.Direction;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class OrderDto {
@@ -33,7 +33,7 @@ public class OrderDto {
     private String status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String created;
+    private LocalDateTime created;
 
 
     @Builder
@@ -46,7 +46,7 @@ public class OrderDto {
                     int quantity,
                     Direction direction,
                     String status,
-                    String created) {
+                    LocalDateTime created) {
         this.orderId = orderId;
         this.clientId = clientId;
         this.broker = broker;

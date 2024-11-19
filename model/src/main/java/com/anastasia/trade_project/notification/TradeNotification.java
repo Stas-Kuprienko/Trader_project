@@ -1,4 +1,4 @@
-package com.anastasia.trade_project.dto;
+package com.anastasia.trade_project.notification;
 
 import com.anastasia.trade_project.enums.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,8 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
-
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 public class TradeNotification implements Serializable {
@@ -42,7 +42,7 @@ public class TradeNotification implements Serializable {
     private Currency currency;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String time;
+    private LocalDateTime time;
 
 
     @Builder
@@ -58,7 +58,7 @@ public class TradeNotification implements Serializable {
                              int quantity,
                              Direction direction,
                              Currency currency,
-                             String time) {
+                             LocalDateTime time) {
         this.id = id;
         this.login = login;
         this.broker = broker;

@@ -1,6 +1,5 @@
 package com.anastasia.trade_project.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
@@ -27,14 +26,6 @@ public class RiskProfileDto {
     @JsonProperty("risk_type")
     private String riskType;
 
-    @JsonProperty("created_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private String createdAt;
-
-    @JsonProperty("updated_at")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private String updatedAt;
-
 
     @Builder
     public RiskProfileDto(String id,
@@ -42,17 +33,13 @@ public class RiskProfileDto {
                           byte accountLossPercentage,
                           byte futuresInAccountPercentage,
                           byte stockInAccountPercentage,
-                          String riskType,
-                          String createdAt,
-                          String updatedAt) {
+                          String riskType) {
         this.id = id;
         this.dealLossPercentage = dealLossPercentage;
         this.accountLossPercentage = accountLossPercentage;
         this.futuresInAccountPercentage = futuresInAccountPercentage;
         StockInAccountPercentage = stockInAccountPercentage;
         this.riskType = riskType;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public RiskProfileDto() {}
