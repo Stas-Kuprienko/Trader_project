@@ -1,4 +1,4 @@
-package com.anastasia.core_service.repository;
+package com.anastasia.core_service.datasource.repository;
 
 import com.anastasia.core_service.entity.user.User;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;

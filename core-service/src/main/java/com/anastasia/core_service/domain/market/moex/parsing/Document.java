@@ -23,7 +23,7 @@ public class Document {
     public Document() {}
 
 
-    public List<Map<String, String>> securitiesData() {
+    public List<Map<String, Object>> securitiesData() {
         for (var d : data) {
             if (d.getId().equals(ID.securities.name())) {
                 return d.getRows();
@@ -32,7 +32,7 @@ public class Document {
         throw new IncorrectContentException("Unexpected data of XML from 'MOEX': " + data);
     }
 
-    public List<Map<String, String>> marketData() {
+    public List<Map<String, Object>> marketData() {
         for (var d : data) {
             if (d.getId().equals(ID.marketdata.name())) {
                 return d.getRows();
@@ -41,7 +41,7 @@ public class Document {
         throw new IncorrectContentException("Unexpected data of XML from 'MOEX': " + data);
     }
 
-    public Optional<Map<String, String>> singleSecuritiesData() {
+    public Optional<Map<String, Object>> singleSecuritiesData() {
         for (var d : data) {
             if (d.getId().equals(ID.securities.name())) {
                 return d.singleData();
@@ -50,7 +50,7 @@ public class Document {
         return Optional.empty();
     }
 
-    public Optional<Map<String, String>> singleMarketData() {
+    public Optional<Map<String, Object>> singleMarketData() {
         for (var d : data) {
             if (d.getId().equals(ID.marketdata.name())) {
                 return d.singleData();

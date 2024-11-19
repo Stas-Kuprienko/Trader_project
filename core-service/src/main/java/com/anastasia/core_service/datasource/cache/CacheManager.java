@@ -1,4 +1,4 @@
-package com.anastasia.core_service.storage;
+package com.anastasia.core_service.datasource.cache;
 
 import com.anastasia.trade_project.markets.Securities;
 import org.springframework.beans.factory.annotation.Autowired;
