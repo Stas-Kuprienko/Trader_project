@@ -1,18 +1,20 @@
 package com.anastasia.trade_project.core_client;
 
 import com.anastasia.trade_project.dto.AccountDto;
-import com.anastasia.trade_project.util.MyRestClient;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 import java.util.UUID;
 
 public class AccountsResource {
 
     private static final String resourceUrl = "/accounts";
 
-    private final MyRestClient<AccountDto> restClient;
+    private final RestClient restClient;
 
-    public AccountsResource(RestTemplate restTemplate, String baseUrl) {
-        this.restClient = new MyRestClient<>(restTemplate, baseUrl + resourceUrl, AccountDto.class);
+    AccountsResource(String baseUrl) {
+        baseUrl += resourceUrl;
+        this.restClient = RestClient.builder()
+                .baseUrl(baseUrl)
+                .build();
     }
 
 
@@ -20,13 +22,15 @@ public class AccountsResource {
         return restClient
                 .post()
                 .body(account)
-                .complete();
+                .retrieve()
+                .body(AccountDto.class);
     }
 
     public AccountDto getById(UUID id) {
         return restClient
                 .get()
-                .uri(MyRestClient.uriById(id))
-                .complete();
+                .uri(CoreServiceClientV1.uriById(id))
+                .retrieve()
+                .body(AccountDto.class);
     }
 }
