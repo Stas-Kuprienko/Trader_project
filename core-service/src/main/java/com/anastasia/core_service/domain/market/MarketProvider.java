@@ -1,21 +1,22 @@
 package com.anastasia.core_service.domain.market;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import com.anastasia.trade_project.enums.ExchangeMarket;
-import com.anastasia.trade_project.markets.Futures;
-import com.anastasia.trade_project.markets.Stock;
-import org.springframework.data.domain.Sort;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.springframework.core.annotation.AliasFor;
+import org.springframework.stereotype.Component;
 
-public interface MarketProvider {
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Component
+public @interface MarketProvider {
+
+    @AliasFor(annotation = Component.class)
+    String value() default "";
 
     ExchangeMarket exchange();
-
-    Flux<Stock> stocksList(int page, int count, Sort sort);
-
-    Mono<Stock> getStock(String ticker);
-
-    Flux<Futures> futuresList(int page, int count, Sort sort);
-
-    Mono<Futures> getFutures(String ticker);
 }

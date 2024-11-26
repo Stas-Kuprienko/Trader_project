@@ -3,6 +3,7 @@ package com.anastasia.core_service.domain.market.moex;
 import com.anastasia.core_service.utility.GetRequestParametersBuilder;
 import java.util.Map;
 
+@Deprecated
 public class MoexUrlDraft {
 
     private final static char delimiter = '/';
