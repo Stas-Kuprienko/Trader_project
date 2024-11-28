@@ -1,22 +1,20 @@
 package com.anastasia.core_service.domain.market.moex;
 
+import com.anastasia.core_service.domain.market.MarketData;
 import com.anastasia.core_service.domain.market.MarketDataProvider;
-import com.anastasia.core_service.domain.market.MarketProvider;
 import com.anastasia.trade_project.enums.ExchangeMarket;
+import com.anastasia.trade_project.enums.Sorting;
 import com.anastasia.trade_project.markets.Futures;
+import com.anastasia.trade_project.markets.Securities;
 import com.anastasia.trade_project.markets.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@MarketProvider(exchange = ExchangeMarket.MOEX)
+@MarketData(exchange = ExchangeMarket.MOEX)
 public class MoexMarketDataProvider implements MarketDataProvider {
 
     private static final String STOCK_URL = "/engines/stock/markets/shares/boards/tqbr/securities/%s";
@@ -44,8 +42,9 @@ public class MoexMarketDataProvider implements MarketDataProvider {
     }
 
     @Override
-    public Flux<Stock> stocksList(int page, int count, Sort sort) {
+    public Flux<Stock> stocksList(int page, int count, Sorting sorting, Sorting.Direction direction) {
         //CACHE
+        Comparator<Stock> comparator = Comparator.comparing(Securities::getTicker);
         return webClient
                 .get()
                 .uri(STOCK_LIST_URL)
@@ -77,7 +76,7 @@ public class MoexMarketDataProvider implements MarketDataProvider {
     }
 
     @Override
-    public Flux<Futures> futuresList(int page, int count, Sort sort) {
+    public Flux<Futures> futuresList(int page, int count, Sorting sorting, Sorting.Direction direction) {
         //CACHE
         return webClient
                 .get()
