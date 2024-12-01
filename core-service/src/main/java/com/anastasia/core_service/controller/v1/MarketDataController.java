@@ -22,7 +22,6 @@ public class MarketDataController {
     }
 
 
-
     @GetMapping("/{exchange}/stocks}")
     public Flux<Stock> getStockList(@PathVariable("exchange") String exchange,
                                     @RequestParam("page") Integer page,

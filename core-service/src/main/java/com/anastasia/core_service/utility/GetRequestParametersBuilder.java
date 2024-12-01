@@ -2,6 +2,7 @@ package com.anastasia.core_service.utility;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class GetRequestParametersBuilder {
 
     private final StringBuilder uri;

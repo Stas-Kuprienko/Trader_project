@@ -6,12 +6,12 @@ import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CacheManager {
+public class MarketDataCache {
 
     private final ReactiveRedisTemplate<String, Securities> redisTemplate;
 
     @Autowired
-    public CacheManager(ReactiveRedisTemplate<String, Securities> redisTemplate) {
+    public MarketDataCache(ReactiveRedisTemplate<String, Securities> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
