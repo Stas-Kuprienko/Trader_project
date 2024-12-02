@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Data
 @RedisHash("futures")
-public final class Futures extends Securities {
+public class Futures extends Securities {
 
     private String asset;
     private double minStep;
@@ -44,7 +44,7 @@ public final class Futures extends Securities {
         this.expiration = expiration;
         this.market = market;
         this.board = board;
-        this.exchangeMarket = exchangeMarket;
+        this.exchange = exchangeMarket;
     }
 
     public Futures() {}
@@ -81,7 +81,7 @@ public final class Futures extends Securities {
                 ", expiration=" + expiration +
                 ", market=" + market +
                 ", board=" + board +
-                ", exchangeMarket=" + exchangeMarket +
+                ", exchangeMarket=" + exchange +
                 '}';
     }
 }

@@ -1,14 +1,15 @@
 package com.anastasia.trade_project.markets;
 
-import com.anastasia.trade_project.enums.Currency;
 import com.anastasia.trade_project.enums.Board;
+import com.anastasia.trade_project.enums.Currency;
 import com.anastasia.trade_project.enums.ExchangeMarket;
 import com.anastasia.trade_project.enums.Market;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Data
+@Getter @Setter
 public abstract class Securities implements Serializable, Comparable<Securities> {
 
     protected String ticker;
@@ -18,7 +19,7 @@ public abstract class Securities implements Serializable, Comparable<Securities>
     protected Currency currency;
     protected Market market;
     protected Board board;
-    protected ExchangeMarket exchangeMarket;
+    protected ExchangeMarket exchange;
 
 
     @Override

@@ -6,18 +6,18 @@ CREATE TABLE person.users (
     role VARCHAR(31)        NOT NULL    DEFAULT 'USER',
     language VARCHAR(2)     NOT NULL    DEFAULT 'EN',
     name VARCHAR(127)       NOT NULL    DEFAULT 'default_username',
-    status VARCHAR(63)      NOT NULL    DEFAULT 'ACTIVE' CHECK (status IN('ACTIVE', 'BLOCKED', 'DISABLED')
+    status VARCHAR(63)      NOT NULL    DEFAULT 'ACTIVE' CHECK (status IN('ACTIVE', 'BLOCKED', 'DISABLED')),
     created_at DATE         NOT NULL    DEFAULT now(),
     updated_at TIMESTAMP    NOT NULL    DEFAULT now()
 );
 
 CREATE TABLE person.risk_profile (
     id UUID    PRIMARY KEY  DEFAULT gen_random_uuid(),
-    deal_loss_percentage TINYINT,
-    account_loss_percentage TINYINT,
-    futures_in_account_percentage TINYINT,
-    stocks_in_account_percentage TINYINT,
-    risk_type VARCHAR(127)  DEFAULT 'medium'  CHECK (risk_type IN('conservative', 'medium', 'aggressive'))
+    deal_loss_percentage SMALLINT,
+    account_loss_percentage SMALLINT,
+    futures_in_account_percentage SMALLINT,
+    stocks_in_account_percentage SMALLINT,
+    risk_type VARCHAR(127)  DEFAULT 'medium'  CHECK (risk_type IN('conservative', 'medium', 'aggressive')),
     created_at DATE         NOT NULL    DEFAULT now(),
     updated_at TIMESTAMP    NOT NULL    DEFAULT now()
 );
@@ -31,7 +31,7 @@ CREATE TABLE person.account (
     token_expires_at DATE,
     risk_profile_id UUID                REFERENCES person.risk_profile,
     created_at DATE         NOT NULL    DEFAULT now(),
-    updated_at TIMESTAMP    NOT NULL    DEFAULT now()
+    updated_at TIMESTAMP    NOT NULL    DEFAULT now(),
     UNIQUE(client_id, broker)
 );
 

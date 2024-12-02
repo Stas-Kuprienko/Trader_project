@@ -11,7 +11,7 @@ public final class PaginationUtility {
     private PaginationUtility() {}
 
 
-    public static List<? extends Securities> sorting(List<? extends Securities> toSort, Sorting sortingCase, Sorting.Direction direction) {
+    public static <S extends Securities> List<S> sorting(List<S> toSort, Sorting sortingCase, Sorting.Direction direction) {
         return switch (sortingCase) {
             case Sorting.VOLUME -> sortByTradeVolume(toSort, direction);
             case Sorting.ALPHABET -> sortByAlphabet(toSort, direction);
@@ -19,7 +19,7 @@ public final class PaginationUtility {
         };
     }
 
-    public static List<? extends Securities> findPage(List<? extends Securities> toPaging, int page, int count) {
+    public static <S extends Securities> List<S> findPage(List<S> toPaging, int page, int count) {
         if (!(page > 0) || !(count > 0)) {
             throw PaginationException.illegalArguments(page, count);
         }
@@ -43,7 +43,7 @@ public final class PaginationUtility {
         }
     }
 
-    public static List<? extends Securities> sortByTradeVolume(List<? extends Securities> toSort, Sorting.Direction direction) {
+    public static <S extends Securities> List<S> sortByTradeVolume(List<S> toSort, Sorting.Direction direction) {
         switch (direction) {
             case ASC -> toSort.sort(Comparator.comparingLong(Securities::getDayTradeVolume));
             case DESC -> toSort.sort(Comparator.comparingLong(Securities::getDayTradeVolume).reversed());
@@ -51,9 +51,9 @@ public final class PaginationUtility {
         return toSort;
     }
 
-    public static List<? extends Securities> sortByAlphabet(List<? extends Securities> toSort, Sorting.Direction direction) {
+    public static <S extends Securities> List<S> sortByAlphabet(List<S> toSort, Sorting.Direction direction) {
         switch (direction) {
-            case ASC ->toSort.sort(Comparator.comparing(Securities::getTicker));
+            case ASC -> toSort.sort(Comparator.comparing(Securities::getTicker));
             case DESC -> toSort.sort(Comparator.comparing(Securities::getTicker).reversed());
         }
         return toSort;

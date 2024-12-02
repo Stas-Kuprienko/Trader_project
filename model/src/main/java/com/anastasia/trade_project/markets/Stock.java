@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Data
 @RedisHash("stock")
-public final class Stock extends Securities {
+public class Stock extends Securities {
 
     private int lotSize;
 
@@ -34,7 +34,7 @@ public final class Stock extends Securities {
         this.dayTradeVolume = dayTradeVolume;
         this.market = market;
         this.board = board;
-        this.exchangeMarket = exchangeMarket;
+        this.exchange = exchangeMarket;
     }
 
     public Stock() {}
@@ -52,6 +52,11 @@ public final class Stock extends Securities {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(ticker, name, currency, market, board);
+    }
+
+    @Override
     public String toString() {
         return "Stock{" +
                 "ticker='" + ticker + '\'' +
@@ -61,7 +66,7 @@ public final class Stock extends Securities {
                 ", currency=" + currency +
                 ", market=" + market +
                 ", board=" + board +
-                ", exchangeMarket=" + exchangeMarket +
+                ", exchangeMarket=" + exchange +
                 '}';
     }
 }

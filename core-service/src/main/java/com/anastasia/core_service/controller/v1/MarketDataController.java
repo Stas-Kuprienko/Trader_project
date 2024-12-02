@@ -22,7 +22,7 @@ public class MarketDataController {
     }
 
 
-    @GetMapping("/{exchange}/stocks}")
+    @GetMapping("/{exchange}/stocks")
     public Flux<Stock> getStockList(@PathVariable("exchange") String exchange,
                                     @RequestParam("page") Integer page,
                                     @RequestParam("count") Integer count,
@@ -41,7 +41,7 @@ public class MarketDataController {
 
     @GetMapping("/{exchange}/stocks/{ticker}")
     public Mono<Stock> getStock(@PathVariable("exchange") String exchange,
-                                                @PathVariable("ticker") String ticker) {
+                                @PathVariable("ticker") String ticker) {
         ExchangeMarket exchangeMarket = ExchangeMarket.valueOf(exchange.toUpperCase());
         return marketDataDispatcher
                 .marketDataProvider(exchangeMarket)

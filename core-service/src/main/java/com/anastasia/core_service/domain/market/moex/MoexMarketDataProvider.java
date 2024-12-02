@@ -1,18 +1,22 @@
 package com.anastasia.core_service.domain.market.moex;
 
+import com.anastasia.core_service.datasource.cache.MarketDataCache;
 import com.anastasia.core_service.domain.market.MarketData;
 import com.anastasia.core_service.domain.market.MarketDataProvider;
+import com.anastasia.core_service.utility.PaginationUtility;
 import com.anastasia.trade_project.enums.ExchangeMarket;
 import com.anastasia.trade_project.enums.Sorting;
 import com.anastasia.trade_project.markets.Futures;
-import com.anastasia.trade_project.markets.Securities;
 import com.anastasia.trade_project.markets.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @MarketData(exchange = ExchangeMarket.MOEX)
 public class MoexMarketDataProvider implements MarketDataProvider {
@@ -22,13 +26,16 @@ public class MoexMarketDataProvider implements MarketDataProvider {
     private static final String FUTURES_URL = "/engines/futures/markets/forts/securities/%s";
     private static final String FUTURES_LIST_URL = "/engines/futures/markets/forts/securities";
 
+    private final MarketDataCache marketDataCache;
     private final MoexXmlUtility xmlParser;
     private final WebClient webClient;
 
 
     @Autowired
-    public MoexMarketDataProvider(MoexXmlUtility xmlParser,
+    public MoexMarketDataProvider(MarketDataCache marketDataCache,
+                                  MoexXmlUtility xmlParser,
                                   @Value("${project.exchange.moex.url}") String moexBaseUrl) {
+        this.marketDataCache = marketDataCache;
         this.xmlParser = xmlParser;
         this.webClient = WebClient.builder()
                 .baseUrl(moexBaseUrl)
@@ -41,70 +48,102 @@ public class MoexMarketDataProvider implements MarketDataProvider {
         return ExchangeMarket.MOEX;
     }
 
+
     @Override
     public Flux<Stock> stocksList(int page, int count, Sorting sorting, Sorting.Direction direction) {
-        //CACHE
-        Comparator<Stock> comparator = Comparator.comparing(Securities::getTicker);
-        return webClient
-                .get()
-                .uri(STOCK_LIST_URL)
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(xmlParser::parse)
-                .flatMapIterable(document -> {
-                    Iterator<Map<String, Object>> securities = document.securitiesData().iterator();
-                    Iterator<Map<String, Object>> marketData = document.marketData().iterator();
-                    List<Stock> stocks = new ArrayList<>();
-                    while (securities.hasNext()) {
-                        stocks.add(xmlParser.stock(securities.next(), marketData.next()));
+        return marketDataCache
+                .getStockList(ExchangeMarket.MOEX)
+                .flatMap(list -> {
+                    if (list.isEmpty()) {
+                        return webClient
+                                .mutate()
+                                .codecs(configurer -> configurer
+                                        .defaultCodecs()
+                                        .maxInMemorySize(16 * 1024 * 1024))
+                                .build()
+                                .get()
+                                .uri(STOCK_LIST_URL)
+                                .retrieve()
+                                .bodyToMono(String.class)
+                                .map(xmlParser::parse)
+                                .map(document -> {
+                                    Iterator<Map<String, Object>> securities = document.securitiesData().iterator();
+                                    Iterator<Map<String, Object>> marketData = document.marketData().iterator();
+                                    List<Stock> stocks = new ArrayList<>();
+                                    while (securities.hasNext()) {
+                                        stocks.add(xmlParser.stock(securities.next(), marketData.next()));
+                                    }
+                                    return stocks;
+                                })
+                                .doOnNext(stocks -> marketDataCache.putStockList(stocks).subscribe());
+                    } else {
+                        return Mono.just(list);
                     }
-                    return stocks;
-                });
+                })
+                .flatMapIterable(list -> PaginationUtility.findPage(
+                        PaginationUtility.sorting(list, sorting, direction), page, count));
     }
+
 
     @Override
     public Mono<Stock> getStock(String ticker) {
-        return webClient
-                .get()
-                .uri(STOCK_URL.formatted(ticker))
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(xmlParser::parse)
-                .map(document -> xmlParser.stock(
-                        document.securitiesData().getFirst(),
-                        document.marketData().getFirst()));
+        return marketDataCache
+                .getStock(ExchangeMarket.MOEX, ticker)
+                .switchIfEmpty(webClient
+                        .get()
+                        .uri(STOCK_URL.formatted(ticker))
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .map(xmlParser::parse)
+                        .map(document -> xmlParser.stock(
+                                document.securitiesData().getFirst(),
+                                document.marketData().getFirst())));
     }
+
 
     @Override
     public Flux<Futures> futuresList(int page, int count, Sorting sorting, Sorting.Direction direction) {
-        //CACHE
-        return webClient
-                .get()
-                .uri(FUTURES_LIST_URL)
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(xmlParser::parse)
-                .flatMapIterable(document -> {
-                    Iterator<Map<String, Object>> securities = document.securitiesData().iterator();
-                    Iterator<Map<String, Object>> marketData = document.marketData().iterator();
-                    List<Futures> futuresList = new ArrayList<>();
-                    while (securities.hasNext()) {
-                        futuresList.add(xmlParser.futures(securities.next(), marketData.next()));
+        return marketDataCache
+                .getFuturesList(ExchangeMarket.MOEX)
+                .flatMap(list -> {
+                    if (list.isEmpty()) {
+                        return webClient
+                                .get()
+                                .uri(FUTURES_LIST_URL)
+                                .retrieve()
+                                .bodyToMono(String.class)
+                                .map(xmlParser::parse)
+                                .map(document -> {
+                                    Iterator<Map<String, Object>> securities = document.securitiesData().iterator();
+                                    Iterator<Map<String, Object>> marketData = document.marketData().iterator();
+                                    List<Futures> futuresList = new ArrayList<>();
+                                    while (securities.hasNext()) {
+                                        futuresList.add(xmlParser.futures(securities.next(), marketData.next()));
+                                    }
+                                    return futuresList;
+                                })
+                                .doOnNext(futures -> marketDataCache.putFuturesList(futures).subscribe());
+                    } else {
+                        return Mono.just(list);
                     }
-                    return futuresList;
-                });
+                })
+                .flatMapIterable(list -> PaginationUtility.findPage(
+                        PaginationUtility.sorting(list, sorting, direction), page, count));
     }
+
 
     @Override
     public Mono<Futures> getFutures(String ticker) {
-        return webClient
-                .get()
-                .uri(FUTURES_URL.formatted(ticker))
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(xmlParser::parse)
-                .map(document -> xmlParser.futures(
-                        document.securitiesData().getFirst(),
-                        document.marketData().getFirst()));
+        return marketDataCache
+                .getFutures(ExchangeMarket.MOEX, ticker)
+                .switchIfEmpty(webClient
+                        .get()
+                        .uri(FUTURES_URL.formatted(ticker))
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .map(xmlParser::parse)
+                        .map(document -> xmlParser.futures(
+                                document.securitiesData().getFirst(),
+                                document.marketData().getFirst())));
     }
 }

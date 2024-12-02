@@ -42,46 +42,46 @@ public class MoexXmlUtility {
     }
 
     public Stock stock(Map<String, Object> securitiesRow, Map<String, Object> marketDataRow) {
-        String stringCurrency = getNotNullValue(securitiesRow, StockSecuritiesColumns.CURRENCYID.name(), String.class);
+        String stringCurrency = getNotNullValue(securitiesRow, StockSecuritiesColumns.CURRENCYID.name());
         return Stock.builder()
-                .ticker(getNotNullValue(securitiesRow, StockSecuritiesColumns.SECID.name(), String.class))
-                .name(getNotNullValue(securitiesRow, StockSecuritiesColumns.SECNAME.name(), String.class))
+                .ticker(getNotNullValue(securitiesRow, StockSecuritiesColumns.SECID.name()))
+                .name(getNotNullValue(securitiesRow, StockSecuritiesColumns.SECNAME.name()))
                 .currency(currencyValue(stringCurrency))
                 .price(priceAtTheDate(marketDataRow))
-                .lotSize(getNotNullValue(securitiesRow, StockSecuritiesColumns.LOTSIZE.name(), Integer.class))
-                .dayTradeVolume(getNotNullValue(marketDataRow, StockMarketColumns.VALTODAY.name(), Long.class))
+                .lotSize(Integer.parseInt(getNotNullValue(securitiesRow, StockSecuritiesColumns.LOTSIZE.name())))
+                .dayTradeVolume(Long.parseLong(getNotNullValue(marketDataRow, StockMarketColumns.VALTODAY.name())))
                 .market(Market.Stock)
-                .board(Board.valueOf(getNotNullValue(securitiesRow, StockSecuritiesColumns.BOARDID.name(), String.class)))
+                .board(Board.valueOf(getNotNullValue(securitiesRow, StockSecuritiesColumns.BOARDID.name())))
                 .exchangeMarket(ExchangeMarket.MOEX)
                 .build();
     }
 
     public Futures futures(Map<String, Object> securitiesRow, Map<String, Object> marketDataRow) {
         LocalDate expiration = LocalDate
-                .parse(getNotNullValue(marketDataRow, FuturesSecuritiesColumns.LASTDELDATE.name(), String.class));
+                .parse(getNotNullValue(marketDataRow, FuturesSecuritiesColumns.LASTDELDATE.name()));
         return Futures.builder()
-                .ticker(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.SECID.name(), String.class))
-                .name(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.SHORTNAME.name(), String.class))
-                .asset(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.ASSETCODE.name(), String.class))
-                .minStep(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.MINSTEP.name(), Double.class))
-                .stepPrice(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.STEPPRICE.name(), Double.class))
+                .ticker(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.SECID.name()))
+                .name(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.SHORTNAME.name()))
+                .asset(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.ASSETCODE.name()))
+                .minStep(Double.parseDouble(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.MINSTEP.name())))
+                .stepPrice(Double.parseDouble(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.STEPPRICE.name())))
                 .price(priceAtTheDate(marketDataRow))
                 .currency(Currency.RUR)
-                .dayTradeVolume(getNotNullValue(marketDataRow, FuturesMarketColumns.VALTODAY.name(), Long.class))
+                .dayTradeVolume(Long.parseLong(getNotNullValue(marketDataRow, FuturesMarketColumns.VALTODAY.name())))
                 .expiration(expiration)
-                .board(Board.valueOf(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.BOARDID.name(), String.class)))
+                .board(Board.valueOf(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.BOARDID.name())))
                 .market(Market.Forts)
                 .exchangeMarket(ExchangeMarket.MOEX)
                 .build();
     }
 
 
-    private <E> E getNotNullValue(Map<String, Object> row, String key, Class<E> clas) {
+    private String getNotNullValue(Map<String, Object> row, String key) {
         Object value = row.get(key);
         if (value == null) {
             throw new IncorrectContentException("Unexpected data of XML from 'MOEX': " + row);
         } else {
-            return clas.cast(value);
+            return (String) value;
         }
     }
 
@@ -95,9 +95,9 @@ public class MoexXmlUtility {
 
     private Securities.PriceAtTheDate priceAtTheDate(Map<String, Object> marketData) {
         String stringPrice = (String) marketData.get(StockMarketColumns.LAST.name());
-        double doublePrice = stringPrice != null ? Double.parseDouble(stringPrice) : 0.0;
+        double doublePrice = stringPrice == null || stringPrice.isEmpty() ? 0.0 : Double.parseDouble(stringPrice);
 
-        String stringDateTime = getNotNullValue(marketData, StockMarketColumns.SYSTIME.name(), String.class);
+        String stringDateTime = getNotNullValue(marketData, StockMarketColumns.SYSTIME.name());
         LocalDateTime localDateTime = LocalDateTime.parse(stringDateTime, CoreServiceConfig.DATE_TIME_FORMAT);
 
         return new Securities.PriceAtTheDate(doublePrice, localDateTime);
