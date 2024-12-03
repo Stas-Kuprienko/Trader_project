@@ -26,17 +26,19 @@ public class MoexMarketDataProvider implements MarketDataProvider {
     private static final String FUTURES_URL = "/engines/futures/markets/forts/securities/%s";
     private static final String FUTURES_LIST_URL = "/engines/futures/markets/forts/securities";
 
+    private static final int increasedMaxInMemorySize = 16 * 1024 * 1024;
+
     private final MarketDataCache marketDataCache;
-    private final MoexXmlUtility xmlParser;
+    private final MoexXmlUtility xmlUtility;
     private final WebClient webClient;
 
 
     @Autowired
     public MoexMarketDataProvider(MarketDataCache marketDataCache,
-                                  MoexXmlUtility xmlParser,
+                                  MoexXmlUtility xmlUtility,
                                   @Value("${project.exchange.moex.url}") String moexBaseUrl) {
         this.marketDataCache = marketDataCache;
-        this.xmlParser = xmlParser;
+        this.xmlUtility = xmlUtility;
         this.webClient = WebClient.builder()
                 .baseUrl(moexBaseUrl)
                 .build();
@@ -55,23 +57,22 @@ public class MoexMarketDataProvider implements MarketDataProvider {
                 .getStockList(ExchangeMarket.MOEX)
                 .flatMap(list -> {
                     if (list.isEmpty()) {
-                        return webClient
-                                .mutate()
-                                .codecs(configurer -> configurer
+                        return webClient.mutate()
+                                .codecs(config -> config
                                         .defaultCodecs()
-                                        .maxInMemorySize(16 * 1024 * 1024))
+                                        .maxInMemorySize(increasedMaxInMemorySize))
                                 .build()
                                 .get()
                                 .uri(STOCK_LIST_URL)
                                 .retrieve()
                                 .bodyToMono(String.class)
-                                .map(xmlParser::parse)
+                                .map(xmlUtility::parse)
                                 .map(document -> {
                                     Iterator<Map<String, Object>> securities = document.securitiesData().iterator();
                                     Iterator<Map<String, Object>> marketData = document.marketData().iterator();
                                     List<Stock> stocks = new ArrayList<>();
                                     while (securities.hasNext()) {
-                                        stocks.add(xmlParser.stock(securities.next(), marketData.next()));
+                                        stocks.add(xmlUtility.stock(securities.next(), marketData.next()));
                                     }
                                     return stocks;
                                 })
@@ -94,8 +95,8 @@ public class MoexMarketDataProvider implements MarketDataProvider {
                         .uri(STOCK_URL.formatted(ticker))
                         .retrieve()
                         .bodyToMono(String.class)
-                        .map(xmlParser::parse)
-                        .map(document -> xmlParser.stock(
+                        .map(xmlUtility::parse)
+                        .map(document -> xmlUtility.stock(
                                 document.securitiesData().getFirst(),
                                 document.marketData().getFirst())));
     }
@@ -107,18 +108,22 @@ public class MoexMarketDataProvider implements MarketDataProvider {
                 .getFuturesList(ExchangeMarket.MOEX)
                 .flatMap(list -> {
                     if (list.isEmpty()) {
-                        return webClient
+                        return webClient.mutate()
+                                .codecs(config -> config
+                                        .defaultCodecs()
+                                        .maxInMemorySize(increasedMaxInMemorySize))
+                                .build()
                                 .get()
                                 .uri(FUTURES_LIST_URL)
                                 .retrieve()
                                 .bodyToMono(String.class)
-                                .map(xmlParser::parse)
+                                .map(xmlUtility::parse)
                                 .map(document -> {
                                     Iterator<Map<String, Object>> securities = document.securitiesData().iterator();
                                     Iterator<Map<String, Object>> marketData = document.marketData().iterator();
                                     List<Futures> futuresList = new ArrayList<>();
                                     while (securities.hasNext()) {
-                                        futuresList.add(xmlParser.futures(securities.next(), marketData.next()));
+                                        futuresList.add(xmlUtility.futures(securities.next(), marketData.next()));
                                     }
                                     return futuresList;
                                 })
@@ -141,8 +146,8 @@ public class MoexMarketDataProvider implements MarketDataProvider {
                         .uri(FUTURES_URL.formatted(ticker))
                         .retrieve()
                         .bodyToMono(String.class)
-                        .map(xmlParser::parse)
-                        .map(document -> xmlParser.futures(
+                        .map(xmlUtility::parse)
+                        .map(document -> xmlUtility.futures(
                                 document.securitiesData().getFirst(),
                                 document.marketData().getFirst())));
     }

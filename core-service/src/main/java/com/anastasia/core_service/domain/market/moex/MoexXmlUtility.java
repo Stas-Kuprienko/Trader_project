@@ -58,7 +58,7 @@ public class MoexXmlUtility {
 
     public Futures futures(Map<String, Object> securitiesRow, Map<String, Object> marketDataRow) {
         LocalDate expiration = LocalDate
-                .parse(getNotNullValue(marketDataRow, FuturesSecuritiesColumns.LASTDELDATE.name()));
+                .parse(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.LASTDELDATE.name()));
         return Futures.builder()
                 .ticker(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.SECID.name()))
                 .name(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.SHORTNAME.name()))

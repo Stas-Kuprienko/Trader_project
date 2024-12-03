@@ -38,7 +38,7 @@ public final class PaginationUtility {
             if (to > toPaging.size()) {
                 return toPaging.subList(from, toPaging.size());
             } else {
-                return toPaging.subList(from, count);
+                return toPaging.subList(from, to);
             }
         }
     }
