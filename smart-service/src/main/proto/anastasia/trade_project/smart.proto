@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package com.anastasia.trade_project;
+
+import "google/protobuf/empty.proto";
+
+
+service SmartAutoTrade {
+
+  rpc subscribe(stream SubscribeTradeRequest) returns (stream SubscribeTradeResponse);
+  rpc unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
+  rpc getStrategies(google.protobuf.Empty) returns (StrategiesList);
+
+}
+
+message SubscribeTradeRequest {
+
+  Security security = 1;
+  Strategy strategy = 2;
+  Account account = 3;
+
+}
+
+message UnsubscribeRequest {
+
+  Security security = 1;
+  Strategy strategy = 2;
+  Account account = 3;
+
+}
+
+message SubscribeTradeResponse {
+
+  oneof payload {
+    OrderNotification notification = 1;
+    Exception exception = 2;
+  }
+
+}
+
+message UnsubscribeResponse {
+
+  bool isUnsubscribe = 1;
+
+}
+
+message Account {
+
+  string broker = 1;
+  string clientId = 2;
+  string token = 3;
+
+}
+
+message Security {
+
+  string ticker = 1;
+  string board = 2;
+  string exchange = 3;
+
+}
+
+enum TimeFrame {
+
+  M5 = 0;
+  M15 = 1;
+  H1 = 2;
+  D1 = 4;
+  W1 = 5;
+
+}
+
+enum TradeScope {
+
+  INTRADAY = 0;
+  MEDIUMTERM = 1;
+
+}
+
+message Strategy {
+
+  string name = 1;
+  TimeFrame timeFrame = 2;
+  TradeScope tradeScope = 3;
+
+}
+
+enum Direction {
+
+  BUY = 0;
+  SELL = 1;
+
+}
+
+message OrderNotification {
+
+  repeated Account account = 1;
+  Security security = 2;
+  double price = 3;
+  Direction direction = 4;
+  string dateTime = 5;
+
+}
+
+message StrategiesList {
+
+  repeated string item = 1;
+
+}
+
+message Exception {
+
+  int32 code = 1;
+  string message = 2;
+
+}
