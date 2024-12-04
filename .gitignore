@@ -39,3 +39,4 @@ bin/
 /volumes/
 /.idea/
 /telegram-bot/src/main/resources/application-local.yaml
+/smart-service/src/main/resources/application-local.yaml

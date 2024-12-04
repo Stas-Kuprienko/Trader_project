@@ -25,3 +25,7 @@ project:
       url: localhost:5432
       username: postgres
       password: postgres
+  resources:
+    finam:
+      url: trade-api.finam.ru
+
