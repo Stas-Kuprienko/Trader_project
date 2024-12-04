@@ -40,7 +40,8 @@ protobuf {
         }
     }
     generateProtoTasks {
-        all().configureEach { task ->
+        all()*.plugins {
+            grpc {}
         }
     }
 }

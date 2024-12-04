@@ -5,15 +5,15 @@ package com.anastasia.trade_project;
 import "google/protobuf/empty.proto";
 
 
-service SmartAutoTrade {
+service SmartService {
 
-  rpc subscribe(stream SubscribeTradeRequest) returns (stream SubscribeTradeResponse);
+  rpc subscribe(stream SubscribeRequest) returns (stream SubscribeResponse);
   rpc unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
   rpc getStrategies(google.protobuf.Empty) returns (StrategiesList);
 
 }
 
-message SubscribeTradeRequest {
+message SubscribeRequest {
 
   Security security = 1;
   Strategy strategy = 2;
@@ -29,10 +29,10 @@ message UnsubscribeRequest {
 
 }
 
-message SubscribeTradeResponse {
+message SubscribeResponse {
 
   oneof payload {
-    OrderNotification notification = 1;
+    Notification notification = 1;
     Exception exception = 2;
   }
 
@@ -92,7 +92,7 @@ enum Direction {
 
 }
 
-message OrderNotification {
+message Notification {
 
   repeated Account account = 1;
   Security security = 2;
