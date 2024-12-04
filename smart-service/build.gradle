@@ -1,7 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
-    id 'com.google.protobuf' version '0.9.4'
+    id "com.google.protobuf" version "0.9.4"
 }
 
 dependencies {
@@ -32,27 +32,36 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.21.12'  // Protobuf compiler
+        artifact = 'com.google.protobuf:protoc:3.0.0'
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.56.0'  // gRPC codegen plugin
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.0.0-pre2'
         }
     }
     generateProtoTasks {
-        all()*.plugins {
-            grpc {}
+        all().configureEach { task ->
         }
     }
 }
 
 sourceSets {
-    main {
-        java {
-            srcDirs 'build/generated/source/proto/main/java'
-            srcDirs 'build/generated/source/proto/main/grpc'
-        }
+  main {
+    proto {
+      srcDir 'src/main/protobuf'
+      srcDir 'src/main/protocolbuffers'
+      include '**/*.protodevel'
     }
+    java {
+      srcDirs 'build/generated/source/proto/main/java'
+      srcDirs 'build/generated/source/proto/main/grpc'
+    }
+  }
+  test {
+    proto {
+      srcDir 'src/test/protocolbuffers'
+    }
+  }
 }
 
 tasks.named('test') {

@@ -1,3 +1,9 @@
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    mavenLocal()
+  }
+}
+
 rootProject.name = 'trade-project'
 include 'core-service', 'smart-service', 'telegram-bot', 'ui-service', 'model', 'core-client'
-
