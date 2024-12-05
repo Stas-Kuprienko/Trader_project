@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package com.anastasia.trade_project;
+package com.anastasia.smart_service;
 
 import "google/protobuf/empty.proto";
 
 
-service SmartService {
+service AutoTrade {
 
   rpc subscribe(stream SubscribeRequest) returns (stream SubscribeResponse);
   rpc unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);

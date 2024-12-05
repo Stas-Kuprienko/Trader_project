@@ -13,6 +13,9 @@ dependencies {
 	implementation "io.grpc:grpc-protobuf:$rpc_version"
 	implementation "io.grpc:grpc-stub:$rpc_version"
 
+	//annotations
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+
     //analytics
     implementation "org.apache.commons:commons-math4-core:$apache_math_version"
 

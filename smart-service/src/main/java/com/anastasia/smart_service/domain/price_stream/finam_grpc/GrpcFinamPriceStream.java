@@ -22,7 +22,7 @@ public class GrpcFinamPriceStream implements PriceStream {
     private final Set<TradeStrategy> subscribers;
 
 
-    public GrpcFinamPriceStream(FinamOrderBookEntry orderBookEntry, EventDriver driver) {
+    GrpcFinamPriceStream(FinamOrderBookEntry orderBookEntry, EventDriver driver) {
         this.orderBookEntry = orderBookEntry;
         this.driver = driver;
         subscribers = new HashSet<>();

@@ -4,16 +4,18 @@ import com.anastasia.smart_service.domain.price_stream.PriceStream;
 import com.anastasia.smart_service.domain.price_stream.PriceStreamProvider;
 import com.anastasia.smart_service.domain.strategy.TradeStrategy;
 import com.anastasia.smart_service.util.EventDriver;
-import com.anastasia.trade_project.Smart;
+import com.anastasia.smart_service.Smart;
+import com.anastasia.smart_service.util.GrpcCredentials;
 import grpc.tradeapi.v1.EventsGrpc;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import proto.tradeapi.v1.Events;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 
 @Component
@@ -27,12 +29,12 @@ public class FinamPriceStreamProvider implements PriceStreamProvider {
 
 
     @Autowired
-    public FinamPriceStreamProvider(ScheduledExecutorService scheduler,
+    public FinamPriceStreamProvider(@Qualifier("scheduler") ScheduledExecutorService scheduler,
                                     @GrpcClient("${project.resources.finam.url}") EventsGrpc.EventsStub stub,
                                     @Value("${project.resources.finam.token}") String token) {
         this.scheduler = scheduler;
         this.stub = stub.withCallCredentials(new GrpcCredentials(token));
-        priceStreamStore = new HashMap<>();
+        priceStreamStore = new ConcurrentHashMap<>();
     }
 
 

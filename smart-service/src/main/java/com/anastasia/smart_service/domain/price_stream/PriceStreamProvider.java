@@ -1,7 +1,7 @@
 package com.anastasia.smart_service.domain.price_stream;
 
 import com.anastasia.smart_service.domain.strategy.TradeStrategy;
-import com.anastasia.trade_project.Smart;
+import com.anastasia.smart_service.Smart;
 
 public interface PriceStreamProvider {
 

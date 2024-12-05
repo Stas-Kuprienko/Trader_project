@@ -1,13 +1,13 @@
 package com.anastasia.smart_service.controller;
 
-import com.anastasia.trade_project.Smart;
-import com.anastasia.trade_project.SmartServiceGrpc;
+import com.anastasia.smart_service.Smart;
+import com.anastasia.smart_service.AutoTradeGrpc;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 
 @GrpcService
-public class SmartServiceController extends SmartServiceGrpc.SmartServiceImplBase {
+public class AutoTradeController extends AutoTradeGrpc.AutoTradeImplBase {
 
 
     @Override

@@ -1,4 +1,4 @@
-package com.anastasia.smart_service.domain.price_stream.finam_grpc;
+package com.anastasia.smart_service.util;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;

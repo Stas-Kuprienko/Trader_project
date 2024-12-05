@@ -10,12 +10,12 @@ import java.util.concurrent.ScheduledExecutorService;
 public class SmartServiceConfig {
 
 
-    @Bean
+    @Bean("virtualExecutorService")
     public ExecutorService virtualExecutorService() {
         return Executors.newVirtualThreadPerTaskExecutor();
     }
 
-    @Bean
+    @Bean("scheduler")
     public ScheduledExecutorService scheduler() {
         return Executors.newScheduledThreadPool(5);
     }

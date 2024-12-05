@@ -8,7 +8,7 @@ public class FinamOrderBookEntry {
     private boolean isActive;
 
 
-    public Events.OrderBookEvent getOrderBook() {
+    Events.OrderBookEvent getOrderBook() {
         return orderBook;
     }
 
