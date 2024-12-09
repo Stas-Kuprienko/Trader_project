@@ -5,8 +5,8 @@ import com.anastasia.core_service.domain.market.MarketData;
 import com.anastasia.core_service.domain.market.MarketDataProvider;
 import com.anastasia.core_service.utility.PaginationUtility;
 import com.anastasia.trade_project.enums.ExchangeMarket;
-import com.anastasia.trade_project.enums.Sorting;
 import com.anastasia.trade_project.markets.Futures;
+import com.anastasia.trade_project.markets.MarketPage;
 import com.anastasia.trade_project.markets.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +52,7 @@ public class MoexMarketDataProvider implements MarketDataProvider {
 
 
     @Override
-    public Flux<Stock> stocksList(int page, int count, Sorting sorting, Sorting.Direction direction) {
+    public Flux<Stock> stocksList(MarketPage page) {
         return marketDataCache
                 .getStockList(ExchangeMarket.MOEX)
                 .flatMap(list -> {
@@ -81,8 +81,11 @@ public class MoexMarketDataProvider implements MarketDataProvider {
                         return Mono.just(list);
                     }
                 })
-                .flatMapIterable(list -> PaginationUtility.findPage(
-                        PaginationUtility.sorting(list, sorting, direction), page, count));
+                .flatMapIterable(list -> PaginationUtility
+                        .findPage(
+                                PaginationUtility.sorting(list, page.getSort(), page.getDirection()),
+                                page.getPage(),
+                                page.getCount()));
     }
 
 
@@ -103,7 +106,7 @@ public class MoexMarketDataProvider implements MarketDataProvider {
 
 
     @Override
-    public Flux<Futures> futuresList(int page, int count, Sorting sorting, Sorting.Direction direction) {
+    public Flux<Futures> futuresList(MarketPage page) {
         return marketDataCache
                 .getFuturesList(ExchangeMarket.MOEX)
                 .flatMap(list -> {
@@ -132,8 +135,11 @@ public class MoexMarketDataProvider implements MarketDataProvider {
                         return Mono.just(list);
                     }
                 })
-                .flatMapIterable(list -> PaginationUtility.findPage(
-                        PaginationUtility.sorting(list, sorting, direction), page, count));
+                .flatMapIterable(list -> PaginationUtility
+                        .findPage(
+                                PaginationUtility.sorting(list, page.getSort(), page.getDirection()),
+                                page.getPage(),
+                                page.getCount()));
     }
 
 
