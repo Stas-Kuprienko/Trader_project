@@ -5,6 +5,7 @@ import com.anastasia.smart_service.domain.automation.DroneLauncher;
 import com.anastasia.smart_service.domain.strategy.TradeStrategy;
 import com.anastasia.smart_service.model.Drone;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +19,7 @@ public class DroneLauncherImpl implements DroneLauncher {
 
 
     @Autowired
-    public DroneLauncherImpl(ExecutorService executorService) {
+    public DroneLauncherImpl(@Qualifier("scheduler") ExecutorService executorService) {
         this.executorService = executorService;
         running = new ConcurrentHashMap<>();
     }

@@ -3,30 +3,32 @@ package com.anastasia.core_service.domain.smart;
 import com.anastasia.core_service.entity.user.Account;
 import com.anastasia.smart_service.AutoTradeGrpc;
 import com.anastasia.smart_service.Smart;
+import com.anastasia.trade_project.dto.StrategyDefinition;
 import com.anastasia.trade_project.enums.TradeScope;
 import com.anastasia.trade_project.markets.Securities;
 import com.google.protobuf.Empty;
+import io.grpc.ManagedChannel;
 import io.grpc.stub.StreamObserver;
-import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class SmartServiceClient {
 
     private final AutoTradeGrpc.AutoTradeStub stub;
+    private final AutoTradeGrpc.AutoTradeBlockingStub blockingStub;
     private final StreamObserver<Smart.SubscribeResponse> subscribeResponse;
     private final StreamObserver<Smart.UnsubscribeResponse> unsubscribeResponse;
 
 
     @Autowired
-    public SmartServiceClient(@GrpcClient("${project.variables.smart-service.url}") AutoTradeGrpc.AutoTradeStub stub,
+    public SmartServiceClient(@Qualifier("managedChannelSmartService") ManagedChannel managedChannelSmartService,
                               NotificationHandler notificationHandler, ExceptionHandler exceptionHandler) {
-        this.stub = stub;
+        this.stub = AutoTradeGrpc.newStub(managedChannelSmartService);
+        this.blockingStub = AutoTradeGrpc.newBlockingStub(managedChannelSmartService);
         this.subscribeResponse = new SubscriptionStreamObserver(notificationHandler, exceptionHandler);
         this.unsubscribeResponse = new UnsubscriptionStreamObserver(notificationHandler, exceptionHandler);
     }
@@ -80,12 +82,13 @@ public class SmartServiceClient {
                 .then();
     }
 
-    public Flux<String> strategies() {
-        //TODO
-        List<String> strategies = new ArrayList<>();
-        return Flux.just(strategies)
-                .doOnNext(list -> stub.getStrategies(Empty.newBuilder().build(), new StrategiesListStreamObserver(list)))
-                .flatMapIterable(list -> list);
+    public Flux<StrategyDefinition> strategies() {
+        return Mono.just(blockingStub.getStrategies(Empty.newBuilder().build()))
+                .flatMapIterable(source -> source
+                        .getItemList()
+                        .stream()
+                        .map(sd -> new StrategyDefinition(sd.getName(), sd.getDescription()))
+                        .toList());
     }
 
 

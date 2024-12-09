@@ -74,6 +74,13 @@ message Strategy {
 
 }
 
+message StrategyDefinition {
+
+  string name = 1;
+  string description = 2;
+
+}
+
 enum Direction {
 
   BUY = 0;
@@ -93,7 +100,7 @@ message Notification {
 
 message StrategiesList {
 
-  repeated string item = 1;
+  repeated StrategyDefinition item = 1;
 
 }
 

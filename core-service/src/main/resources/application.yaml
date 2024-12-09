@@ -7,6 +7,9 @@ spring:
   profiles:
     active:
       - local
+  autoconfigure:
+    exclude: net.devh.boot.grpc.server.autoconfigure.GrpcServerFactoryAutoConfiguration
+
   security:
     oauth2:
       resourceserver:
@@ -40,6 +43,8 @@ grpc:
       address: static://${project.variables.smart-service.url}
       enableKeepAlive: true
       negotiationType: "PLAINTEXT"
+  server:
+    port: -1
 
 
 project:
