@@ -3,6 +3,7 @@ package com.anastasia.trade_project.core_client;
 public class CoreServiceClientV1 {
 
     public final UsersResource USERS;
+    public final TelegramChatResource TELEGRAM_CHAT;
     public final AccountsResource ACCOUNTS;
     public final MarketDataResource MARKET;
 
@@ -12,6 +13,7 @@ public class CoreServiceClientV1 {
         USERS = new UsersResource(baseUrl);
         ACCOUNTS = new AccountsResource(baseUrl);
         MARKET = new MarketDataResource(baseUrl);
+        TELEGRAM_CHAT = new TelegramChatResource(baseUrl);
     }
 
 

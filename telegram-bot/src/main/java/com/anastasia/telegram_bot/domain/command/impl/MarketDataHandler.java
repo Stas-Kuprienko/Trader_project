@@ -7,8 +7,8 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMess
 import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Mono;
 
-@CommandHandler(command = BotCommand.START)
-public class StartCommandHandler implements BotCommandHandler {
+@CommandHandler(command = BotCommand.MARKET)
+public class MarketDataHandler implements BotCommandHandler {
 
     @Override
     public Mono<BotApiMethodMessage> handle(Message message) {

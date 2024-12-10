@@ -1,6 +1,7 @@
 package com.anastasia.telegram_bot.configuration;
 
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
+import com.anastasia.telegram_bot.domain.session.ChatSession;
 import com.anastasia.trade_project.core_client.CoreServiceClientV1;
 import com.anastasia.trade_project.markets.Futures;
 import com.anastasia.trade_project.markets.Stock;
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +20,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -31,7 +30,6 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.lang.NonNull;
 import java.util.HashMap;
 import java.util.Map;
@@ -117,6 +115,21 @@ public class TelegramBotConfig {
         Jackson2JsonRedisSerializer<Futures> valueSerializer = new Jackson2JsonRedisSerializer<>(objectMapper, Futures.class);
         RedisSerializationContext<String, Futures> redisSerializationContext = RedisSerializationContext
                 .<String, Futures>newSerializationContext(stringRedisSerializer)
+                .value(valueSerializer)
+                .hashKey(stringRedisSerializer)
+                .hashValue(valueSerializer)
+                .build();
+        return new ReactiveRedisTemplate<>(connectionFactory, redisSerializationContext);
+    }
+
+    @Bean("chatSessionRedisTemplate")
+    public ReactiveRedisTemplate<String, ChatSession> chatSessionRedisTemplate(ReactiveRedisConnectionFactory connectionFactory,
+                                                                           ObjectMapper objectMapper,
+                                                                           StringRedisSerializer stringRedisSerializer) {
+
+        Jackson2JsonRedisSerializer<ChatSession> valueSerializer = new Jackson2JsonRedisSerializer<>(objectMapper, ChatSession.class);
+        RedisSerializationContext<String, ChatSession> redisSerializationContext = RedisSerializationContext
+                .<String, ChatSession>newSerializationContext(stringRedisSerializer)
                 .value(valueSerializer)
                 .hashKey(stringRedisSerializer)
                 .hashValue(valueSerializer)

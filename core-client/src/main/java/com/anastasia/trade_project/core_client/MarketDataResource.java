@@ -7,8 +7,9 @@ import com.anastasia.trade_project.markets.Stock;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
 import java.util.List;
+import java.util.Optional;
 
-public class MarketDataResource {
+public class MarketDataResource extends HttpError404Handler {
 
     private static final String resourceUrl = "/market-data";
 
@@ -46,11 +47,11 @@ public class MarketDataResource {
                 .body(new ParameterizedTypeReference<>() {});
     }
 
-    public Stock stock(ExchangeMarket exchange, String ticker) {
-        return restClient.get()
+    public Optional<Stock> stock(ExchangeMarket exchange, String ticker) {
+        return process(() -> restClient.get()
                 .uri(STOCK.formatted(exchange, ticker))
                 .retrieve()
-                .body(Stock.class);
+                .body(Stock.class));
     }
 
     public List<Futures> futuresList(ExchangeMarket exchange, MarketPage page) {
@@ -66,10 +67,10 @@ public class MarketDataResource {
                 .body(new ParameterizedTypeReference<>() {});
     }
 
-    public Futures futures(ExchangeMarket exchange, String ticker) {
-        return restClient.get()
+    public Optional<Futures> futures(ExchangeMarket exchange, String ticker) {
+        return process(() -> restClient.get()
                 .uri(FUTURES.formatted(exchange, ticker))
                 .retrieve()
-                .body(Futures.class);
+                .body(Futures.class));
     }
 }

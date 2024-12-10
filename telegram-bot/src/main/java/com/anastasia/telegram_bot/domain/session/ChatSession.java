@@ -1,7 +1,6 @@
 package com.anastasia.telegram_bot.domain.session;
 
 import com.anastasia.telegram_bot.domain.command.BotCommand;
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +15,6 @@ public class ChatSession {
     private Long chatId;
     private Context context;
 
-
-    @Builder
     public ChatSession(Long chatId, Context context) {
         this.chatId = chatId;
         this.context = context;
@@ -26,16 +23,22 @@ public class ChatSession {
     public ChatSession() {}
 
 
+    public static ChatSession createNew(long chatId) {
+        return new ChatSession(chatId, new Context(BotCommand.RESET, new HashMap<>(), 0));
+    }
+
 
     @Getter @Setter
     public static class Context {
 
         private BotCommand command;
         private Map<String, Object> attributes;
+        private int step;
 
-        public Context(BotCommand command, Map<String, Object> attributes) {
+        public Context(BotCommand command, Map<String, Object> attributes, int step) {
             this.command = command;
             this.attributes = attributes;
+            this.step = step;
         }
 
         public Context() {}
