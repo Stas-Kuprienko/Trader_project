@@ -5,7 +5,7 @@ import reactor.core.publisher.Mono;
 
 public interface ChatSessionRepository {
 
-    Mono<Void> put(ChatSession chatSession);
+    Mono<Void> save(ChatSession chatSession);
 
-    Mono<ChatSession> get(long chatId);
+    Mono<ChatSession> find(long chatId);
 }

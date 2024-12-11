@@ -20,6 +20,7 @@ telegram:
 
 project:
   variables:
+    service-url: localhost:8080
     kafka:
       url: localhost:9092
     redis:

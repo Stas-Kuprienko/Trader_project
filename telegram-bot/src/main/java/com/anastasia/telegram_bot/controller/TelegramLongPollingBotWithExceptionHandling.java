@@ -1,28 +1,44 @@
 package com.anastasia.telegram_bot.controller;
 
-import org.springframework.context.MessageSource;
+import com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler;
+import com.anastasia.telegram_bot.exception.UnregisteredUserException;
+import com.anastasia.trade_project.util.JustAction;
+import jakarta.ws.rs.NotFoundException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import java.util.function.Consumer;
 
 public abstract class TelegramLongPollingBotWithExceptionHandling extends TelegramLongPollingBot {
 
-    private final MessageSource messageSource;
+    private final TelegramBotExceptionHandler exceptionHandler;
 
-    public TelegramLongPollingBotWithExceptionHandling(String botToken, MessageSource messageSource) {
+
+    protected TelegramLongPollingBotWithExceptionHandling(String botToken, TelegramBotExceptionHandler exceptionHandler) {
         super(botToken);
-        this.messageSource = messageSource;
+        this.exceptionHandler = exceptionHandler;
     }
 
-    protected final void handleExceptions(Consumer<?> consumer) {
-        try {
-            consumer.accept(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            //TODO handling
-            SendMessage sendMessage = new SendMessage();
 
+    protected final void process(Update update, JustAction onUpdateReceived) {
+        try {
+            onUpdateReceived.perform();
+        } catch (UnregisteredUserException e) {
+            SendMessage sendMessage = exceptionHandler.unregisteredUserHandle(e, update);
+            try {
+                execute(sendMessage);
+            } catch (TelegramApiException ex) {
+                throw new RuntimeException(ex);
+            }
+        } catch (NotFoundException e) {
+            SendMessage sendMessage = exceptionHandler.notFoundHandle(e, update);
+            try {
+                execute(sendMessage);
+            } catch (TelegramApiException ex) {
+                throw new RuntimeException(ex);
+            }
+        } catch (Exception e) {
+            SendMessage sendMessage = exceptionHandler.defaultHandle(e, update);
             try {
                 execute(sendMessage);
             } catch (TelegramApiException ex) {

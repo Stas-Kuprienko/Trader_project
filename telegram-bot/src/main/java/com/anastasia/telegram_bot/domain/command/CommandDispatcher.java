@@ -1,8 +1,6 @@
 package com.anastasia.telegram_bot.domain.command;
 
-import com.anastasia.telegram_bot.domain.session.ChatSession;
 import com.anastasia.telegram_bot.domain.session.ChatSessionService;
-import com.anastasia.telegram_bot.service.UserDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -19,30 +17,28 @@ public class CommandDispatcher {
 
     private final Map<String, BotCommandHandler> commandHandlerStore;
     private final ChatSessionService chatSessionService;
-    private final UserDataService userDataService;
 
     @Autowired
     public CommandDispatcher(ApplicationContext applicationContext,
-                             ChatSessionService chatSessionService,
-                             UserDataService userDataService) {
+                             ChatSessionService chatSessionService) {
         commandHandlerStore = collectHandlers(applicationContext);
         this.chatSessionService = chatSessionService;
-        this.userDataService = userDataService;
     }
 
 
     public Mono<BotApiMethodMessage> apply(Message message) {
         String command = message.getText();
         Long chatId = message.getChatId();
-        chatSessionService.get(chatId)
-                .switchIfEmpty(userDataService
-                        .getUserByChatId(chatId)
-                        .flatMap(user -> chatSessionService.create(chatId)));
-        //TODO
-        BotCommandHandler handler = commandHandlerStore.get(command);
-        if (handler == null) {
-        }
-        return handler.handle(message);
+        return chatSessionService
+                .get(chatId)
+                .flatMap(chatSession -> {
+                    BotCommandHandler handler = commandHandlerStore.get(command);
+                    if (handler == null) {
+                        handler = commandHandlerStore.get(chatSession.getContext().getCommand().name);
+                    }
+                    log.info("Command handler {} is applied", handler.getClass().getSimpleName());
+                    return handler.handle(message, chatSession);
+                });
     }
 
 

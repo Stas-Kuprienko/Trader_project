@@ -1,12 +1,11 @@
 package com.anastasia.telegram_bot.controller;
 
+import com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler;
 import com.anastasia.telegram_bot.domain.command.CommandDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -22,11 +21,11 @@ public class TelegramBotController extends TelegramLongPollingBotWithExceptionHa
 
 
     @Autowired
-    public TelegramBotController(MessageSource messageSource,
+    public TelegramBotController(TelegramBotExceptionHandler controllerAdvice,
                                  CommandDispatcher commandDispatcher,
                                  @Value("${telegram.username}") String username,
                                  @Value("${telegram.botToken}") String botToken) {
-        super(botToken, messageSource);
+        super(botToken, controllerAdvice);
         this.username = username;
         this.commandDispatcher = commandDispatcher;
     }
@@ -39,7 +38,7 @@ public class TelegramBotController extends TelegramLongPollingBotWithExceptionHa
 
     @Override
     public void onUpdateReceived(Update update) {
-        handleExceptions(o -> {
+        process(update, () -> {
             if (update.hasMessage()) {
                 log.info(update.getMessage().toString());
                 commandDispatcher

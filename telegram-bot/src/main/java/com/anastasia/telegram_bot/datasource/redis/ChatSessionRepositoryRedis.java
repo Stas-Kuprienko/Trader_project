@@ -35,7 +35,7 @@ public class ChatSessionRepositoryRedis implements ChatSessionRepository {
     }
 
     @Override
-    public Mono<Void> put(ChatSession chatSession) {
+    public Mono<Void> save(ChatSession chatSession) {
         return redisTemplate
                 .opsForHash()
                 .put(CHAT_SESSION_KEY, chatSession.getChatId(), chatSession)
@@ -44,7 +44,7 @@ public class ChatSessionRepositoryRedis implements ChatSessionRepository {
     }
 
     @Override
-    public Mono<ChatSession> get(long chatId) {
+    public Mono<ChatSession> find(long chatId) {
         return redisTemplate.opsForHash()
                 .get(CHAT_SESSION_KEY, chatId)
                 .map(ChatSession.class::cast)
