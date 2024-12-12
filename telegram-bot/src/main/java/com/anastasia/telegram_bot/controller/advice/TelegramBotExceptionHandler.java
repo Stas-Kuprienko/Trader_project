@@ -1,15 +1,17 @@
 package com.anastasia.telegram_bot.controller.advice;
 
 import com.anastasia.telegram_bot.exception.UnregisteredUserException;
+import com.anastasia.telegram_bot.utils.ChatBotUtility;
 import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Locale;
-import static com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler.MessageKey.*;
+import static com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler.MessageTextKey.*;
 
 @Slf4j
 @Component
@@ -29,8 +31,8 @@ public class TelegramBotExceptionHandler {
     public SendMessage unregisteredUserHandle(UnregisteredUserException e, Update update) {
         log.info(e.getMessage());
         Long chatId = update.getMessage().getChatId();
-        String username = getUsername(update);
-        Locale locale = getLocale(update);
+        String username = ChatBotUtility.getUsername(update.getMessage());
+        Locale locale = ChatBotUtility.getLocale(update.getMessage());
 
         String message = messageSource
                 .getMessage(UNREGISTERED.name(), new Object[]{username, serviceUrl}, locale);
@@ -43,57 +45,38 @@ public class TelegramBotExceptionHandler {
 
     public SendMessage notFoundHandle(NotFoundException e, Update update) {
         log.info(e.getMessage());
-        Long chatId = update.getMessage().getChatId();
-        Locale locale = getLocale(update);
+        return buildMessage(update.getMessage(), NOT_FOUND);
+    }
 
-        String message = messageSource
-                .getMessage(NOT_FOUND.name(), null, locale);
-
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(message);
-        return sendMessage;
+    public SendMessage illegalArgumentHandle(IllegalArgumentException e, Update update) {
+        log.info(e.getMessage());
+        return buildMessage(update.getMessage(), ILLEGAL_ARGUMENT);
     }
 
     public SendMessage defaultHandle(Exception e, Update update) {
         log.info(e.getMessage());
-        Long chatId = update.getMessage().getChatId();
-        Locale locale = getLocale(update);
+        return buildMessage(update.getMessage(), DEFAULT);
+    }
 
-        String message = messageSource
-                .getMessage(DEFAULT.name(), null, locale);
+
+    private SendMessage buildMessage(Message message, MessageTextKey textKey) {
+        Long chatId = message.getChatId();
+        Locale locale = ChatBotUtility.getLocale(message);
+
+        String text = messageSource
+                .getMessage(textKey.name(), null, locale);
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText(message);
+        sendMessage.setText(text);
         return sendMessage;
     }
 
 
-    private Locale getLocale(Update update) {
-        if (update.hasMessage()) {
-            return Locale.of(update.getMessage()
-                    .getFrom()
-                    .getLanguageCode());
-        } else {
-            throw new IllegalArgumentException("Message is null");
-        }
-    }
-
-    private String getUsername(Update update) {
-        if (update.hasMessage()) {
-            return update.getMessage()
-                    .getFrom()
-                    .getFirstName();
-        } else {
-            throw new IllegalArgumentException("Message is null");
-        }
-    }
-
-
-    enum MessageKey {
+    enum MessageTextKey {
         UNREGISTERED,
         NOT_FOUND,
+        ILLEGAL_ARGUMENT,
 
         DEFAULT
     }

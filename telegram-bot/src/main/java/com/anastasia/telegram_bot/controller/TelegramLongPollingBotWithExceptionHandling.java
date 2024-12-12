@@ -37,6 +37,13 @@ public abstract class TelegramLongPollingBotWithExceptionHandling extends Telegr
             } catch (TelegramApiException ex) {
                 throw new RuntimeException(ex);
             }
+        } catch (IllegalArgumentException e) {
+            SendMessage sendMessage = exceptionHandler.illegalArgumentHandle(e, update);
+            try {
+                execute(sendMessage);
+            } catch (TelegramApiException ex) {
+                throw new RuntimeException(ex);
+            }
         } catch (Exception e) {
             SendMessage sendMessage = exceptionHandler.defaultHandle(e, update);
             try {

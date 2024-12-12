@@ -4,7 +4,7 @@ public enum BotCommand {
 
     START("/start"),
     HELP("/help"),
-    RESET("/reset"),
+    CLEAR("/clear"),
     MARKET("/market"),
     ACCOUNTS("/accounts");
 

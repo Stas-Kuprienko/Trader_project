@@ -29,24 +29,23 @@ public class ChatSessionRepositoryRedis implements ChatSessionRepository {
 
     @PostConstruct
     public void init() {
-        Duration duration = Duration.of(1, ChronoUnit.MINUTES);
+        Duration duration = Duration.of(5, ChronoUnit.MINUTES);
         redisTemplate.expire(CHAT_SESSION_KEY, duration);
         log.info("Cache duration for {} key is set to {}", CHAT_SESSION_KEY, duration);
     }
 
     @Override
-    public Mono<Void> save(ChatSession chatSession) {
+    public Mono<Boolean> save(ChatSession chatSession) {
         return redisTemplate
                 .opsForHash()
-                .put(CHAT_SESSION_KEY, chatSession.getChatId(), chatSession)
-                .doOnNext(b -> log.debug("The chat session for ID {} is cached", chatSession.getChatId()))
-                .then();
+                .put(CHAT_SESSION_KEY, chatSession.getChatId().toString(), chatSession)
+                .doOnNext(b -> log.debug("The chat session for ID {} is cached", chatSession.getChatId()));
     }
 
     @Override
     public Mono<ChatSession> find(long chatId) {
         return redisTemplate.opsForHash()
-                .get(CHAT_SESSION_KEY, chatId)
+                .get(CHAT_SESSION_KEY, String.valueOf(chatId))
                 .map(ChatSession.class::cast)
                 .doOnNext(session -> log.debug("The chat session for ID {} is retrieved", chatId));
     }

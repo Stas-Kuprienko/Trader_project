@@ -2,10 +2,18 @@ package com.anastasia.telegram_bot.domain.command;
 
 import com.anastasia.telegram_bot.domain.session.ChatSession;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Mono;
 
 public interface BotCommandHandler {
 
-    Mono<BotApiMethodMessage> handle(Message message, ChatSession session);
+    Mono<? extends BotApiMethodMessage> handle(Message message, ChatSession session);
+
+    default SendMessage createSendMessage(Long chatId, String text) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(text);
+        return sendMessage;
+    }
 }

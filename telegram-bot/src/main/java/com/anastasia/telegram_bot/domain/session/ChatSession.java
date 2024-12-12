@@ -24,7 +24,17 @@ public class ChatSession {
 
 
     public static ChatSession createNew(long chatId) {
-        return new ChatSession(chatId, new Context(BotCommand.RESET, new HashMap<>(), 0));
+        return new ChatSession(chatId, new Context(BotCommand.CLEAR, new HashMap<>(), 0));
+    }
+
+    public Map<String, String> getAttributes() {
+        return context.attributes;
+    }
+
+    public void clear() {
+        context.setCommand(BotCommand.CLEAR);
+        context.setStep(0);
+        context.attributes.clear();
     }
 
 
@@ -32,10 +42,10 @@ public class ChatSession {
     public static class Context {
 
         private BotCommand command;
-        private Map<String, Object> attributes;
+        private Map<String, String> attributes;
         private int step;
 
-        public Context(BotCommand command, Map<String, Object> attributes, int step) {
+        public Context(BotCommand command, Map<String, String> attributes, int step) {
             this.command = command;
             this.attributes = attributes;
             this.step = step;

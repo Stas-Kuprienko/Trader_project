@@ -25,7 +25,7 @@ public class ChatSessionService {
                 .doOnNext(chatSession -> repository.save(chatSession).subscribe());
     }
 
-    public Mono<Void> save(ChatSession chatSession) {
+    public Mono<Boolean> save(ChatSession chatSession) {
         return repository.save(chatSession);
     }
 
