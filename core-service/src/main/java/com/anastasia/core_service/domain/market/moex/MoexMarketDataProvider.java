@@ -1,6 +1,6 @@
 package com.anastasia.core_service.domain.market.moex;
 
-import com.anastasia.core_service.datasource.cache.MarketDataCache;
+import com.anastasia.core_service.datasource.cache.MarketDataRepository;
 import com.anastasia.core_service.domain.market.MarketData;
 import com.anastasia.core_service.domain.market.MarketDataProvider;
 import com.anastasia.core_service.utility.PaginationUtility;
@@ -28,16 +28,16 @@ public class MoexMarketDataProvider implements MarketDataProvider {
 
     private static final int increasedMaxInMemorySize = 16 * 1024 * 1024;
 
-    private final MarketDataCache marketDataCache;
+    private final MarketDataRepository marketDataRepository;
     private final MoexXmlUtility xmlUtility;
     private final WebClient webClient;
 
 
     @Autowired
-    public MoexMarketDataProvider(MarketDataCache marketDataCache,
+    public MoexMarketDataProvider(MarketDataRepository marketDataRepository,
                                   MoexXmlUtility xmlUtility,
                                   @Value("${project.exchange.moex.url}") String moexBaseUrl) {
-        this.marketDataCache = marketDataCache;
+        this.marketDataRepository = marketDataRepository;
         this.xmlUtility = xmlUtility;
         this.webClient = WebClient.builder()
                 .baseUrl(moexBaseUrl)
@@ -53,7 +53,7 @@ public class MoexMarketDataProvider implements MarketDataProvider {
 
     @Override
     public Flux<Stock> stocksList(MarketPage page) {
-        return marketDataCache
+        return marketDataRepository
                 .getStockList(ExchangeMarket.MOEX)
                 .flatMap(list -> {
                     if (list.isEmpty()) {
@@ -76,7 +76,7 @@ public class MoexMarketDataProvider implements MarketDataProvider {
                                     }
                                     return stocks;
                                 })
-                                .doOnNext(stocks -> marketDataCache.putStockList(stocks).subscribe());
+                                .doOnNext(stocks -> marketDataRepository.putStockList(ExchangeMarket.MOEX, stocks).subscribe());
                     } else {
                         return Mono.just(list);
                     }
@@ -91,7 +91,7 @@ public class MoexMarketDataProvider implements MarketDataProvider {
 
     @Override
     public Mono<Stock> getStock(String ticker) {
-        return marketDataCache
+        return marketDataRepository
                 .getStock(ExchangeMarket.MOEX, ticker)
                 .switchIfEmpty(webClient
                         .get()
@@ -107,7 +107,7 @@ public class MoexMarketDataProvider implements MarketDataProvider {
 
     @Override
     public Flux<Futures> futuresList(MarketPage page) {
-        return marketDataCache
+        return marketDataRepository
                 .getFuturesList(ExchangeMarket.MOEX)
                 .flatMap(list -> {
                     if (list.isEmpty()) {
@@ -130,7 +130,7 @@ public class MoexMarketDataProvider implements MarketDataProvider {
                                     }
                                     return futuresList;
                                 })
-                                .doOnNext(futures -> marketDataCache.putFuturesList(futures).subscribe());
+                                .doOnNext(futures -> marketDataRepository.putFuturesList(ExchangeMarket.MOEX, futures).subscribe());
                     } else {
                         return Mono.just(list);
                     }
@@ -145,7 +145,7 @@ public class MoexMarketDataProvider implements MarketDataProvider {
 
     @Override
     public Mono<Futures> getFutures(String ticker) {
-        return marketDataCache
+        return marketDataRepository
                 .getFutures(ExchangeMarket.MOEX, ticker)
                 .switchIfEmpty(webClient
                         .get()
