@@ -7,3 +7,5 @@ pluginManagement {
 
 rootProject.name = 'trade-project'
 include 'core-service', 'smart-service', 'telegram-bot', 'ui-service', 'model', 'core-client'
+include 'core-client-reactive'
+

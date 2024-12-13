@@ -2,9 +2,9 @@ plugins {}
 
 dependencies {
     // JSON
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
-    implementation "jakarta.validation:jakarta.validation-api:$jakarta_valid_version"
+    compileOnly "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+    compileOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
+    compileOnly "jakarta.validation:jakarta.validation-api:$jakarta_valid_version"
 
     // redis
     compileOnly "org.springframework.data:spring-data-redis:$springframework_boot_version"

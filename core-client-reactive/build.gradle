@@ -2,7 +2,7 @@ plugins {}
 
 dependencies {
     //web
-    compileOnly "org.springframework:spring-web:$spring_version"
+    compileOnly "org.springframework:spring-webflux:$spring_version"
 
     //json
     compileOnly "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
