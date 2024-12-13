@@ -2,13 +2,17 @@ package com.anastasia.telegram_bot.controller;
 
 import com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler;
 import com.anastasia.telegram_bot.exception.UnregisteredUserException;
-import com.anastasia.trade_project.util.JustAction;
+import com.anastasia.telegram_bot.utils.MonoVoidWrapper;
 import jakarta.ws.rs.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import java.io.Serializable;
+import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 public abstract class TelegramLongPollingBotWithExceptionHandling extends TelegramLongPollingBot {
 
     private final TelegramBotExceptionHandler exceptionHandler;
@@ -20,37 +24,50 @@ public abstract class TelegramLongPollingBotWithExceptionHandling extends Telegr
     }
 
 
-    protected final void process(Update update, JustAction onUpdateReceived) {
+    protected final void process(Update update, MonoVoidWrapper onUpdateReceived) {
         try {
-            onUpdateReceived.perform();
+            log.info(update.getMessage().toString());
+            onUpdateReceived
+                    .perform()
+                    .subscribe(this::executeAsync);
         } catch (UnregisteredUserException e) {
-            SendMessage sendMessage = exceptionHandler.unregisteredUserHandle(e, update);
-            try {
-                execute(sendMessage);
-            } catch (TelegramApiException ex) {
-                throw new RuntimeException(ex);
-            }
+            exceptionHandler
+                    .unregisteredUserHandle(e, update)
+                    .subscribe(this::executeAsync);
         } catch (NotFoundException e) {
-            SendMessage sendMessage = exceptionHandler.notFoundHandle(e, update);
-            try {
-                execute(sendMessage);
-            } catch (TelegramApiException ex) {
-                throw new RuntimeException(ex);
-            }
+            exceptionHandler
+                    .notFoundHandle(e, update)
+                    .subscribe(this::executeAsync);
         } catch (IllegalArgumentException e) {
-            SendMessage sendMessage = exceptionHandler.illegalArgumentHandle(e, update);
-            try {
-                execute(sendMessage);
-            } catch (TelegramApiException ex) {
-                throw new RuntimeException(ex);
-            }
+            exceptionHandler
+                    .illegalArgumentHandle(e, update)
+                    .subscribe(this::executeAsync);
         } catch (Exception e) {
-            SendMessage sendMessage = exceptionHandler.defaultHandle(e, update);
-            try {
-                execute(sendMessage);
-            } catch (TelegramApiException ex) {
-                throw new RuntimeException(ex);
-            }
+            exceptionHandler
+                    .defaultHandle(e, update)
+                    .subscribe(this::executeAsync);
+        }
+    }
+
+    @Override
+    public <T extends Serializable, Method extends BotApiMethod<T>> T execute(Method method) {
+        try {
+            return super.execute(method);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+            //TODO
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public <T extends Serializable, Method extends BotApiMethod<T>> CompletableFuture<T> executeAsync(Method method) {
+        try {
+            return super.executeAsync(method);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+            //TODO
+            throw new RuntimeException(e);
         }
     }
 }

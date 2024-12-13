@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import reactor.core.publisher.Mono;
+
 import java.util.Locale;
 import static com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler.MessageTextKey.*;
 
@@ -28,7 +30,7 @@ public class TelegramBotExceptionHandler {
     }
 
 
-    public SendMessage unregisteredUserHandle(UnregisteredUserException e, Update update) {
+    public Mono<SendMessage> unregisteredUserHandle(UnregisteredUserException e, Update update) {
         log.info(e.getMessage());
         Long chatId = update.getMessage().getChatId();
         String username = ChatBotUtility.getUsername(update.getMessage());
@@ -40,26 +42,26 @@ public class TelegramBotExceptionHandler {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(message);
-        return sendMessage;
+        return Mono.just(sendMessage);
     }
 
-    public SendMessage notFoundHandle(NotFoundException e, Update update) {
+    public Mono<SendMessage> notFoundHandle(NotFoundException e, Update update) {
         log.info(e.getMessage());
         return buildMessage(update.getMessage(), NOT_FOUND);
     }
 
-    public SendMessage illegalArgumentHandle(IllegalArgumentException e, Update update) {
+    public Mono<SendMessage> illegalArgumentHandle(IllegalArgumentException e, Update update) {
         log.info(e.getMessage());
         return buildMessage(update.getMessage(), ILLEGAL_ARGUMENT);
     }
 
-    public SendMessage defaultHandle(Exception e, Update update) {
+    public Mono<SendMessage> defaultHandle(Exception e, Update update) {
         log.info(e.getMessage());
         return buildMessage(update.getMessage(), DEFAULT);
     }
 
 
-    private SendMessage buildMessage(Message message, MessageTextKey textKey) {
+    private Mono<SendMessage> buildMessage(Message message, MessageTextKey textKey) {
         Long chatId = message.getChatId();
         Locale locale = ChatBotUtility.getLocale(message);
 
@@ -69,7 +71,7 @@ public class TelegramBotExceptionHandler {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(text);
-        return sendMessage;
+        return Mono.just(sendMessage);
     }
 
 

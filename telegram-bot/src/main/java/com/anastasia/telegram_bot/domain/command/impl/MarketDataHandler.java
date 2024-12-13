@@ -49,18 +49,18 @@ public class MarketDataHandler implements BotCommandHandler {
 
         return Mono.just(switch (step) {
 
-            case EXCHANGE -> exchange(session, step, locale);
+                    case EXCHANGE -> exchange(session, step, locale);
 
-            case SECURITIES_TYPE -> securitiesType(session, message.getText(), step, locale);
+                    case SECURITIES_TYPE -> securitiesType(session, message.getText(), step, locale);
 
-            case SORTING -> sorting(session, message.getText(), step, locale);
+                    case SORTING -> sorting(session, message.getText(), step, locale);
 
-            case RETURN_RESULT -> returnResult(session, message.getText());
+                    case RETURN_RESULT -> returnResult(session, message.getText());
 
-            case PAGINATION -> pagination(session, message.getText());
-        }
+                    case PAGINATION -> pagination(session, message.getText());
+                }
         ).map(sendMessage -> {
-            chatSessionService.save(session);
+            chatSessionService.save(session).subscribe();
             return sendMessage;
         });
     }
@@ -96,7 +96,7 @@ public class MarketDataHandler implements BotCommandHandler {
                 .setStep(Steps.PAGINATION.ordinal());
         session.getAttributes()
                 .put(Steps.SORTING.name(), messageText);
-        return getItems(session, 0);
+        return getItems(session, 1);
     }
 
     private SendMessage pagination(ChatSession session, String messageText) {
@@ -131,7 +131,7 @@ public class MarketDataHandler implements BotCommandHandler {
             throw new IllegalArgumentException("Securities type is incorrect: " + securitiesType);
         }
         for (var s : list) {
-            strBuild.append(s).append("\n");
+            strBuild.append(s).append('\n').append('\n');
         }
         return createSendMessage(session.getChatId(), strBuild.toString());
     }

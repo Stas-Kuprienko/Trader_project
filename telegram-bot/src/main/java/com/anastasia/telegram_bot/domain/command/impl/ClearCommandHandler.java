@@ -36,7 +36,7 @@ public class ClearCommandHandler implements BotCommandHandler {
         return Mono.just(session)
                 .doOnNext(ChatSession::clear)
                 .map(b -> {
-                    chatSessionService.save(session);
+                    chatSessionService.save(session).subscribe();
                     return createSendMessage(session.getChatId(), text);
                 });
     }
