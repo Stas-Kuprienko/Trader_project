@@ -34,7 +34,12 @@ public class CommandDispatcher {
                 .flatMap(chatSession -> {
                     BotCommandHandler handler = commandHandlerStore.get(command);
                     if (handler == null) {
-                        handler = commandHandlerStore.get(chatSession.getContext().getCommand().name);
+                        BotCommand sessionContextCommand = chatSession.getContext().getCommand();
+                        if (sessionContextCommand != null) {
+                            handler = commandHandlerStore.get(sessionContextCommand.name);
+                        } else {
+                            handler = commandHandlerStore.get(null);
+                        }
                     }
                     log.info("Command handler {} is applied", handler.getClass().getSimpleName());
                     return handler.handle(message, chatSession);
@@ -54,6 +59,8 @@ public class CommandDispatcher {
                         log.info("Handler for bot command '{}' is registered", command);
                     }
                 });
+        BotCommandHandler badRequestHandler = applicationContext.getBean("badRequestHandler", BotCommandHandler.class);
+        commandHandlers.put(null, badRequestHandler);
         return commandHandlers;
     }
 }

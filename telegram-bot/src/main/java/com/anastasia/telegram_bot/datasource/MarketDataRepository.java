@@ -8,14 +8,6 @@ import java.util.List;
 
 public interface MarketDataRepository {
 
-    Mono<Void> putStock(Stock stock);
-
-    Mono<Void> putStockList(List<Stock> stockList);
-
-    Mono<Void> putFutures(Futures futures);
-
-    Mono<Void> putFuturesList(List<Futures> futuresList);
-
     Mono<Stock> getStock(ExchangeMarket exchange, String ticker);
 
     Mono<List<Stock>> getStockList(ExchangeMarket exchange);

@@ -9,7 +9,6 @@ import reactor.core.publisher.Mono;
 
 public interface MarketDataService {
 
-
     Flux<Stock> stockList(ExchangeMarket exchange, MarketPage page);
 
     Mono<Stock> stock(ExchangeMarket exchange, String ticker);

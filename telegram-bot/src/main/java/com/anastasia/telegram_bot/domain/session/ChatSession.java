@@ -32,7 +32,7 @@ public class ChatSession {
     }
 
     public void clear() {
-        context.setCommand(BotCommand.CLEAR);
+        context.setCommand(null);
         context.setStep(0);
         context.attributes.clear();
     }

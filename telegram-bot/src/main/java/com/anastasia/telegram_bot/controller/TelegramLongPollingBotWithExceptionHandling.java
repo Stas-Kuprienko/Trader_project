@@ -1,9 +1,7 @@
 package com.anastasia.telegram_bot.controller;
 
 import com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler;
-import com.anastasia.telegram_bot.exception.UnregisteredUserException;
 import com.anastasia.telegram_bot.utils.MonoVoidWrapper;
-import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -25,28 +23,13 @@ public abstract class TelegramLongPollingBotWithExceptionHandling extends Telegr
 
 
     protected final void process(Update update, MonoVoidWrapper onUpdateReceived) {
-        try {
-            log.info(update.getMessage().toString());
-            onUpdateReceived
-                    .perform()
-                    .subscribe(this::executeAsync);
-        } catch (UnregisteredUserException e) {
-            exceptionHandler
-                    .unregisteredUserHandle(e, update)
-                    .subscribe(this::executeAsync);
-        } catch (NotFoundException e) {
-            exceptionHandler
-                    .notFoundHandle(e, update)
-                    .subscribe(this::executeAsync);
-        } catch (IllegalArgumentException e) {
-            exceptionHandler
-                    .illegalArgumentHandle(e, update)
-                    .subscribe(this::executeAsync);
-        } catch (Exception e) {
-            exceptionHandler
-                    .defaultHandle(e, update)
-                    .subscribe(this::executeAsync);
-        }
+        log.info(update.getMessage().toString());
+        onUpdateReceived
+                .perform()
+                .doOnError(throwable -> exceptionHandler
+                        .apply(throwable, update)
+                        .subscribe(this::executeAsync))
+                .subscribe(this::executeAsync);
     }
 
     @Override
@@ -54,7 +37,7 @@ public abstract class TelegramLongPollingBotWithExceptionHandling extends Telegr
         try {
             return super.execute(method);
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             //TODO
             throw new RuntimeException(e);
         }
@@ -65,7 +48,7 @@ public abstract class TelegramLongPollingBotWithExceptionHandling extends Telegr
         try {
             return super.executeAsync(method);
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             //TODO
             throw new RuntimeException(e);
         }

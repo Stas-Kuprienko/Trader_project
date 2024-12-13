@@ -4,16 +4,12 @@ import com.anastasia.telegram_bot.datasource.MarketDataRepository;
 import com.anastasia.trade_project.enums.ExchangeMarket;
 import com.anastasia.trade_project.markets.Futures;
 import com.anastasia.trade_project.markets.Stock;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Slf4j
@@ -34,59 +30,6 @@ public class MarketDataRepositoryRedis implements MarketDataRepository {
         this.futuresRedisTemplate = futuresRedisTemplate;
     }
 
-
-    @PostConstruct
-    public void init() {
-        for (ExchangeMarket e : ExchangeMarket.values()) {
-
-            String stockKey = e + STOCK_KEY;
-            Duration stockDuration = Duration.of(1, ChronoUnit.MINUTES);
-            stockRedisTemplate.expire(stockKey, stockDuration);
-            log.info("Cache duration for {} key is set to {}", stockKey, stockDuration);
-
-            String futuresKey = e + FUTURES_KEY;
-            Duration futuresDuration = Duration.of(1, ChronoUnit.MINUTES);
-            futuresRedisTemplate.expire(futuresKey, futuresDuration);
-            log.info("Cache duration for {} key is set to {}", futuresKey, futuresDuration);
-        }
-    }
-
-
-    @Override
-    public Mono<Void> putStock(Stock stock) {
-        return stockRedisTemplate
-                .opsForHash()
-                .put(stock.getExchange() + STOCK_KEY, stock.getTicker(), stock)
-                .doOnNext(b -> log.debug("The object is cached: {}", stock))
-                .then();
-    }
-
-    @Override
-    public Mono<Void> putStockList(List<Stock> stockList) {
-        var opsForHash = stockRedisTemplate.opsForHash();
-        return Flux.fromIterable(stockList)
-                .map(stock -> opsForHash.put(stock.getExchange() + STOCK_KEY, stock.getTicker(), stock))
-                .doOnNext(b -> log.debug("The objects is cached: {}", stockList))
-                .then();
-    }
-
-    @Override
-    public Mono<Void> putFutures(Futures futures) {
-        return futuresRedisTemplate
-                .opsForHash()
-                .put(futures.getExchange() + FUTURES_KEY, futures.getTicker(), futures)
-                .doOnNext(b -> log.debug("The object is cached: {}", futures))
-                .then();
-    }
-
-    @Override
-    public Mono<Void> putFuturesList(List<Futures> futuresList) {
-        var opsForHash = futuresRedisTemplate.opsForHash();
-        return Flux.fromIterable(futuresList)
-                .map(futures -> opsForHash.put(futures.getExchange() + FUTURES_KEY, futures.getTicker(), futures))
-                .doOnNext(b -> log.debug("The objects is cached: {}", futuresList))
-                .then();
-    }
 
     @Override
     public Mono<Stock> getStock(ExchangeMarket exchange, String ticker) {
