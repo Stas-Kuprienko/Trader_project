@@ -24,7 +24,7 @@ public class ChatSession {
 
 
     public static ChatSession createNew(long chatId) {
-        return new ChatSession(chatId, new Context(BotCommand.CLEAR, new HashMap<>(), 0));
+        return new ChatSession(chatId, new Context(null, new HashMap<>(), 0));
     }
 
     public Map<String, String> getAttributes() {

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Component
-public class TelegramBotController extends TelegramLongPollingBotWithExceptionHandling {
+public class TelegramBotController extends TelegramLongPollingBotReactive {
 
     private final CommandDispatcher commandDispatcher;
     private final String username;

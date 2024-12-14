@@ -11,12 +11,12 @@ import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-public abstract class TelegramLongPollingBotWithExceptionHandling extends TelegramLongPollingBot {
+public abstract class TelegramLongPollingBotReactive extends TelegramLongPollingBot {
 
     private final TelegramBotExceptionHandler exceptionHandler;
 
 
-    protected TelegramLongPollingBotWithExceptionHandling(String botToken, TelegramBotExceptionHandler exceptionHandler) {
+    protected TelegramLongPollingBotReactive(String botToken, TelegramBotExceptionHandler exceptionHandler) {
         super(botToken);
         this.exceptionHandler = exceptionHandler;
     }

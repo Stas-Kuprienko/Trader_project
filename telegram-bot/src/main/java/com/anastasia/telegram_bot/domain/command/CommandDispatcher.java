@@ -27,13 +27,13 @@ public class CommandDispatcher {
 
 
     public Mono<BotApiMethodMessage> apply(Message message) {
-        String command = message.getText();
-        Long chatId = message.getChatId();
         return chatSessionService
-                .get(chatId)
+                .get(message.getChatId())
                 .flatMap(chatSession -> {
-                    BotCommandHandler handler = commandHandlerStore.get(command);
-                    if (handler == null) {
+                    BotCommandHandler handler = commandHandlerStore.get(message.getText());
+                    if (handler != null) {
+                        chatSession.getContext().setStep(0);
+                    } else {
                         BotCommand sessionContextCommand = chatSession.getContext().getCommand();
                         if (sessionContextCommand != null) {
                             handler = commandHandlerStore.get(sessionContextCommand.name);
