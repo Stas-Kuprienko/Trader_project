@@ -40,3 +40,4 @@ bin/
 /.idea/
 /telegram-bot/src/main/resources/application-local.yaml
 /smart-service/src/main/resources/application-local.yaml
+/core-service/src/main/resources/application-local.yaml

@@ -26,10 +26,9 @@ spring:
     password: ${project.variables.datasource.password}
   kafka:
     bootstrap-servers: ${project.variables.kafka.url}
-    topic: transactions
-    consumer:
-      group-id: core-service-group
-      auto-offset-reset: earliest
+    topic: transactions-topic
+    partitions: 3
+    replicas: 3
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -48,23 +47,26 @@ grpc:
 
 
 project:
+
   variables:
     keycloak:
-      url: localhost:8080
+      url: <?>
     datasource:
-      url: localhost:5432
-      username: postgres
-      password: postgres
+      url: <?>
+      username: <?>
+      password: <?>
     kafka:
-      url: localhost:9092
+      url: <?>
     smart-service:
-      url: localhost:9090
+      url: <?>
     redis:
-      host: localhost
-      port: 6379
+      host: <?>
+      port: <?>
+
   encryption:
-    secret-key: ???
-    iv-value: ???
+    secret-key: <?>
+    iv-value: <?>
+
   exchange:
     moex:
       url: https://iss.moex.com/iss

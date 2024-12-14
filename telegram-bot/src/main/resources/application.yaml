@@ -5,6 +5,7 @@ spring:
     active:
       - local
   kafka:
+    topic: transactions-topic
     consumer:
       bootstrap-servers: ${project.variables.kafka.url}
       group-id: telegram-bot-group
@@ -20,11 +21,11 @@ telegram:
 
 project:
   variables:
-    service-url: localhost:8080
+    service-url: <?>
     kafka:
-      url: localhost:9092
+      url: <?>
     redis:
-      host: localhost
-      port: 6379
+      host: <?>
+      port: <?>
     core-service:
-      url: http://localhost:8082
+      url: <?>

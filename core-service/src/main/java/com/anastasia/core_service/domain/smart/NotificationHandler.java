@@ -1,6 +1,6 @@
 package com.anastasia.core_service.domain.smart;
 
-import com.anastasia.core_service.domain.notification.NotificationService;
+import com.anastasia.core_service.domain.event_driven.MessageService;
 import com.anastasia.smart_service.Smart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class NotificationHandler {
 
-    private final NotificationService notificationService;
+    private final MessageService messageService;
 
 
     @Autowired
-    public NotificationHandler(NotificationService notificationService) {
-        this.notificationService = notificationService;
+    public NotificationHandler(MessageService messageService) {
+        this.messageService = messageService;
     }
 
 
