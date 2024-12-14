@@ -17,14 +17,20 @@ spring:
 grpc:
   server:
     port: 9090
+    security:
+      enabled: true
+#      certificate-chain:
+#      private-key:
+    netty:
+      use-native-transport: true
 
 
 project:
   variables:
     datasource:
-      url: localhost:5432
-      username: postgres
-      password: postgres
+      url: <?>
+      username: <?>
+      password: <?>
   resources:
     finam:
       url: trade-api.finam.ru

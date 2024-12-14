@@ -24,7 +24,11 @@ public class GrpcConfig {
 
     @Bean
     public ManagedChannel managedChannelSmartService() {
-        ManagedChannel managedChannel = ManagedChannelBuilder.forTarget(smartServiceUrl).build();
+        //TODO temporary .usePlaintext()
+        ManagedChannel managedChannel = ManagedChannelBuilder
+                .forTarget(smartServiceUrl)
+                .usePlaintext()
+                .build();
         log.info("Managed channel gRpc for {} is registered", smartServiceUrl);
         managedChannelSmartService = managedChannel;
         return managedChannel;
