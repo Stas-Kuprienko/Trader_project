@@ -5,8 +5,8 @@ import com.anastasia.telegram_bot.domain.command.BotCommandHandler;
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
 import com.anastasia.telegram_bot.domain.session.ChatSession;
 import com.anastasia.telegram_bot.domain.session.ChatSessionService;
+import com.anastasia.telegram_bot.service.MarketDataService;
 import com.anastasia.telegram_bot.utils.ChatBotUtility;
-import com.anastasia.trade_project.core_client.CoreServiceClientV1;
 import com.anastasia.trade_project.enums.ExchangeMarket;
 import com.anastasia.trade_project.markets.MarketPage;
 import com.anastasia.trade_project.markets.Securities;
@@ -15,6 +15,7 @@ import org.springframework.context.MessageSource;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Locale;
@@ -26,16 +27,16 @@ public class MarketDataHandler implements BotCommandHandler {
     private static final byte DEFAULT_ITEM_COUNT = 10;
 
     private final MessageSource messageSource;
-    private final CoreServiceClientV1 coreServiceClient;
+    private final MarketDataService marketDataService;
     private final ChatSessionService chatSessionService;
 
 
     @Autowired
     public MarketDataHandler(MessageSource messageSource,
-                             CoreServiceClientV1 coreServiceClient,
+                             MarketDataService marketDataService,
                              ChatSessionService chatSessionService) {
         this.messageSource = messageSource;
-        this.coreServiceClient = coreServiceClient;
+        this.marketDataService = marketDataService;
         this.chatSessionService = chatSessionService;
     }
 
@@ -47,13 +48,13 @@ public class MarketDataHandler implements BotCommandHandler {
         session.getContext()
                 .setCommand(BotCommand.MARKET);
 
-        return Mono.just(switch (step) {
+        return (switch (step) {
 
-                    case EXCHANGE -> exchange(session, step, locale);
+                    case EXCHANGE -> Mono.just(exchange(session, step, locale));
 
-                    case SECURITIES_TYPE -> securitiesType(session, message.getText(), step, locale);
+                    case SECURITIES_TYPE -> Mono.just(securitiesType(session, message.getText(), step, locale));
 
-                    case SORTING -> sorting(session, message.getText(), step, locale);
+                    case SORTING -> Mono.just(sorting(session, message.getText(), step, locale));
 
                     case RETURN_RESULT -> returnResult(session, message.getText());
 
@@ -74,32 +75,37 @@ public class MarketDataHandler implements BotCommandHandler {
     }
 
     private SendMessage securitiesType(ChatSession session, String messageText, Steps step, Locale locale) {
+        Exchange exchange = Exchange.valueOf(messageText.toUpperCase());
         session.getContext()
                 .setStep(Steps.SORTING.ordinal());
         session.getAttributes()
-                .put(Steps.EXCHANGE.name(), messageText);
+                .put(Steps.EXCHANGE.name(), exchange.name());
         String text = messageSource.getMessage(KEY_SAMPLE.formatted(step), null, locale);
         return createSendMessage(session.getChatId(), text);
     }
 
     private SendMessage sorting(ChatSession session, String messageText, Steps step, Locale locale) {
+        SecuritiesType securitiesType = SecuritiesType.valueOf(messageText.toUpperCase());
         session.getContext()
                 .setStep(Steps.RETURN_RESULT.ordinal());
         session.getAttributes()
-                .put(Steps.SECURITIES_TYPE.name(), messageText);
+                .put(Steps.SECURITIES_TYPE.name(), securitiesType.name());
         String text = messageSource.getMessage(KEY_SAMPLE.formatted(step), null, locale);
         return createSendMessage(session.getChatId(), text);
     }
 
-    private SendMessage returnResult(ChatSession session, String messageText) {
+    private Mono<? extends BotApiMethodMessage> returnResult(ChatSession session, String messageText) {
+        SortingType sortingType = SortingType.valueOf(messageText.toUpperCase());
         session.getContext()
                 .setStep(Steps.PAGINATION.ordinal());
         session.getAttributes()
-                .put(Steps.SORTING.name(), messageText);
-        return getItems(session, 1);
+                .put(Steps.SORTING.name(), sortingType.name());
+        return getItems(session, 1)
+                .collectList()
+                .map(list -> collectItems(session.getChatId(), list));
     }
 
-    private SendMessage pagination(ChatSession session, String messageText) {
+    private Mono<? extends BotApiMethodMessage> pagination(ChatSession session, String messageText) {
         session.getContext()
                 .setStep(Steps.PAGINATION.ordinal());
         int pageNumber;
@@ -108,32 +114,36 @@ public class MarketDataHandler implements BotCommandHandler {
         } catch (NumberFormatException e) {
 
             session.getContext().setStep(0);
-            session.getContext().setCommand(BotCommand.CLEAR);
             throw new IllegalArgumentException(e);
         }
-        return getItems(session, pageNumber);
+        return getItems(session, pageNumber)
+                .collectList()
+                .map(list -> collectItems(session.getChatId(), list));
     }
 
-    private SendMessage getItems(ChatSession session, int pageNumber) {
-        //TODO temporary solution
-        StringBuilder strBuild = new StringBuilder();
+    private Flux<? extends Securities> getItems(ChatSession session, int pageNumber) {
         ExchangeMarket exchange = ExchangeMarket.valueOf(session.getAttributes().get(Steps.EXCHANGE.name()));
-        String securitiesType = session.getAttributes().get(Steps.SECURITIES_TYPE.name());
+        SecuritiesType securitiesType = SecuritiesType
+                .valueOf(session.getAttributes().get(Steps.SECURITIES_TYPE.name()));
         String sortingParam = session.getAttributes().get(Steps.SORTING.name());
         MarketPage marketPage = new MarketPage(pageNumber, DEFAULT_ITEM_COUNT, sortingParam, null);
 
-        List<? extends Securities> list;
-        if (securitiesType.equalsIgnoreCase("Stocks")) {
-            list = coreServiceClient.MARKET.stockList(exchange, marketPage);
-        } else if (securitiesType.equalsIgnoreCase("Futures")) {
-            list = coreServiceClient.MARKET.futuresList(exchange, marketPage);
-        } else {
-            throw new IllegalArgumentException("Securities type is incorrect: " + securitiesType);
-        }
-        for (var s : list) {
+        return switch (securitiesType) {
+            case STOCKS -> marketDataService.stockList(exchange, marketPage);
+            case FUTURES -> marketDataService.futuresList(exchange, marketPage);
+        };
+    }
+
+    private BotApiMethodMessage collectItems(long chatId, List<? extends Securities> securities) {
+        //TODO
+        StringBuilder strBuild = new StringBuilder();
+        for (var s : securities) {
             strBuild.append(s).append('\n').append('\n');
         }
-        return createSendMessage(session.getChatId(), strBuild.toString());
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(strBuild.toString());
+        return sendMessage;
     }
 
 
@@ -143,5 +153,17 @@ public class MarketDataHandler implements BotCommandHandler {
         SORTING,
         RETURN_RESULT,
         PAGINATION
+    }
+
+    enum Exchange {
+        MOEX
+    }
+
+    enum SecuritiesType {
+        STOCKS, FUTURES
+    }
+
+    enum SortingType {
+        VOLUME, ALPHABET
     }
 }
