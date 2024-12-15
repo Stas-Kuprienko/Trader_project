@@ -1,5 +1,6 @@
 package com.anastasia.smart_service.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.ExecutorService;
@@ -10,13 +11,13 @@ import java.util.concurrent.ScheduledExecutorService;
 public class SmartServiceConfig {
 
 
-    @Bean("virtualExecutorService")
+    @Bean
     public ExecutorService virtualExecutorService() {
         return Executors.newVirtualThreadPerTaskExecutor();
     }
 
-    @Bean("scheduler")
-    public ScheduledExecutorService scheduler() {
-        return Executors.newScheduledThreadPool(5);
+    @Bean
+    public ScheduledExecutorService scheduler(@Value("${project.variables}") Integer threadPoolSize) {
+        return Executors.newScheduledThreadPool(threadPoolSize);
     }
 }

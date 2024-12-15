@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: smart-service
+  profiles:
+    active:
+      - local
+  r2dbc:
+    url: r2dbc:postgresql://${project.resources.datasource.url}/trade_project
+    username: ${project.resources.datasource.username}
+    password: ${project.resources.datasource.password}
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://${project.resources.datasource.url}/trade_project
+    user: ${project.resources.datasource.username}
+    password: ${project.resources.datasource.password}
+
+grpc:
+  server:
+    port: 9090
+    security:
+      enabled: true
+#      certificate-chain:
+#      private-key:
+    netty:
+      use-native-transport: true
+
+
+project:
+  resources:
+    datasource:
+      url: <?>
+      username: <?>
+      password: <?>
+    finam:
+      url: trade-api.finam.ru
+  variables:
+    thread-pool-size: <?>

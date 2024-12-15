@@ -1,0 +1,19 @@
+plugins {
+	id 'org.springframework.boot' version '3.3.4'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+dependencies {
+	compileOnly "org.springframework.boot:spring-boot-starter:$springframework_boot_version"
+
+    //analytics
+    implementation "org.apache.commons:commons-math4-core:$apache_math_version"
+
+    //machine learning
+    implementation "org.deeplearning4j:deeplearning4j-core:$dl4j_version"
+    implementation "org.nd4j:nd4j-native-platform:$dl4j_version"
+}
+
+test {
+    useJUnitPlatform()
+}

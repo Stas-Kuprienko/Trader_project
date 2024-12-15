@@ -39,5 +39,6 @@ bin/
 /volumes/
 /.idea/
 /telegram-bot/src/main/resources/application-local.yaml
-/smart-service/src/main/resources/application-local.yaml
 /core-service/src/main/resources/application-local.yaml
+/moex_2.xml
+/smart-service/auto-trade/src/main/resources/application-local.yaml
