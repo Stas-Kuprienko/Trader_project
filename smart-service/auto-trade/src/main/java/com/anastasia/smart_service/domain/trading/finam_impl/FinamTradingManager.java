@@ -1,6 +1,8 @@
 package com.anastasia.smart_service.domain.trading.finam_impl;
 
 import com.anastasia.smart_service.Smart;
+import com.anastasia.smart_service.domain.event.EventNotificationService;
+import com.anastasia.smart_service.model.TradeSubscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -9,15 +11,18 @@ import java.util.concurrent.ExecutorService;
 
 public class FinamTradingManager {
 
+    private final EventNotificationService notificationService;
     private final ExecutorService executorService;
 
     @Autowired
-    public FinamTradingManager(@Qualifier("virtualExecutorService") ExecutorService executorService) {
+    public FinamTradingManager(EventNotificationService notificationService,
+                               @Qualifier("virtualExecutorService") ExecutorService executorService) {
+        this.notificationService = notificationService;
         this.executorService = executorService;
     }
 
 
-    public void deal(Smart.Security security, double price, List<Smart.Account> subscribers) {
+    public void deal(TradeSubscription subscription, double price, List<Smart.Account> subscribers) {
 
     }
 }

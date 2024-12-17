@@ -4,6 +4,7 @@ import com.anastasia.smart_service.Smart;
 import com.anastasia.smart_service.domain.automation.DroneLauncher;
 import com.anastasia.smart_service.domain.strategy.TradeStrategy;
 import com.anastasia.smart_service.model.Drone;
+import com.anastasia.smart_service.model.impl.MyDrone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,24 @@ public class DroneLauncherImpl implements DroneLauncher {
 
 
     @Override
-    public void run(Smart.SubscribeRequest request, Smart.SubscribeResponse response) {
+    public void follow(TradeStrategy strategy, Smart.Account account) {
+        Drone drone = running.get(strategy);
+        if (drone == null) {
+            drone = new MyDrone(strategy);
+            drone.run(executorService);
+        }
+        drone.addSubscriber(account);
+    }
 
+    @Override
+    public void leave(TradeStrategy strategy, Smart.Account account) {
+        Drone drone = running.get(strategy);
+        if (drone != null) {
+            drone.removeSubscriber(account);
+            if (drone.isEmpty()) {
+                drone.stop(false);
+                running.remove(strategy);
+            }
+        }
     }
 }

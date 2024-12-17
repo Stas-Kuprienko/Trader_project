@@ -32,15 +32,16 @@ message UnsubscribeRequest {
 message SubscribeResponse {
 
   oneof payload {
-    Notification notification = 1;
+    OrderNotification notification = 1;
     Exception exception = 2;
+    StatusResponse status = 3;
   }
 
 }
 
 message UnsubscribeResponse {
 
-  bool isUnsubscribe = 1;
+  StatusResponse status = 1;
 
 }
 
@@ -88,19 +89,34 @@ enum Direction {
 
 }
 
-message Notification {
-
-  repeated Account account = 1;
-  Security security = 2;
-  double price = 3;
-  Direction direction = 4;
-  string dateTime = 5;
-
-}
-
 message StrategiesList {
 
   repeated StrategyDefinition item = 1;
+
+}
+
+message StatusResponse {
+
+  bool success = 1;
+
+}
+
+message Order {
+
+  Account account = 1;
+  Strategy strategy = 2;
+  Security security = 3;
+  double price = 4;
+  int64 quantity = 5;
+  Direction direction = 6;
+  int32 transactionId = 7;
+  string time = 8;
+
+}
+
+message OrderNotification {
+
+  repeated Order orderList = 1;
 
 }
 

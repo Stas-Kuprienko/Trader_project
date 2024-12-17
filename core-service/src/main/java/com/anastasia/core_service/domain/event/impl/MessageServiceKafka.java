@@ -1,6 +1,6 @@
-package com.anastasia.core_service.domain.event_driven.impl;
+package com.anastasia.core_service.domain.event.impl;
 
-import com.anastasia.core_service.domain.event_driven.MessageService;
+import com.anastasia.core_service.domain.event.MessageService;
 import com.anastasia.trade_project.notification.TradeNotification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

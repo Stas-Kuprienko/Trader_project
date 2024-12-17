@@ -1,5 +1,6 @@
 package com.anastasia.core_service.domain.smart;
 
+import com.anastasia.core_service.domain.event.NotificationAssistant;
 import com.anastasia.core_service.entity.user.Account;
 import com.anastasia.smart_service.AutoTradeGrpc;
 import com.anastasia.smart_service.Smart;
@@ -14,23 +15,32 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class SmartServiceClient {
 
     private final AutoTradeGrpc.AutoTradeStub stub;
     private final AutoTradeGrpc.AutoTradeBlockingStub blockingStub;
-    private final StreamObserver<Smart.SubscribeResponse> subscribeResponse;
-    private final StreamObserver<Smart.UnsubscribeResponse> unsubscribeResponse;
+    private final NotificationAssistant notificationAssistant;
+    private final ExceptionHandler exceptionHandler;
+    private final Map<TradeSubscription, StreamObserver<Smart.SubscribeRequest>> subscriptionRequestStore;
+    private final Map<TradeSubscription, StreamObserver<Smart.SubscribeResponse>> subscriptionResponseStore;
+    private final Map<TradeSubscription, StreamObserver<Smart.UnsubscribeResponse>> unsubscriptionResponseStore;
 
 
     @Autowired
     public SmartServiceClient(@Qualifier("managedChannelSmartService") ManagedChannel managedChannelSmartService,
-                              NotificationHandler notificationHandler, ExceptionHandler exceptionHandler) {
+                              NotificationAssistant notificationAssistant, ExceptionHandler exceptionHandler) {
+
         this.stub = AutoTradeGrpc.newStub(managedChannelSmartService);
         this.blockingStub = AutoTradeGrpc.newBlockingStub(managedChannelSmartService);
-        this.subscribeResponse = new SubscriptionStreamObserver(notificationHandler, exceptionHandler);
-        this.unsubscribeResponse = new UnsubscriptionStreamObserver(notificationHandler, exceptionHandler);
+        this.notificationAssistant = notificationAssistant;
+        this.exceptionHandler = exceptionHandler;
+        subscriptionRequestStore = new ConcurrentHashMap<>();
+        subscriptionResponseStore = new ConcurrentHashMap<>();
+        unsubscriptionResponseStore = new ConcurrentHashMap<>();
     }
 
 
@@ -54,7 +64,9 @@ public class SmartServiceClient {
                         .setAccount(accountToRequest)
                         .setStrategy(strategyToRequest)
                         .build())
-                .doOnNext(request -> stub.subscribe(subscribeResponse).onNext(request))
+                .doOnNext(request ->
+                        subscribeRequestStreamObserver(new TradeSubscription(securities, tradeStrategy, tradeScope))
+                        .onNext(request))
                 .then();
     }
 
@@ -78,7 +90,9 @@ public class SmartServiceClient {
                         .setAccount(accountToRequest)
                         .setStrategy(strategyToRequest)
                         .build())
-                .doOnNext(request -> stub.unsubscribe(request, unsubscribeResponse))
+                .doOnNext(request -> stub
+                        .unsubscribe(request, unsubscribeRequestStreamObserver(
+                                new TradeSubscription(securities, tradeStrategy, tradeScope))))
                 .then();
     }
 
@@ -91,6 +105,36 @@ public class SmartServiceClient {
                         .toList());
     }
 
+    public Mono<Void> completeSubscription(TradeSubscription subscription) {
+        return Mono.just(subscriptionResponseStore.get(subscription))
+                .map(responseStreamObserver -> {
+                    if (responseStreamObserver != null) {
+                        responseStreamObserver.onCompleted();
+                        subscriptionResponseStore.remove(subscription);
+                    }
+                    return responseStreamObserver;
+                })
+                .then();
+    }
+
+
+    private StreamObserver<Smart.SubscribeRequest> subscribeRequestStreamObserver(TradeSubscription subscription) {
+        //TODO with completable future
+        StreamObserver<Smart.SubscribeRequest> requestStreamObserver = subscriptionRequestStore.get(subscription);
+        if (requestStreamObserver == null) {
+            var responseStreamObserver = new SubscribeResponseStreamObserver(notificationAssistant, exceptionHandler);
+            requestStreamObserver = stub.subscribe(responseStreamObserver);
+            subscriptionRequestStore.put(subscription, requestStreamObserver);
+            subscriptionResponseStore.put(subscription, responseStreamObserver);
+        }
+        return requestStreamObserver;
+    }
+
+    private StreamObserver<Smart.UnsubscribeResponse> unsubscribeRequestStreamObserver(TradeSubscription subscription) {
+        //TODO with completable future
+        return unsubscriptionResponseStore
+                .computeIfAbsent(subscription, k -> new UnsubscribeResponseStreamObserver(notificationAssistant, exceptionHandler));
+    }
 
     private Smart.TradeScope convertTradeScope(TradeScope tradeScope) {
         return Smart.TradeScope.valueOf(tradeScope.name());

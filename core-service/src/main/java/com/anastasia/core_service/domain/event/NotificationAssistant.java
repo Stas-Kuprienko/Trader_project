@@ -1,4 +1,4 @@
-package com.anastasia.core_service.domain.event_driven;
+package com.anastasia.core_service.domain.event;
 
 import com.anastasia.smart_service.Smart;
 import com.anastasia.trade_project.notification.TradeNotification;
@@ -14,7 +14,11 @@ public class NotificationAssistant {
     }
 
 
-    public void notify(Smart.Notification notification) {
+    public void handle(Smart.OrderNotification notification) {
         //TODO list
+    }
+
+    public void sendResponse(Smart.StatusResponse status) {
+        //TODO
     }
 }
