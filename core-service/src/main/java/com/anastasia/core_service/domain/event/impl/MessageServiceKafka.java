@@ -3,6 +3,7 @@ package com.anastasia.core_service.domain.event.impl;
 import com.anastasia.core_service.domain.event.MessageService;
 import com.anastasia.trade_project.notification.TradeNotification;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -28,13 +29,15 @@ public class MessageServiceKafka implements MessageService<TradeNotification> {
 
     @Override
     public Mono<SendResult<String, TradeNotification>> send(TradeNotification notification) {
-        return Mono.fromFuture(kafkaTemplate.send(topic, notification))
+        ProducerRecord<String, TradeNotification> record = new ProducerRecord<>(topic, notification);
+        return Mono.fromFuture(kafkaTemplate.send(record))
                 .doOnNext(result -> log.info("Message is sent to topic '{}'. Result: {}", topic, result.toString()));
     }
 
     @Override
     public Mono<SendResult<String, TradeNotification>> send(String key, TradeNotification notification) {
-        return Mono.fromFuture(kafkaTemplate.send(topic, key, notification))
+        ProducerRecord<String, TradeNotification> record = new ProducerRecord<>(topic, key, notification);
+        return Mono.fromFuture(kafkaTemplate.send(record))
                 .doOnNext(result -> log.info("Message is sent to topic '{}'. Result: {}", topic, result.toString()));
     }
 }

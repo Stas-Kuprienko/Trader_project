@@ -3,9 +3,6 @@ package com.anastasia.trade_project.notification;
 import com.anastasia.trade_project.enums.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 import java.io.Serializable;
@@ -14,63 +11,51 @@ import java.time.LocalDateTime;
 @Data
 public class TradeNotification implements Serializable {
 
-    @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-    private String id;
+    @JsonProperty("user_id")
+    private long userId;
 
-    @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$") @NotBlank
-    private String login;
+    @JsonProperty("transaction_id")
+    private int transactionId;
 
     private Broker broker;
 
     @JsonProperty("client_id")
     private String clientId;
 
-    private ExchangeMarket exchangeMarket;
-
     private String ticker;
 
     private Board board;
 
-    private Market market;
-
     private double price;
 
-    private int quantity;
+    private long quantity;
 
     private Direction direction;
-
-    private Currency currency;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime time;
 
 
     @Builder
-    public TradeNotification(String id,
-                             String login,
+    public TradeNotification(long userId,
+                             int transactionId,
                              Broker broker,
                              String clientId,
-                             ExchangeMarket exchangeMarket,
                              String ticker,
                              Board board,
-                             Market market,
                              double price,
-                             int quantity,
+                             long quantity,
                              Direction direction,
-                             Currency currency,
                              LocalDateTime time) {
-        this.id = id;
-        this.login = login;
+        this.userId = userId;
+        this.transactionId = transactionId;
         this.broker = broker;
         this.clientId = clientId;
-        this.exchangeMarket = exchangeMarket;
         this.ticker = ticker;
         this.board = board;
-        this.market = market;
         this.price = price;
         this.quantity = quantity;
         this.direction = direction;
-        this.currency = currency;
         this.time = time;
     }
 

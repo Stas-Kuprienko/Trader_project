@@ -119,7 +119,6 @@ public class SmartServiceClient {
 
 
     private StreamObserver<Smart.SubscribeRequest> subscribeRequestStreamObserver(TradeSubscription subscription) {
-        //TODO with completable future
         StreamObserver<Smart.SubscribeRequest> requestStreamObserver = subscriptionRequestStore.get(subscription);
         if (requestStreamObserver == null) {
             var responseStreamObserver = new SubscribeResponseStreamObserver(notificationAssistant, exceptionHandler);
@@ -131,7 +130,6 @@ public class SmartServiceClient {
     }
 
     private StreamObserver<Smart.UnsubscribeResponse> unsubscribeRequestStreamObserver(TradeSubscription subscription) {
-        //TODO with completable future
         return unsubscriptionResponseStore
                 .computeIfAbsent(subscription, k -> new UnsubscribeResponseStreamObserver(notificationAssistant, exceptionHandler));
     }
