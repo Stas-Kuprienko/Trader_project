@@ -1,6 +1,6 @@
 package com.anastasia.telegram_bot.domain.command.impl;
 
-import com.anastasia.telegram_bot.domain.command.BotCommand;
+import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.command.BotCommandHandler;
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
 import com.anastasia.telegram_bot.domain.session.ChatSession;
@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Locale;
 
-@CommandHandler(command = BotCommand.MARKET)
+@CommandHandler(command = BotCommands.MARKET)
 public class MarketDataHandler implements BotCommandHandler {
 
     private static final String KEY_SAMPLE = "MARKET.%s";
@@ -43,23 +43,28 @@ public class MarketDataHandler implements BotCommandHandler {
 
     @Override
     public Mono<? extends BotApiMethodMessage> handle(Message message, ChatSession session) {
-        Steps step = Steps.values()[session.getContext().getStep()];
         Locale locale = ChatBotUtility.getLocale(message);
+        return handle(message.getText(), session, locale);
+    }
+
+    @Override
+    public Mono<? extends BotApiMethodMessage> handle(String text, ChatSession session, Locale locale) {
+        Steps step = Steps.values()[session.getContext().getStep()];
         session.getContext()
-                .setCommand(BotCommand.MARKET);
+                .setCommand(BotCommands.MARKET);
 
         return (switch (step) {
 
-                    case EXCHANGE -> Mono.just(exchange(session, step, locale));
+            case EXCHANGE -> Mono.just(exchange(session, step, locale));
 
-                    case SECURITIES_TYPE -> Mono.just(securitiesType(session, message.getText(), step, locale));
+            case SECURITIES_TYPE -> Mono.just(securitiesType(session, text, step, locale));
 
-                    case SORTING -> Mono.just(sorting(session, message.getText(), step, locale));
+            case SORTING -> Mono.just(sorting(session, text, step, locale));
 
-                    case RETURN_RESULT -> returnResult(session, message.getText());
+            case RETURN_RESULT -> returnResult(session, text);
 
-                    case PAGINATION -> pagination(session, message.getText());
-                }
+            case PAGINATION -> pagination(session, text);
+        }
         ).map(sendMessage -> {
             chatSessionService.save(session).subscribe();
             return sendMessage;

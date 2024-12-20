@@ -1,6 +1,6 @@
 package com.anastasia.telegram_bot.domain.command.impl;
 
-import com.anastasia.telegram_bot.domain.command.BotCommand;
+import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.command.BotCommandHandler;
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
 import com.anastasia.telegram_bot.domain.session.ChatSession;
@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Mono;
 import java.util.Locale;
 
-@CommandHandler(command = BotCommand.CLEAR)
+@CommandHandler(command = BotCommands.CLEAR)
 public class ClearCommandHandler implements BotCommandHandler {
 
     private static final String MESSAGE_KEY = "CLEAR";
@@ -38,6 +38,17 @@ public class ClearCommandHandler implements BotCommandHandler {
                 .map(b -> {
                     chatSessionService.save(session).subscribe();
                     return createSendMessage(session.getChatId(), text);
+                });
+    }
+
+    @Override
+    public Mono<? extends BotApiMethodMessage> handle(String text, ChatSession session, Locale locale) {
+        String textToSend = messageSource.getMessage(MESSAGE_KEY, null, locale);
+        return Mono.just(session)
+                .doOnNext(ChatSession::clear)
+                .map(b -> {
+                    chatSessionService.save(session).subscribe();
+                    return createSendMessage(session.getChatId(), textToSend);
                 });
     }
 }

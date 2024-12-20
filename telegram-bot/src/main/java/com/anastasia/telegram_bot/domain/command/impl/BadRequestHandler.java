@@ -35,4 +35,17 @@ public class BadRequestHandler implements BotCommandHandler {
         sendMessage.setText(text);
         return Mono.just(sendMessage);
     }
+
+    @Override
+    public Mono<? extends BotApiMethodMessage> handle(String text, ChatSession session, Locale locale) {
+        Long chatId = session.getChatId();
+
+        String textToSend = messageSource
+                .getMessage("ILLEGAL_ARGUMENT", null, locale);
+
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(textToSend);
+        return Mono.just(sendMessage);
+    }
 }

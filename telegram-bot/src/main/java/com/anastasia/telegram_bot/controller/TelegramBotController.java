@@ -1,8 +1,8 @@
 package com.anastasia.telegram_bot.controller;
 
 import com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler;
-import com.anastasia.telegram_bot.domain.callback.CallBackQueryHandler;
 import com.anastasia.telegram_bot.domain.command.CommandDispatcher;
+import com.anastasia.telegram_bot.domain.element.CommandMenuList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,20 +12,19 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class TelegramBotController extends TelegramLongPollingBotReactive {
 
     private final CommandDispatcher commandDispatcher;
-    private final CallBackQueryHandler callBackQueryHandler;
     private final String username;
 
 
     @Autowired
     public TelegramBotController(TelegramBotExceptionHandler controllerAdvice,
+                                 CommandMenuList commandMenuList,
                                  CommandDispatcher commandDispatcher,
-                                 CallBackQueryHandler callBackQueryHandler,
                                  @Value("${telegram.username}") String username,
                                  @Value("${telegram.botToken}") String botToken) {
         super(botToken, controllerAdvice);
         this.username = username;
         this.commandDispatcher = commandDispatcher;
-        this.callBackQueryHandler = callBackQueryHandler;
+        this.execute(commandMenuList.getDefaultMenu());
     }
 
 
@@ -40,7 +39,7 @@ public class TelegramBotController extends TelegramLongPollingBotReactive {
             process(update, () -> commandDispatcher.apply(update.getMessage()));
 
         } else if (update.hasCallbackQuery()) {
-            process(update, () -> callBackQueryHandler.apply(update.getCallbackQuery()));
+            process(update, () -> commandDispatcher.apply(update.getCallbackQuery()));
         }
     }
 }

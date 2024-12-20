@@ -1,6 +1,6 @@
 package com.anastasia.telegram_bot.domain.command;
 
-public enum BotCommand {
+public enum BotCommands {
 
     START("/start"),
     HELP("/help"),
@@ -11,7 +11,7 @@ public enum BotCommand {
 
     public final String name;
 
-    BotCommand(String name) {
+    BotCommands(String name) {
         this.name = name;
     }
 }

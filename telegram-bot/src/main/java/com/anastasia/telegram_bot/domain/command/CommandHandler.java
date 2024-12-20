@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Component
 public @interface CommandHandler {
 
-    BotCommand command();
+    BotCommands command();
 
     @AliasFor(annotation = Component.class)
     String value() default "";

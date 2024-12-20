@@ -5,10 +5,13 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMess
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Mono;
+import java.util.Locale;
 
 public interface BotCommandHandler {
 
     Mono<? extends BotApiMethodMessage> handle(Message message, ChatSession session);
+
+    Mono<? extends BotApiMethodMessage> handle(String text, ChatSession session, Locale locale);
 
     default SendMessage createSendMessage(Long chatId, String text) {
         SendMessage sendMessage = new SendMessage();

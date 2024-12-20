@@ -1,6 +1,6 @@
 package com.anastasia.telegram_bot.domain.session;
 
-import com.anastasia.telegram_bot.domain.command.BotCommand;
+import com.anastasia.telegram_bot.domain.command.BotCommands;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,11 +41,11 @@ public class ChatSession {
     @Getter @Setter
     public static class Context {
 
-        private BotCommand command;
+        private BotCommands command;
         private Map<String, String> attributes;
         private int step;
 
-        public Context(BotCommand command, Map<String, String> attributes, int step) {
+        public Context(BotCommands command, Map<String, String> attributes, int step) {
             this.command = command;
             this.attributes = attributes;
             this.step = step;
