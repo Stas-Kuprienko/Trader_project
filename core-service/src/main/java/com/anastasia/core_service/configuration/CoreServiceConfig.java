@@ -89,9 +89,20 @@ public class CoreServiceConfig {
     // \/ KAFKA ********** \/
 
     @Bean
-    public NewTopic createTopic(@Value("${spring.kafka.topic}") String topicName,
-                                @Value("${spring.kafka.partitions}") Integer partitions,
-                                @Value("${spring.kafka.replicas}") Integer replicas) {
+    public NewTopic createTradeNotificationTopic(@Value("${spring.kafka.trade-notification-topic}") String topicName,
+                                                 @Value("${spring.kafka.partitions}") Integer partitions,
+                                                 @Value("${spring.kafka.replicas}") Integer replicas) {
+        return TopicBuilder
+                .name(topicName)
+                .partitions(partitions)
+                .replicas(replicas)
+                .build();
+    }
+
+    @Bean
+    public NewTopic createSubscribeStatusTopic(@Value("${spring.kafka.subscribe-status-topic}") String topicName,
+                                               @Value("${spring.kafka.partitions}") Integer partitions,
+                                               @Value("${spring.kafka.replicas}") Integer replicas) {
         return TopicBuilder
                 .name(topicName)
                 .partitions(partitions)

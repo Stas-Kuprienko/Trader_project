@@ -5,7 +5,7 @@ import reactor.core.publisher.Mono;
 
 public interface MessageService<MESSAGE> {
 
-    Mono<SendResult<String, MESSAGE>> send(MESSAGE notification);
+    Mono<SendResult<String, MESSAGE>> send(MESSAGE message);
 
-    Mono<SendResult<String, MESSAGE>> send(String key, MESSAGE notification);
+    Mono<SendResult<String, MESSAGE>> send(String key, MESSAGE message);
 }
