@@ -16,6 +16,9 @@ dependencies {
     //web
     implementation "org.springframework:spring-web:$spring_version"
 
+    //reactive
+    implementation "io.projectreactor:reactor-core:$reactor_version"
+
 	//messaging
 	implementation "org.springframework.kafka:spring-kafka:$spring_kafka_version"
 
