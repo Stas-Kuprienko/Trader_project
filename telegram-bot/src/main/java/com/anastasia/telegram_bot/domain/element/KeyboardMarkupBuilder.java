@@ -12,12 +12,12 @@ import java.util.Locale;
 import java.util.Map;
 
 @Component
-public class KeyboardMarkups {
+public class KeyboardMarkupBuilder {
 
     private final MessageSource messageSource;
 
     @Autowired
-    public KeyboardMarkups(MessageSource messageSource) {
+    public KeyboardMarkupBuilder(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
@@ -47,25 +47,25 @@ public class KeyboardMarkups {
         return keyboardMarkup;
     }
 
-    public List<InlineKeyboardButton> inlineKeyboardButtons(Locale locale, List<String> values) {
-        return values.stream()
-                .map(v -> {
+    public List<InlineKeyboardButton> inlineKeyboardButtons(Locale locale, List<String> callbackQueries) {
+        return callbackQueries.stream()
+                .map(callback -> {
                     String label = messageSource
-                            .getMessage(ChatBotUtility.extractCallbackKey(v), null, locale);
+                            .getMessage(callback, null, locale);
                     var button = new InlineKeyboardButton(label);
-                    button.setCallbackData(v);
+                    button.setCallbackData(callback);
                     return button;
                 })
                 .toList();
     }
 
-    public List<InlineKeyboardButton> inlineKeyboardButtons(Locale locale, String... values) {
-        return Arrays.stream(values)
-                .map(v -> {
+    public List<InlineKeyboardButton> inlineKeyboardButtons(Locale locale, String... callbackQueries) {
+        return Arrays.stream(callbackQueries)
+                .map(callback -> {
                     String label = messageSource
-                            .getMessage(ChatBotUtility.extractCallbackKey(v), null, locale);
+                            .getMessage(callback, null, locale);
                     var button = new InlineKeyboardButton(label);
-                    button.setCallbackData(v);
+                    button.setCallbackData(callback);
                     return button;
                 })
                 .toList();
@@ -80,9 +80,8 @@ public class KeyboardMarkups {
         return values.entrySet()
                 .stream()
                 .map(e -> {
-                    String callback = ChatBotUtility.extractCallbackKey(e.getKey());
                     var button = new InlineKeyboardButton(e.getValue());
-                    button.setCallbackData(callback);
+                    button.setCallbackData(e.getKey());
                     return button;
                 })
                 .toList();

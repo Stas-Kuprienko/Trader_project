@@ -23,7 +23,7 @@ public abstract class TelegramLongPollingBotReactive extends TelegramLongPolling
 
 
     protected final void process(Update update, MonoVoidWrapper onUpdateReceived) {
-        log.info(update.getMessage().toString());
+        log.info(update.toString());
         onUpdateReceived
                 .perform()
                 .doOnError(throwable -> exceptionHandler

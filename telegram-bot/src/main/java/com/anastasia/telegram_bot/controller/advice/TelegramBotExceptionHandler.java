@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 import static com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler.MessageTextKey.*;
 
 @Slf4j
@@ -46,9 +46,9 @@ public class TelegramBotExceptionHandler {
 
     public Mono<SendMessage> unregisteredUserHandle(UnregisteredUserException e, Update update) {
         log.info(e.getMessage());
-        Long chatId = update.getMessage().getChatId();
-        String username = ChatBotUtility.getUsername(update.getMessage());
-        Locale locale = ChatBotUtility.getLocale(update.getMessage());
+        Long chatId = ChatBotUtility.getChatId(update);
+        String username = ChatBotUtility.getUsername(update);
+        Locale locale = ChatBotUtility.getLocale(update);
 
         String message = messageSource
                 .getMessage(UNREGISTERED.name(), new Object[]{username, serviceUrl}, locale);
@@ -61,27 +61,29 @@ public class TelegramBotExceptionHandler {
 
     public Mono<SendMessage> notFoundHandle(NotFoundException e, Update update) {
         log.warn(e.getMessage());
-        return buildMessage(update.getMessage(), NOT_FOUND);
+        Long chatId = ChatBotUtility.getChatId(update);
+        Locale locale = ChatBotUtility.getLocale(update);
+        return buildMessage(chatId, locale, NOT_FOUND);
     }
 
     public Mono<SendMessage> illegalArgumentHandle(IllegalArgumentException e, Update update) {
         log.warn(e.getMessage());
-        return buildMessage(update.getMessage(), ILLEGAL_ARGUMENT);
+        Long chatId = ChatBotUtility.getChatId(update);
+        Locale locale = ChatBotUtility.getLocale(update);
+        return buildMessage(chatId, locale, ILLEGAL_ARGUMENT);
     }
 
     public Mono<SendMessage> defaultHandle(Throwable e, Update update) {
         log.error(e.getMessage(), e);
-        return buildMessage(update.getMessage(), DEFAULT);
+        Long chatId = ChatBotUtility.getChatId(update);
+        Locale locale = ChatBotUtility.getLocale(update);
+        return buildMessage(chatId, locale, DEFAULT);
     }
 
 
-    private Mono<SendMessage> buildMessage(Message message, MessageTextKey textKey) {
-        Long chatId = message.getChatId();
-        Locale locale = ChatBotUtility.getLocale(message);
-
+    private Mono<SendMessage> buildMessage(long chatId, Locale locale, MessageTextKey textKey) {
         String text = messageSource
                 .getMessage(textKey.name(), null, locale);
-
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(text);

@@ -54,7 +54,7 @@ public class CommandDispatcher {
                 .get(callbackQuery.getFrom().getId())
                 .flatMap(chatSession -> {
                     Locale locale = ChatBotUtility.getLocale(callbackQuery);
-                    String[] callback = callbackData(callbackQuery);
+                    String[] callback = ChatBotUtility.callBackData(callbackQuery);
                     String text = callback[2];
                     BotCommands command = BotCommands.valueOf(callback[0]);
                     int step = Integer.parseInt(callback[1]);
@@ -70,14 +70,6 @@ public class CommandDispatcher {
                 });
     }
 
-
-    private String[] callbackData(CallbackQuery callbackQuery) {
-        String[] callback = callbackQuery.getData().split(":");
-        if (callback.length != 3) {
-            throw new IllegalArgumentException("Incorrect callback query value: " + callbackQuery);
-        }
-        return callback;
-    }
 
     private Map<String, BotCommandHandler> collectHandlers(ApplicationContext applicationContext) {
         Map<String, BotCommandHandler> commandHandlers = new HashMap<>();

@@ -3,12 +3,19 @@ package com.anastasia.telegram_bot.utils;
 import com.anastasia.telegram_bot.domain.session.ChatSession;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import java.util.Locale;
 
 public final class ChatBotUtility {
 
     private ChatBotUtility() {}
 
+
+    public static Long getChatId(Update update) {
+        return update.hasMessage() ?
+                update.getMessage().getChatId() :
+                update.getCallbackQuery().getMessage().getChatId();
+    }
 
     public static Locale getLocale(Message message) {
         return Locale.of(message
@@ -22,24 +29,50 @@ public final class ChatBotUtility {
                 .getLanguageCode());
     }
 
+    public static Locale getLocale(Update update) {
+        return update.hasMessage() ?
+                getLocale(update.getMessage()) :
+                getLocale(update.getCallbackQuery());
+    }
+
     public static String getUsername(Message message) {
         return message
                 .getFrom()
                 .getFirstName();
     }
 
-    public static String extractCallbackKey(String callbackQuery) {
-        String[] strings = callbackQuery.split(":");
-        if (strings.length != 3) {
+    public static String getUsername(CallbackQuery callbackQuery) {
+        return callbackQuery
+                .getFrom()
+                .getFirstName();
+    }
+
+    public static String getUsername(Update update) {
+        return update.hasMessage() ?
+                getUsername(update.getMessage()) :
+                getUsername(update.getCallbackQuery());
+    }
+
+    public static String[] callBackData(CallbackQuery callbackQuery) {
+        String[] callback = callbackQuery.getData().split(":");
+        if (callback.length != 3) {
             throw new IllegalArgumentException("Incorrect callback query value: " + callbackQuery);
         }
-        return strings[2];
+        return callback;
     }
 
     public static String callBackQuery(ChatSession session, String data) {
         return session.getContext().getCommand().name +
                 ':' +
-                session.getContext().getStep() +
+                (session.getContext().getStep() + 1) +
+                ':' +
+                data;
+    }
+
+    public static String callBackQuery(String command,  int step, String data) {
+        return command +
+                ':' +
+                (step + 1) +
                 ':' +
                 data;
     }
