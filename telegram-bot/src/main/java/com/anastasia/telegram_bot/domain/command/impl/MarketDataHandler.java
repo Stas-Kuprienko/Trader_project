@@ -3,7 +3,8 @@ package com.anastasia.telegram_bot.domain.command.impl;
 import com.anastasia.telegram_bot.domain.command.BotCommandHandler;
 import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
-import com.anastasia.telegram_bot.domain.element.KeyboardMarkupBuilder;
+import com.anastasia.telegram_bot.domain.element.ButtonKeys;
+import com.anastasia.telegram_bot.domain.element.InlineKeyboardBuilder;
 import com.anastasia.telegram_bot.domain.session.ChatSession;
 import com.anastasia.telegram_bot.domain.session.ChatSessionService;
 import com.anastasia.telegram_bot.service.MarketDataService;
@@ -17,23 +18,23 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMess
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+
+import java.util.*;
 
 @CommandHandler(command = BotCommands.MARKET)
 public class MarketDataHandler implements BotCommandHandler {
 
     private static final String KEY_SAMPLE = "MARKET.%s";
+    private static final String KEY_SAMPLE_2 = "MARKET.%s.%s";
     private static final byte DEFAULT_ITEM_COUNT = 10;
 
     private final MessageSource messageSource;
     private final MarketDataService marketDataService;
     private final ChatSessionService chatSessionService;
-    private final KeyboardMarkupBuilder keyboardMarkupBuilder;
+    private final InlineKeyboardBuilder inlineKeyboardBuilder;
 
     private final Map<Steps, InlineKeyboardMarkup> keyboards;
 
@@ -42,12 +43,12 @@ public class MarketDataHandler implements BotCommandHandler {
     public MarketDataHandler(MessageSource messageSource,
                              MarketDataService marketDataService,
                              ChatSessionService chatSessionService,
-                             KeyboardMarkupBuilder keyboardMarkupBuilder) {
+                             InlineKeyboardBuilder inlineKeyboardBuilder) {
         this.messageSource = messageSource;
         this.marketDataService = marketDataService;
         this.chatSessionService = chatSessionService;
-        this.keyboardMarkupBuilder = keyboardMarkupBuilder;
-        keyboards = initKeyboardMap(keyboardMarkupBuilder);
+        this.inlineKeyboardBuilder = inlineKeyboardBuilder;
+        keyboards = initKeyboardMap(inlineKeyboardBuilder);
     }
 
 
@@ -71,9 +72,9 @@ public class MarketDataHandler implements BotCommandHandler {
 
             case SORTING -> Mono.just(sorting(session, text, step, locale));
 
-            case RETURN_RESULT -> returnResult(session, text);
+            case RETURN_RESULT -> returnResult(session, text, locale);
 
-            case PAGINATION -> pagination(session, text);
+            case PAGINATION -> pagination(session, text, locale);
         }
         ).map(sendMessage -> {
             chatSessionService.save(session).subscribe();
@@ -109,31 +110,50 @@ public class MarketDataHandler implements BotCommandHandler {
         return createSendMessage(session.getChatId(), text, keyboards.get(Steps.SORTING));
     }
 
-    private Mono<? extends BotApiMethodMessage> returnResult(ChatSession session, String messageText) {
+    private Mono<? extends BotApiMethodMessage> returnResult(ChatSession session, String messageText, Locale locale) {
         SortingType sortingType = SortingType.valueOf(messageText.toUpperCase());
+        int pageNumber = 1;
         session.getContext()
                 .setStep(Steps.PAGINATION.ordinal());
         session.getAttributes()
                 .put(Steps.SORTING.name(), sortingType.name());
-        return getItems(session, 1)
-                .collectList()
-                .map(list -> collectItems(session.getChatId(), list));
-    }
-
-    private Mono<? extends BotApiMethodMessage> pagination(ChatSession session, String messageText) {
-        session.getContext()
-                .setStep(Steps.PAGINATION.ordinal());
-        int pageNumber;
-        try {
-            pageNumber = Integer.parseInt(messageText);
-        } catch (NumberFormatException e) {
-
-            session.getContext().setStep(0);
-            throw new IllegalArgumentException(e);
-        }
+        session.getAttributes()
+                .put(Steps.PAGINATION.name(), String.valueOf(pageNumber));
         return getItems(session, pageNumber)
                 .collectList()
-                .map(list -> collectItems(session.getChatId(), list));
+                .map(list -> {
+                    var keyboardMarkup = collectItems(locale, true, list);
+                    String exchange = session.getAttributes().get(Steps.EXCHANGE.name());
+                    return createSendMessage(session.getChatId(), exchange, keyboardMarkup);
+                });
+    }
+
+    private Mono<? extends BotApiMethodMessage> pagination(ChatSession session, String messageText, Locale locale) {
+        session.getContext()
+                .setStep(Steps.PAGINATION.ordinal());
+        ButtonKeys buttonKey = ButtonKeys.valueOf(messageText);
+        int pageNumber = Integer.parseInt(session.getAttributes().get(Steps.PAGINATION.name()));
+        switch (buttonKey) {
+            case NEXT -> pageNumber += 1;
+            case PREVIOUS -> pageNumber -= 1;
+            case BACK -> {
+                return Mono.just(
+                        sorting(session, session.getAttributes().get(Steps.SECURITIES_TYPE.name()), Steps.SORTING, locale));
+            }
+            case EXIT -> {
+                session.getContext().setCommand(null);
+                return Mono.just(createSendMessage(session.getChatId(), ""));
+            }
+        }
+        session.getAttributes().put(Steps.PAGINATION.name(), Integer.toString(pageNumber));
+        return getItems(session, pageNumber)
+                .collectList()
+                .map(list -> {
+                    int page = Integer.parseInt(session.getAttributes().get(Steps.PAGINATION.name()));
+                    var keyboardMarkup = collectItems(locale, page == 1, list);
+                    String exchange = session.getAttributes().get(Steps.EXCHANGE.name());
+                    return createSendMessage(session.getChatId(), exchange, keyboardMarkup);
+                });
     }
 
     private Flux<? extends Securities> getItems(ChatSession session, int pageNumber) {
@@ -149,16 +169,23 @@ public class MarketDataHandler implements BotCommandHandler {
         };
     }
 
-    private BotApiMethodMessage collectItems(long chatId, List<? extends Securities> securities) {
-        //TODO
-        StringBuilder strBuild = new StringBuilder();
+    private InlineKeyboardMarkup collectItems(Locale locale, boolean isFirstPage, List<? extends Securities> securities) {
+        String template = messageSource.getMessage(KEY_SAMPLE.formatted(Steps.RETURN_RESULT), null, locale);
+        //TODO remake
+        List<List<InlineKeyboardButton>> buttonRows = new ArrayList<>();
         for (var s : securities) {
-            strBuild.append(s).append('\n').append('\n');
+            // {name} *** {ticker}\nPrice: {price} ({price_datetime})\nCurrency: {currency}
+            String item = template.formatted(s.getName(), s.getTicker(), s.getPrice().price(), s.getPrice().time(), s.getCurrency());
+
+            String callback = ChatBotUtility
+                    .callBackQuery(BotCommands.MARKET, Steps.PAGINATION.ordinal(), s.getTicker() + ':' + s.getExchange());
+
+            buttonRows.add(inlineKeyboardBuilder.singleInlineKeyboardButton(callback, item));
         }
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(strBuild.toString());
-        return sendMessage;
+        String callbackPrefix = ChatBotUtility.callBackQueryPrefix(BotCommands.MARKET, Steps.PAGINATION.ordinal());
+        buttonRows.add(inlineKeyboardBuilder.navigationButtonRow(callbackPrefix, isFirstPage, locale));
+
+        return inlineKeyboardBuilder.inlineKeyboard(buttonRows);
     }
 
 
@@ -195,36 +222,39 @@ public class MarketDataHandler implements BotCommandHandler {
     private InlineKeyboardMarkup securitiesTypeKeyboard(Locale locale) {
         Map<String, String> map = new HashMap<>();
         for (var s : SecuritiesType.values()) {
-            String label = messageSource.getMessage(s.name(), null, locale);
+            String key = KEY_SAMPLE_2.formatted(Steps.SECURITIES_TYPE, s);
+            String label = messageSource.getMessage(key, null, locale);
             String callbackQuery = ChatBotUtility
-                    .callBackQuery(BotCommands.MARKET.name(), Steps.SECURITIES_TYPE.ordinal(), s.name());
+                    .callBackQuery(BotCommands.MARKET, Steps.SECURITIES_TYPE.ordinal() + 1, s.name());
             map.put(callbackQuery, label);
         }
-        return keyboardMarkupBuilder
-                .inlineKeyboardMarkup(keyboardMarkupBuilder.inlineKeyboardButtons(map));
+        return inlineKeyboardBuilder
+                .inlineKeyboard(inlineKeyboardBuilder.inlineKeyboardButtons(map));
     }
 
-    private Map<Steps, InlineKeyboardMarkup> initKeyboardMap(KeyboardMarkupBuilder keyboardMarkupBuilder) {
+    private Map<Steps, InlineKeyboardMarkup> initKeyboardMap(InlineKeyboardBuilder inlineKeyboardBuilder) {
         Map<Steps, InlineKeyboardMarkup> keyboardMarkupMap = new HashMap<>(8);
-        String command = BotCommands.MARKET.name();
+        BotCommands command = BotCommands.MARKET;
 
         //Exchange
         Map<String, String> map = new HashMap<>();
-        map.put(ChatBotUtility.callBackQuery(command, Steps.EXCHANGE.ordinal(), Exchange.NYSE.name()),
+        int step = Steps.EXCHANGE.ordinal() + 1;
+        map.put(ChatBotUtility.callBackQuery(command, step, Exchange.NYSE.name()),
                 Exchange.NYSE.name());
-        map.put(ChatBotUtility.callBackQuery(command, Steps.EXCHANGE.ordinal(), Exchange.MOEX.name()),
+        map.put(ChatBotUtility.callBackQuery(command, step, Exchange.MOEX.name()),
                 Exchange.MOEX.name());
-        keyboardMarkupMap.put(Steps.EXCHANGE, keyboardMarkupBuilder
-                        .inlineKeyboardMarkup(keyboardMarkupBuilder.inlineKeyboardButtons(map)));
+        keyboardMarkupMap.put(Steps.EXCHANGE, inlineKeyboardBuilder
+                        .inlineKeyboard(inlineKeyboardBuilder.inlineKeyboardButtons(map)));
         map.clear();
 
         //Sorting
-        map.put(ChatBotUtility.callBackQuery(command, Steps.SORTING.ordinal(), SortingType.VOLUME.name()),
+        step = Steps.SORTING.ordinal() + 1;
+        map.put(ChatBotUtility.callBackQuery(command, step, SortingType.VOLUME.name()),
                 SortingType.VOLUME.value);
-        map.put(ChatBotUtility.callBackQuery(command, Steps.SORTING.ordinal(), SortingType.ALPHABET.name()),
+        map.put(ChatBotUtility.callBackQuery(command, step, SortingType.ALPHABET.name()),
                 SortingType.ALPHABET.value);
-        keyboardMarkupMap.put(Steps.SORTING, keyboardMarkupBuilder
-                        .inlineKeyboardMarkup(keyboardMarkupBuilder.inlineKeyboardButtons(map)));
+        keyboardMarkupMap.put(Steps.SORTING, inlineKeyboardBuilder
+                        .inlineKeyboard(inlineKeyboardBuilder.inlineKeyboardButtons(map)));
 
         return keyboardMarkupMap;
     }

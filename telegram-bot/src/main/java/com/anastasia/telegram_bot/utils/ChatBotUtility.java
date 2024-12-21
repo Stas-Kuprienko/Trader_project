@@ -1,5 +1,6 @@
 package com.anastasia.telegram_bot.utils;
 
+import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.session.ChatSession;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -64,16 +65,23 @@ public final class ChatBotUtility {
     public static String callBackQuery(ChatSession session, String data) {
         return session.getContext().getCommand().name +
                 ':' +
-                (session.getContext().getStep() + 1) +
+                session.getContext().getStep() +
                 ':' +
                 data;
     }
 
-    public static String callBackQuery(String command,  int step, String data) {
-        return command +
+    public static String callBackQuery(BotCommands command, int step, String data) {
+        return command.name() +
                 ':' +
-                (step + 1) +
+                step +
                 ':' +
                 data;
+    }
+
+    public static String callBackQueryPrefix(BotCommands command, int step) {
+        return command.name() +
+                ':' +
+                step +
+                ':';
     }
 }
