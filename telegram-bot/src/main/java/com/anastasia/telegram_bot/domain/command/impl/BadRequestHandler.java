@@ -8,6 +8,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Mono;
 import java.util.Locale;
@@ -37,7 +38,7 @@ public class BadRequestHandler implements BotCommandHandler {
     }
 
     @Override
-    public Mono<BotApiMethod<?>> handle(String text, ChatSession session, Locale locale) {
+    public Mono<BotApiMethod<?>> handle(CallbackQuery callbackQuery, ChatSession session, Locale locale) {
         Long chatId = session.getChatId();
 
         String textToSend = messageSource

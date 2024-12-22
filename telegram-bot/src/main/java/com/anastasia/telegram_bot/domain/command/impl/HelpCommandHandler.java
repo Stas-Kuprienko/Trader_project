@@ -5,6 +5,7 @@ import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
 import com.anastasia.telegram_bot.domain.session.ChatSession;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Mono;
 import java.util.Locale;
@@ -18,7 +19,7 @@ public class HelpCommandHandler implements BotCommandHandler {
     }
 
     @Override
-    public Mono<BotApiMethod<?>> handle(String text, ChatSession session, Locale locale) {
+    public Mono<BotApiMethod<?>> handle(CallbackQuery callbackQuery, ChatSession session, Locale locale) {
         return null;
     }
 }

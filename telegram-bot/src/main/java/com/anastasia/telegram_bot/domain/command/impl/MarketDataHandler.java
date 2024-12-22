@@ -18,6 +18,8 @@ import org.springframework.context.MessageSource;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -38,7 +40,7 @@ public class MarketDataHandler implements BotCommandHandler {
     private final ChatSessionService chatSessionService;
     private final InlineKeyboardBuilder inlineKeyboardBuilder;
 
-    private final Map<Steps, InlineKeyboardMarkup> keyboards;
+    private final Map<Steps, List<InlineKeyboardButton>> keyboardButtons;
 
 
     @Autowired
@@ -50,18 +52,14 @@ public class MarketDataHandler implements BotCommandHandler {
         this.marketDataService = marketDataService;
         this.chatSessionService = chatSessionService;
         this.inlineKeyboardBuilder = inlineKeyboardBuilder;
-        keyboards = initKeyboardMap(inlineKeyboardBuilder);
+        keyboardButtons = initKeyboardMap(inlineKeyboardBuilder);
     }
 
 
     @Override
     public Mono<BotApiMethod<?>> handle(Message message, ChatSession session) {
         Locale locale = ChatBotUtility.getLocale(message);
-        return handle(message.getText(), session, locale);
-    }
-
-    @Override
-    public Mono<BotApiMethod<?>> handle(String text, ChatSession session, Locale locale) {
+        String text = message.getText();
         Steps step = Steps.values()[session.getContext().getStep()];
         session.getContext()
                 .setCommand(BotCommands.MARKET);
@@ -70,13 +68,35 @@ public class MarketDataHandler implements BotCommandHandler {
 
             case EXCHANGE -> Mono.just(exchange(session, step, locale));
 
-            case SECURITIES_TYPE -> Mono.just(securitiesType(session, text, step, locale));
+            case RETURN_RESULT -> returnResult(session, text, locale);
 
-            case SORTING -> Mono.just(sorting(session, text, step, locale));
+            default -> throw new IllegalArgumentException();
+        }
+        ).map(sendMessage -> {
+            chatSessionService.save(session).subscribe();
+            return sendMessage;
+        });
+    }
+
+    @Override
+    public Mono<BotApiMethod<?>> handle(CallbackQuery callbackQuery, ChatSession session, Locale locale) {
+        int messageId = callbackQuery.getMessage().getMessageId();
+        String text = ChatBotUtility.callBackData(callbackQuery)[2];
+        Steps step = Steps.values()[session.getContext().getStep()];
+        session.getContext()
+                .setCommand(BotCommands.MARKET);
+
+        return (switch (step) {
+
+            case SECURITIES_TYPE -> Mono.just(securitiesType(session, messageId, text, step, locale));
+
+            case SORTING -> Mono.just(sorting(session, messageId, text, step, locale));
 
             case RETURN_RESULT -> returnResult(session, text, locale);
 
-            case PAGINATION -> pagination(session, text, locale);
+            case PAGINATION -> pagination(session, messageId, text, locale);
+
+            default -> throw new IllegalStateException();
         }
         ).map(sendMessage -> {
             chatSessionService.save(session).subscribe();
@@ -89,27 +109,33 @@ public class MarketDataHandler implements BotCommandHandler {
         session.getContext()
                 .setStep(Steps.SECURITIES_TYPE.ordinal());
         String text = messageSource.getMessage(KEY_TEMPLATE.formatted(step), null, locale);
-        return createSendMessage(session.getChatId(), text, keyboards.get(Steps.EXCHANGE));
+        String callbackPrefix = ChatBotUtility.callBackQueryPrefix(BotCommands.MARKET, step.ordinal());
+        var keyboard = inlineKeyboardBuilder.inlineKeyboard(keyboardButtons.get(step),
+                List.of(inlineKeyboardBuilder.navigationButton(ButtonKeys.BACK, callbackPrefix, locale)));
+        return createSendMessage(session.getChatId(), text, keyboard);
     }
 
-    private SendMessage securitiesType(ChatSession session, String messageText, Steps step, Locale locale) {
+    private EditMessageText securitiesType(ChatSession session, int messageId, String messageText, Steps step, Locale locale) {
         Exchange exchange = Exchange.valueOf(messageText.toUpperCase());
         session.getContext()
                 .setStep(Steps.SORTING.ordinal());
         session.getAttributes()
                 .put(Steps.EXCHANGE.name(), exchange.name());
         String text = messageSource.getMessage(KEY_TEMPLATE.formatted(step), null, locale);
-        return createSendMessage(session.getChatId(), text, securitiesTypeKeyboard(locale));
+        return editMessageText(session.getChatId(), messageId, text, securitiesTypeKeyboard(locale));
     }
 
-    private SendMessage sorting(ChatSession session, String messageText, Steps step, Locale locale) {
+    private EditMessageText sorting(ChatSession session, int messageId, String messageText, Steps step, Locale locale) {
         SecuritiesType securitiesType = SecuritiesType.valueOf(messageText.toUpperCase());
         session.getContext()
                 .setStep(Steps.RETURN_RESULT.ordinal());
         session.getAttributes()
                 .put(Steps.SECURITIES_TYPE.name(), securitiesType.name());
         String text = messageSource.getMessage(KEY_TEMPLATE.formatted(step), null, locale);
-        return createSendMessage(session.getChatId(), text, keyboards.get(Steps.SORTING));
+        String callbackPrefix = ChatBotUtility.callBackQueryPrefix(BotCommands.MARKET, step.ordinal());
+        var keyboard = inlineKeyboardBuilder.inlineKeyboard(keyboardButtons.get(step),
+                List.of(inlineKeyboardBuilder.navigationButton(ButtonKeys.BACK, callbackPrefix, locale)));
+        return editMessageText(session.getChatId(), messageId, text, keyboard);
     }
 
     private Mono<? extends BotApiMethodMessage> returnResult(ChatSession session, String messageText, Locale locale) {
@@ -130,7 +156,7 @@ public class MarketDataHandler implements BotCommandHandler {
                 });
     }
 
-    private Mono<? extends BotApiMethodMessage> pagination(ChatSession session, String messageText, Locale locale) {
+    private Mono<BotApiMethod<?>> pagination(ChatSession session, int messageId, String messageText, Locale locale) {
         session.getContext()
                 .setStep(Steps.PAGINATION.ordinal());
         ButtonKeys buttonKey = ButtonKeys.valueOf(messageText);
@@ -139,12 +165,7 @@ public class MarketDataHandler implements BotCommandHandler {
             case NEXT -> pageNumber += 1;
             case PREVIOUS -> pageNumber -= 1;
             case BACK -> {
-                return Mono.just(
-                        sorting(session, session.getAttributes().get(Steps.SECURITIES_TYPE.name()), Steps.SORTING, locale));
-            }
-            case EXIT -> {
-                session.getContext().setCommand(null);
-                return Mono.just(createSendMessage(session.getChatId(), ""));
+                return Mono.just(exchange(session, Steps.SORTING, locale));
             }
         }
         session.getAttributes().put(Steps.PAGINATION.name(), Integer.toString(pageNumber));
@@ -154,7 +175,7 @@ public class MarketDataHandler implements BotCommandHandler {
                     int page = Integer.parseInt(session.getAttributes().get(Steps.PAGINATION.name()));
                     var keyboardMarkup = collectItems(locale, page == 1, list);
                     String exchange = session.getAttributes().get(Steps.EXCHANGE.name());
-                    return createSendMessage(session.getChatId(), exchange, keyboardMarkup);
+                    return editMessageText(session.getChatId(), messageId, exchange, keyboardMarkup);
                 });
     }
 
@@ -191,42 +212,42 @@ public class MarketDataHandler implements BotCommandHandler {
 
     private InlineKeyboardMarkup securitiesTypeKeyboard(Locale locale) {
         Map<String, String> map = new HashMap<>();
+        String callBackPrefix = ChatBotUtility
+                .callBackQueryPrefix(BotCommands.MARKET, Steps.SECURITIES_TYPE.ordinal() + 1);
         for (var s : SecuritiesType.values()) {
             String key = KEY_TEMPLATE_2.formatted(Steps.SECURITIES_TYPE, s);
             String label = messageSource.getMessage(key, null, locale);
-            String callbackQuery = ChatBotUtility
-                    .callBackQuery(BotCommands.MARKET, Steps.SECURITIES_TYPE.ordinal() + 1, s.name());
-            map.put(callbackQuery, label);
+            map.put(callBackPrefix + s.name(), label);
         }
+        InlineKeyboardButton navigationButton = inlineKeyboardBuilder
+                .navigationButton(ButtonKeys.BACK, callBackPrefix, locale);
         return inlineKeyboardBuilder
-                .inlineKeyboard(inlineKeyboardBuilder.inlineKeyboardButtons(map));
+                .inlineKeyboard(inlineKeyboardBuilder.inlineKeyboardButtons(map), List.of(navigationButton));
     }
 
-    private Map<Steps, InlineKeyboardMarkup> initKeyboardMap(InlineKeyboardBuilder inlineKeyboardBuilder) {
-        Map<Steps, InlineKeyboardMarkup> keyboardMarkupMap = new HashMap<>(8);
+    private Map<Steps, List<InlineKeyboardButton>> initKeyboardMap(InlineKeyboardBuilder inlineKeyboardBuilder) {
+        Map<Steps, List<InlineKeyboardButton>> buttonRowMap = new HashMap<>(8);
         BotCommands command = BotCommands.MARKET;
+        Map<String, String> map = new HashMap<>();
 
         //Exchange
-        Map<String, String> map = new HashMap<>();
         int step = Steps.EXCHANGE.ordinal() + 1;
-        map.put(ChatBotUtility.callBackQuery(command, step, Exchange.NYSE.name()),
-                Exchange.NYSE.name());
-        map.put(ChatBotUtility.callBackQuery(command, step, Exchange.MOEX.name()),
-                Exchange.MOEX.name());
-        keyboardMarkupMap.put(Steps.EXCHANGE, inlineKeyboardBuilder
-                        .inlineKeyboard(inlineKeyboardBuilder.inlineKeyboardButtons(map)));
+        String callbackPrefix = ChatBotUtility.callBackQueryPrefix(command, step);
+        map.put(callbackPrefix + Exchange.NYSE, Exchange.NYSE.name());
+        map.put(callbackPrefix + Exchange.MOEX, Exchange.MOEX.name());
+        var buttons = inlineKeyboardBuilder.inlineKeyboardButtons(map);
+        buttonRowMap.put(Steps.EXCHANGE, buttons);
         map.clear();
 
         //Sorting
         step = Steps.SORTING.ordinal() + 1;
-        map.put(ChatBotUtility.callBackQuery(command, step, SortingType.VOLUME.name()),
-                SortingType.VOLUME.value);
-        map.put(ChatBotUtility.callBackQuery(command, step, SortingType.ALPHABET.name()),
-                SortingType.ALPHABET.value);
-        keyboardMarkupMap.put(Steps.SORTING, inlineKeyboardBuilder
-                        .inlineKeyboard(inlineKeyboardBuilder.inlineKeyboardButtons(map)));
+        callbackPrefix = ChatBotUtility.callBackQueryPrefix(command, step);
+        map.put(callbackPrefix + SortingType.VOLUME, SortingType.VOLUME.value);
+        map.put(callbackPrefix + SortingType.ALPHABET, SortingType.ALPHABET.value);
+        buttons = inlineKeyboardBuilder.inlineKeyboardButtons(map);
+        buttonRowMap.put(Steps.SORTING, buttons);
 
-        return keyboardMarkupMap;
+        return buttonRowMap;
     }
 
 

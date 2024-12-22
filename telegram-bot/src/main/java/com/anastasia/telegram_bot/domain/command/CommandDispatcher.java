@@ -55,7 +55,6 @@ public class CommandDispatcher {
                 .flatMap(chatSession -> {
                     Locale locale = ChatBotUtility.getLocale(callbackQuery);
                     String[] callback = ChatBotUtility.callBackData(callbackQuery);
-                    String text = callback[2];
                     BotCommands command = BotCommands.valueOf(callback[0]);
                     int step = Integer.parseInt(callback[1]);
                     if (chatSession.getContext().getStep() != step) {
@@ -66,7 +65,7 @@ public class CommandDispatcher {
                         handler = commandHandlerStore.get(null);
                     }
                     log.info("Command handler {} is applied", handler.getClass().getSimpleName());
-                    return handler.handle(text, chatSession, locale);
+                    return handler.handle(callbackQuery, chatSession, locale);
                 });
     }
 

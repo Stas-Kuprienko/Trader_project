@@ -9,6 +9,7 @@ import com.anastasia.telegram_bot.utils.ChatBotUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Mono;
 import java.util.Locale;
@@ -42,7 +43,7 @@ public class ClearCommandHandler implements BotCommandHandler {
     }
 
     @Override
-    public Mono<BotApiMethod<?>> handle(String text, ChatSession session, Locale locale) {
+    public Mono<BotApiMethod<?>> handle(CallbackQuery callbackQuery, ChatSession session, Locale locale) {
         String textToSend = messageSource.getMessage(MESSAGE_KEY, null, locale);
         return Mono.just(session)
                 .doOnNext(ChatSession::clear)
