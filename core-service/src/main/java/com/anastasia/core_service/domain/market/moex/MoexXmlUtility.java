@@ -70,7 +70,7 @@ public class MoexXmlUtility {
                 .dayTradeVolume(Long.parseLong(getNotNullValue(marketDataRow, FuturesMarketColumns.VALTODAY.name())))
                 .expiration(expiration)
                 .board(Board.valueOf(getNotNullValue(securitiesRow, FuturesSecuritiesColumns.BOARDID.name())))
-                .market(Market.Forts)
+                .market(Market.Futures)
                 .exchangeMarket(ExchangeMarket.MOEX)
                 .build();
     }

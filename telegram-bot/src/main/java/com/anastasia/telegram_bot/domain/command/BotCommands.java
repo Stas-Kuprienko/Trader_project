@@ -6,7 +6,8 @@ public enum BotCommands {
     HELP("/help"),
     CLEAR("/clear"),
     MARKET("/market"),
-    ACCOUNTS("/accounts");
+    ACCOUNTS("/accounts"),
+    SMART("/smart");
 
 
     public final String value;

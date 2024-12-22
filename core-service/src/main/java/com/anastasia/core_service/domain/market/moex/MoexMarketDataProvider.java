@@ -5,8 +5,10 @@ import com.anastasia.core_service.domain.market.MarketData;
 import com.anastasia.core_service.domain.market.MarketDataProvider;
 import com.anastasia.core_service.utility.PaginationUtility;
 import com.anastasia.trade_project.enums.ExchangeMarket;
+import com.anastasia.trade_project.enums.Market;
 import com.anastasia.trade_project.markets.Futures;
 import com.anastasia.trade_project.markets.MarketPage;
+import com.anastasia.trade_project.markets.Securities;
 import com.anastasia.trade_project.markets.Stock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -156,5 +158,13 @@ public class MoexMarketDataProvider implements MarketDataProvider {
                         .map(document -> xmlUtility.futures(
                                 document.securitiesData().getFirst(),
                                 document.marketData().getFirst())));
+    }
+
+    @Override
+    public Mono<? extends Securities> getSecurities(String ticker, Market market) {
+        return switch (market) {
+            case Stock -> getStock(ticker);
+            case Futures -> getFutures(ticker);
+        };
     }
 }
