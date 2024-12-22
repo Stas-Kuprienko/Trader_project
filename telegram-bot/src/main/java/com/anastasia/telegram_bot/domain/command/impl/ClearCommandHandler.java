@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.Locale;
 
 @CommandHandler(command = BotCommands.CLEAR)
-public class ClearCommandHandler implements BotCommandHandler {
+public class ClearCommandHandler extends BotCommandHandler {
 
     private static final String MESSAGE_KEY = "CLEAR";
 

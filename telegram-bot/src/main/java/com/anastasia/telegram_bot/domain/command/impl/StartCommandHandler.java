@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.Locale;
 
 @CommandHandler(command = BotCommands.START)
-public class StartCommandHandler implements BotCommandHandler {
+public class StartCommandHandler extends BotCommandHandler {
 
     @Override
     public Mono<BotApiMethod<?>> handle(Message message, ChatSession session) {

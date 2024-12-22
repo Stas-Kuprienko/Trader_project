@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 import java.util.Locale;
 
 @Component("badRequestHandler")
-public class BadRequestHandler implements BotCommandHandler {
+public class BadRequestHandler extends BotCommandHandler {
 
     private final MessageSource messageSource;
 

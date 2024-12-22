@@ -6,8 +6,7 @@ import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
 import com.anastasia.telegram_bot.domain.element.ButtonKeys;
 import com.anastasia.telegram_bot.domain.element.InlineKeyboardBuilder;
-import com.anastasia.telegram_bot.domain.session.ChatSession;
-import com.anastasia.telegram_bot.domain.session.ChatSessionService;
+import com.anastasia.telegram_bot.domain.session.*;
 import com.anastasia.telegram_bot.service.MarketDataService;
 import com.anastasia.telegram_bot.utils.ChatBotUtility;
 import com.anastasia.trade_project.enums.ExchangeMarket;
@@ -16,9 +15,7 @@ import com.anastasia.trade_project.markets.Securities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -28,7 +25,7 @@ import reactor.core.publisher.Mono;
 import java.util.*;
 
 @CommandHandler(command = BotCommands.MARKET)
-public class MarketDataHandler implements BotCommandHandler {
+public class MarketDataHandler extends BotCommandHandler {
 
     private static final String KEY_TEMPLATE = "MARKET.%s";
     private static final String KEY_TEMPLATE_2 = "MARKET.%s.%s";
@@ -96,7 +93,7 @@ public class MarketDataHandler implements BotCommandHandler {
 
             case PAGINATION -> pagination(session, messageId, text, locale);
 
-            default -> throw new IllegalStateException();
+            default -> throw new IllegalArgumentException();
         }
         ).map(sendMessage -> {
             chatSessionService.save(session).subscribe();
@@ -105,17 +102,49 @@ public class MarketDataHandler implements BotCommandHandler {
     }
 
 
+    private BotApiMethod<?> handleCallbackQueryBack(ChatSession session, int messageId, Locale locale) {
+        int stepInt = session.getContext().getStep();
+        if (stepInt > 0) {
+            stepInt -= 1;
+        }
+        Steps step = Steps.values()[stepInt];
+        session.getContext().setStep(stepInt);
+        return switch (step) {
+            case EXCHANGE ->
+                    exchange(session,
+                            messageId,
+                            step,
+                            locale);
+            case SECURITIES_TYPE ->
+                    securitiesType(session,
+                            messageId,
+                            session.getAttributes().get(Steps.EXCHANGE.name()),
+                            step,
+                            locale);
+            default -> throw new IllegalArgumentException();
+        };
+    }
+
     private SendMessage exchange(ChatSession session, Steps step, Locale locale) {
         session.getContext()
                 .setStep(Steps.SECURITIES_TYPE.ordinal());
         String text = messageSource.getMessage(KEY_TEMPLATE.formatted(step), null, locale);
-        String callbackPrefix = ChatBotUtility.callBackQueryPrefix(BotCommands.MARKET, step.ordinal());
-        var keyboard = inlineKeyboardBuilder.inlineKeyboard(keyboardButtons.get(step),
-                List.of(inlineKeyboardBuilder.navigationButton(ButtonKeys.BACK, callbackPrefix, locale)));
+        var keyboard = inlineKeyboardBuilder.inlineKeyboard(keyboardButtons.get(step));
         return createSendMessage(session.getChatId(), text, keyboard);
     }
 
-    private EditMessageText securitiesType(ChatSession session, int messageId, String messageText, Steps step, Locale locale) {
+    private BotApiMethod<?> exchange(ChatSession session, int messageId, Steps step, Locale locale) {
+        session.getContext()
+                .setStep(Steps.SECURITIES_TYPE.ordinal());
+        String text = messageSource.getMessage(KEY_TEMPLATE.formatted(step), null, locale);
+        var keyboard = inlineKeyboardBuilder.inlineKeyboard(keyboardButtons.get(step));
+        return editMessageText(session.getChatId(), messageId, text, keyboard);
+    }
+
+    private BotApiMethod<?> securitiesType(ChatSession session, int messageId, String messageText, Steps step, Locale locale) {
+        if (messageText.equals(ButtonKeys.BACK.name())) {
+            return handleCallbackQueryBack(session, messageId, locale);
+        }
         Exchange exchange = Exchange.valueOf(messageText.toUpperCase());
         session.getContext()
                 .setStep(Steps.SORTING.ordinal());
@@ -125,7 +154,10 @@ public class MarketDataHandler implements BotCommandHandler {
         return editMessageText(session.getChatId(), messageId, text, securitiesTypeKeyboard(locale));
     }
 
-    private EditMessageText sorting(ChatSession session, int messageId, String messageText, Steps step, Locale locale) {
+    private BotApiMethod<?> sorting(ChatSession session, int messageId, String messageText, Steps step, Locale locale) {
+        if (messageText.equals(ButtonKeys.BACK.name())) {
+            return handleCallbackQueryBack(session, messageId, locale);
+        }
         SecuritiesType securitiesType = SecuritiesType.valueOf(messageText.toUpperCase());
         session.getContext()
                 .setStep(Steps.RETURN_RESULT.ordinal());
@@ -138,7 +170,7 @@ public class MarketDataHandler implements BotCommandHandler {
         return editMessageText(session.getChatId(), messageId, text, keyboard);
     }
 
-    private Mono<? extends BotApiMethodMessage> returnResult(ChatSession session, String messageText, Locale locale) {
+    private Mono<BotApiMethod<?>> returnResult(ChatSession session, String messageText, Locale locale) {
         SortingType sortingType = SortingType.valueOf(messageText.toUpperCase());
         int pageNumber = 1;
         session.getContext()
@@ -165,7 +197,7 @@ public class MarketDataHandler implements BotCommandHandler {
             case NEXT -> pageNumber += 1;
             case PREVIOUS -> pageNumber -= 1;
             case BACK -> {
-                return Mono.just(exchange(session, Steps.SORTING, locale));
+                return Mono.just(exchange(session, Steps.EXCHANGE, locale));
             }
         }
         session.getAttributes().put(Steps.PAGINATION.name(), Integer.toString(pageNumber));
@@ -219,6 +251,8 @@ public class MarketDataHandler implements BotCommandHandler {
             String label = messageSource.getMessage(key, null, locale);
             map.put(callBackPrefix + s.name(), label);
         }
+        callBackPrefix = ChatBotUtility
+                .callBackQueryPrefix(BotCommands.MARKET, Steps.SECURITIES_TYPE.ordinal());
         InlineKeyboardButton navigationButton = inlineKeyboardBuilder
                 .navigationButton(ButtonKeys.BACK, callBackPrefix, locale);
         return inlineKeyboardBuilder

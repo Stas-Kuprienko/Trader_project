@@ -11,20 +11,20 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import reactor.core.publisher.Mono;
 import java.util.Locale;
 
-public interface BotCommandHandler {
+public abstract class BotCommandHandler {
 
-    Mono<BotApiMethod<?>> handle(Message message, ChatSession session);
+    public abstract Mono<BotApiMethod<?>> handle(Message message, ChatSession session);
 
-    Mono<BotApiMethod<?>> handle(CallbackQuery callbackQuery, ChatSession session, Locale locale);
+    public abstract Mono<BotApiMethod<?>> handle(CallbackQuery callbackQuery, ChatSession session, Locale locale);
 
-    default SendMessage createSendMessage(long chatId, String text) {
+    protected SendMessage createSendMessage(long chatId, String text) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(text);
         return sendMessage;
     }
 
-    default SendMessage createSendMessage(long chatId, String text, ReplyKeyboard keyboard) {
+    protected SendMessage createSendMessage(long chatId, String text, ReplyKeyboard keyboard) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(text);
@@ -32,7 +32,7 @@ public interface BotCommandHandler {
         return sendMessage;
     }
 
-    default EditMessageText editMessageText(long chatId, int messageId, String text) {
+    protected EditMessageText editMessageText(long chatId, int messageId, String text) {
         EditMessageText messageText = new EditMessageText();
         messageText.setChatId(chatId);
         messageText.setMessageId(messageId);
@@ -40,7 +40,7 @@ public interface BotCommandHandler {
         return messageText;
     }
 
-    default EditMessageText editMessageText(long chatId, int messageId, String text, InlineKeyboardMarkup keyboard) {
+    protected EditMessageText editMessageText(long chatId, int messageId, String text, InlineKeyboardMarkup keyboard) {
         EditMessageText messageText = new EditMessageText();
         messageText.setChatId(chatId);
         messageText.setMessageId(messageId);
