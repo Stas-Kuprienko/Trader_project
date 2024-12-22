@@ -1,14 +1,14 @@
 package com.anastasia.telegram_bot.domain.command.impl;
 
-import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.command.BotCommandHandler;
+import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
 import com.anastasia.telegram_bot.domain.session.ChatSession;
 import com.anastasia.telegram_bot.domain.session.ChatSessionService;
 import com.anastasia.telegram_bot.utils.ChatBotUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Mono;
 import java.util.Locale;
@@ -30,7 +30,7 @@ public class ClearCommandHandler implements BotCommandHandler {
 
 
     @Override
-    public Mono<? extends BotApiMethodMessage> handle(Message message, ChatSession session) {
+    public Mono<BotApiMethod<?>> handle(Message message, ChatSession session) {
         Locale locale = ChatBotUtility.getLocale(message);
         String text = messageSource.getMessage(MESSAGE_KEY, null, locale);
         return Mono.just(session)
@@ -42,7 +42,7 @@ public class ClearCommandHandler implements BotCommandHandler {
     }
 
     @Override
-    public Mono<? extends BotApiMethodMessage> handle(String text, ChatSession session, Locale locale) {
+    public Mono<BotApiMethod<?>> handle(String text, ChatSession session, Locale locale) {
         String textToSend = messageSource.getMessage(MESSAGE_KEY, null, locale);
         return Mono.just(session)
                 .doOnNext(ChatSession::clear)

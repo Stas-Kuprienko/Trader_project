@@ -6,7 +6,8 @@ import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
 import com.anastasia.telegram_bot.domain.element.ButtonKeys;
 import com.anastasia.telegram_bot.domain.element.InlineKeyboardBuilder;
-import com.anastasia.telegram_bot.domain.session.*;
+import com.anastasia.telegram_bot.domain.session.ChatSession;
+import com.anastasia.telegram_bot.domain.session.ChatSessionService;
 import com.anastasia.telegram_bot.service.MarketDataService;
 import com.anastasia.telegram_bot.utils.ChatBotUtility;
 import com.anastasia.trade_project.enums.ExchangeMarket;
@@ -14,6 +15,7 @@ import com.anastasia.trade_project.markets.MarketPage;
 import com.anastasia.trade_project.markets.Securities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -53,13 +55,13 @@ public class MarketDataHandler implements BotCommandHandler {
 
 
     @Override
-    public Mono<? extends BotApiMethodMessage> handle(Message message, ChatSession session) {
+    public Mono<BotApiMethod<?>> handle(Message message, ChatSession session) {
         Locale locale = ChatBotUtility.getLocale(message);
         return handle(message.getText(), session, locale);
     }
 
     @Override
-    public Mono<? extends BotApiMethodMessage> handle(String text, ChatSession session, Locale locale) {
+    public Mono<BotApiMethod<?>> handle(String text, ChatSession session, Locale locale) {
         Steps step = Steps.values()[session.getContext().getStep()];
         session.getContext()
                 .setCommand(BotCommands.MARKET);

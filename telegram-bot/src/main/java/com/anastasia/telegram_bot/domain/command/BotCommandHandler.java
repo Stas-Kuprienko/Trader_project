@@ -1,7 +1,7 @@
 package com.anastasia.telegram_bot.domain.command;
 
 import com.anastasia.telegram_bot.domain.session.ChatSession;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -10,9 +10,9 @@ import java.util.Locale;
 
 public interface BotCommandHandler {
 
-    Mono<? extends BotApiMethodMessage> handle(Message message, ChatSession session);
+    Mono<BotApiMethod<?>> handle(Message message, ChatSession session);
 
-    Mono<? extends BotApiMethodMessage> handle(String text, ChatSession session, Locale locale);
+    Mono<BotApiMethod<?>> handle(String text, ChatSession session, Locale locale);
 
     default SendMessage createSendMessage(Long chatId, String text) {
         SendMessage sendMessage = new SendMessage();

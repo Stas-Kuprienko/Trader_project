@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethodMessage;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import reactor.core.publisher.Mono;
@@ -28,7 +28,7 @@ public class CommandDispatcher {
     }
 
 
-    public Mono<BotApiMethodMessage> apply(Message message) {
+    public Mono<BotApiMethod<?>> apply(Message message) {
         return chatSessionService
                 .get(message.getChatId())
                 .flatMap(chatSession -> {
@@ -48,7 +48,7 @@ public class CommandDispatcher {
                 });
     }
 
-    public Mono<BotApiMethodMessage> apply(CallbackQuery callbackQuery) {
+    public  Mono<BotApiMethod<?>> apply(CallbackQuery callbackQuery) {
         // Callback query pattern - ${COMMAND}:${STEP}:${DATA} (for example, MARKET:1:NASDAQ)
         return chatSessionService
                 .get(callbackQuery.getFrom().getId())

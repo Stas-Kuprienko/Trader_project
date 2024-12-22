@@ -1,7 +1,7 @@
 package com.anastasia.telegram_bot.controller;
 
 import com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler;
-import com.anastasia.telegram_bot.utils.MonoVoidWrapper;
+import com.anastasia.telegram_bot.utils.BotApiMethodMonoWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -22,7 +22,7 @@ public abstract class TelegramLongPollingBotReactive extends TelegramLongPolling
     }
 
 
-    protected final void process(Update update, MonoVoidWrapper onUpdateReceived) {
+    protected final void process(Update update, BotApiMethodMonoWrapper onUpdateReceived) {
         log.info(update.toString());
         onUpdateReceived
                 .perform()
