@@ -38,7 +38,7 @@ public class CommandDispatcher {
                     } else {
                         BotCommands sessionContextCommand = chatSession.getContext().getCommand();
                         if (sessionContextCommand != null) {
-                            handler = commandHandlerStore.get(sessionContextCommand.name);
+                            handler = commandHandlerStore.get(sessionContextCommand.value);
                         } else {
                             handler = commandHandlerStore.get(null);
                         }
@@ -61,7 +61,7 @@ public class CommandDispatcher {
                     if (chatSession.getContext().getStep() != step) {
                         chatSession.getContext().setStep(step);
                     }
-                    BotCommandHandler handler = commandHandlerStore.get(command.name);
+                    BotCommandHandler handler = commandHandlerStore.get(command.value);
                     if (handler == null) {
                         handler = commandHandlerStore.get(null);
                     }
@@ -78,7 +78,7 @@ public class CommandDispatcher {
                 .forEach((key, value) -> {
                     CommandHandler handlerAnnotation = value.getClass().getAnnotation(CommandHandler.class);
                     if (handlerAnnotation != null) {
-                        String command = handlerAnnotation.command().name;
+                        String command = handlerAnnotation.command().value;
                         commandHandlers.put(command, value);
                         log.info("Handler for bot command '{}' is registered", command);
                     }

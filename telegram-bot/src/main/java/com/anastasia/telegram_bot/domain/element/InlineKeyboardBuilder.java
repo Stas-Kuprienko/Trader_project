@@ -5,7 +5,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-
 import java.util.*;
 
 @Component
@@ -28,9 +27,7 @@ public class InlineKeyboardBuilder {
     }
 
     public InlineKeyboardMarkup inlineKeyboard(List<List<InlineKeyboardButton>> buttons) {
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        keyboardMarkup.setKeyboard(buttons);
-        return keyboardMarkup;
+        return new InlineKeyboardMarkup(buttons);
     }
 
     public InlineKeyboardMarkup flatInlineKeyboard(Locale locale, List<String> buttons) {
@@ -104,14 +101,13 @@ public class InlineKeyboardBuilder {
     }
 
     public List<InlineKeyboardButton> navigationButtonRow(String callbackPrefix, boolean isFirstPage, Locale locale) {
-        var exitButton = navigationButton(ButtonKeys.EXIT, callbackPrefix, locale);
         var backButton = navigationButton(ButtonKeys.BACK, callbackPrefix, locale);
         var nextButton = navigationButton(ButtonKeys.NEXT, callbackPrefix, locale);
         if (isFirstPage) {
-            return List.of(exitButton, backButton, nextButton);
+            return List.of(backButton, nextButton);
         } else {
             var prevButton = navigationButton(ButtonKeys.PREVIOUS, callbackPrefix, locale);
-            return List.of(exitButton, backButton, prevButton, nextButton);
+            return List.of(backButton, prevButton, nextButton);
         }
     }
 }

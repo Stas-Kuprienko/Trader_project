@@ -9,9 +9,9 @@ public enum BotCommands {
     ACCOUNTS("/accounts");
 
 
-    public final String name;
+    public final String value;
 
-    BotCommands(String name) {
-        this.name = name;
+    BotCommands(String value) {
+        this.value = value;
     }
 }

@@ -1,12 +1,12 @@
 package com.anastasia.telegram_bot.domain.command.impl;
 
+import com.anastasia.telegram_bot.configuration.TelegramBotConfig;
 import com.anastasia.telegram_bot.domain.command.BotCommandHandler;
 import com.anastasia.telegram_bot.domain.command.BotCommands;
 import com.anastasia.telegram_bot.domain.command.CommandHandler;
 import com.anastasia.telegram_bot.domain.element.ButtonKeys;
 import com.anastasia.telegram_bot.domain.element.InlineKeyboardBuilder;
-import com.anastasia.telegram_bot.domain.session.ChatSession;
-import com.anastasia.telegram_bot.domain.session.ChatSessionService;
+import com.anastasia.telegram_bot.domain.session.*;
 import com.anastasia.telegram_bot.service.MarketDataService;
 import com.anastasia.telegram_bot.utils.ChatBotUtility;
 import com.anastasia.trade_project.enums.ExchangeMarket;
@@ -21,14 +21,14 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.util.*;
 
 @CommandHandler(command = BotCommands.MARKET)
 public class MarketDataHandler implements BotCommandHandler {
 
-    private static final String KEY_SAMPLE = "MARKET.%s";
-    private static final String KEY_SAMPLE_2 = "MARKET.%s.%s";
+    private static final String KEY_TEMPLATE = "MARKET.%s";
+    private static final String KEY_TEMPLATE_2 = "MARKET.%s.%s";
+    private static final String SECURITIES_TEMPLATE = "%s: %s (%s)";
     private static final byte DEFAULT_ITEM_COUNT = 10;
 
     private final MessageSource messageSource;
@@ -86,7 +86,7 @@ public class MarketDataHandler implements BotCommandHandler {
     private SendMessage exchange(ChatSession session, Steps step, Locale locale) {
         session.getContext()
                 .setStep(Steps.SECURITIES_TYPE.ordinal());
-        String text = messageSource.getMessage(KEY_SAMPLE.formatted(step), null, locale);
+        String text = messageSource.getMessage(KEY_TEMPLATE.formatted(step), null, locale);
         return createSendMessage(session.getChatId(), text, keyboards.get(Steps.EXCHANGE));
     }
 
@@ -96,7 +96,7 @@ public class MarketDataHandler implements BotCommandHandler {
                 .setStep(Steps.SORTING.ordinal());
         session.getAttributes()
                 .put(Steps.EXCHANGE.name(), exchange.name());
-        String text = messageSource.getMessage(KEY_SAMPLE.formatted(step), null, locale);
+        String text = messageSource.getMessage(KEY_TEMPLATE.formatted(step), null, locale);
         return createSendMessage(session.getChatId(), text, securitiesTypeKeyboard(locale));
     }
 
@@ -106,7 +106,7 @@ public class MarketDataHandler implements BotCommandHandler {
                 .setStep(Steps.RETURN_RESULT.ordinal());
         session.getAttributes()
                 .put(Steps.SECURITIES_TYPE.name(), securitiesType.name());
-        String text = messageSource.getMessage(KEY_SAMPLE.formatted(step), null, locale);
+        String text = messageSource.getMessage(KEY_TEMPLATE.formatted(step), null, locale);
         return createSendMessage(session.getChatId(), text, keyboards.get(Steps.SORTING));
     }
 
@@ -170,12 +170,11 @@ public class MarketDataHandler implements BotCommandHandler {
     }
 
     private InlineKeyboardMarkup collectItems(Locale locale, boolean isFirstPage, List<? extends Securities> securities) {
-        String template = messageSource.getMessage(KEY_SAMPLE.formatted(Steps.RETURN_RESULT), null, locale);
-        //TODO remake
         List<List<InlineKeyboardButton>> buttonRows = new ArrayList<>();
         for (var s : securities) {
-            // {name} *** {ticker}\nPrice: {price} ({price_datetime})\nCurrency: {currency}
-            String item = template.formatted(s.getName(), s.getTicker(), s.getPrice().price(), s.getPrice().time(), s.getCurrency());
+            // SECURITIES_TEMPLATE  ${ticker}: ${price} (${datetime})
+            String item = SECURITIES_TEMPLATE
+                    .formatted(s.getTicker(), s.getPrice().price(), s.getPrice().time().format(TelegramBotConfig.DATE_TIME_FORMAT));
 
             String callback = ChatBotUtility
                     .callBackQuery(BotCommands.MARKET, Steps.PAGINATION.ordinal(), s.getTicker() + ':' + s.getExchange());
@@ -188,41 +187,10 @@ public class MarketDataHandler implements BotCommandHandler {
         return inlineKeyboardBuilder.inlineKeyboard(buttonRows);
     }
 
-
-    enum Steps {
-        EXCHANGE,
-        SECURITIES_TYPE,
-        SORTING,
-        RETURN_RESULT,
-        PAGINATION
-    }
-
-    enum Exchange {
-        NYSE, MOEX
-    }
-
-    enum SecuritiesType {
-        STOCKS, FUTURES
-    }
-
-    enum SortingType {
-        VOLUME("trade volume"), ALPHABET("abc...");
-
-        public final String value;
-        SortingType(String value) {
-            this.value = value;
-        }
-
-        enum Direction {
-            asc, desc
-        }
-    }
-
-
     private InlineKeyboardMarkup securitiesTypeKeyboard(Locale locale) {
         Map<String, String> map = new HashMap<>();
         for (var s : SecuritiesType.values()) {
-            String key = KEY_SAMPLE_2.formatted(Steps.SECURITIES_TYPE, s);
+            String key = KEY_TEMPLATE_2.formatted(Steps.SECURITIES_TYPE, s);
             String label = messageSource.getMessage(key, null, locale);
             String callbackQuery = ChatBotUtility
                     .callBackQuery(BotCommands.MARKET, Steps.SECURITIES_TYPE.ordinal() + 1, s.name());
@@ -257,5 +225,35 @@ public class MarketDataHandler implements BotCommandHandler {
                         .inlineKeyboard(inlineKeyboardBuilder.inlineKeyboardButtons(map)));
 
         return keyboardMarkupMap;
+    }
+
+
+    enum Steps {
+        EXCHANGE,
+        SECURITIES_TYPE,
+        SORTING,
+        RETURN_RESULT,
+        PAGINATION
+    }
+
+    enum Exchange {
+        NYSE, MOEX
+    }
+
+    enum SecuritiesType {
+        STOCKS, FUTURES
+    }
+
+    enum SortingType {
+        VOLUME("trade volume"), ALPHABET("abc...");
+
+        public final String value;
+        SortingType(String value) {
+            this.value = value;
+        }
+
+        enum Direction {
+            asc, desc
+        }
     }
 }

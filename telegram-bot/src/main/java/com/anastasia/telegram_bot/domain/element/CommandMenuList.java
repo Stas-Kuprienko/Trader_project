@@ -23,8 +23,8 @@ public class CommandMenuList {
         botCommandList = Arrays
                 .stream(BotCommands.values())
                 .map(c -> {
-                    String description = messageSource.getMessage(c.name, null, Locale.getDefault());
-                    return new BotCommand(c.name, description);
+                    String description = messageSource.getMessage(c.value, null, Locale.getDefault());
+                    return new BotCommand(c.value, description);
                 })
                 .toList();
     }
@@ -38,8 +38,8 @@ public class CommandMenuList {
         List<BotCommand> commandList = Arrays
                 .stream(BotCommands.values())
                 .map(c -> {
-                    String description = messageSource.getMessage(c.name, null, locale);
-                    return new BotCommand(c.name, description);
+                    String description = messageSource.getMessage(c.value, null, locale);
+                    return new BotCommand(c.value, description);
                 })
                 .toList();
         return new SetMyCommands(commandList, new BotCommandScopeDefault(), locale.getLanguage());
