@@ -1,6 +1,8 @@
 package com.anastasia.core_service.service.impl;
 
+import com.anastasia.core_service.datasource.jpa.TelegramChatRepository;
 import com.anastasia.core_service.datasource.jpa.UserDataRepository;
+import com.anastasia.core_service.entity.user.TelegramChat;
 import com.anastasia.core_service.entity.user.User;
 import com.anastasia.core_service.exception.NotFoundException;
 import com.anastasia.core_service.service.UserDataService;
@@ -12,10 +14,12 @@ import reactor.core.publisher.Mono;
 public class UserDataServiceImpl implements UserDataService {
 
     private final UserDataRepository userDataRepository;
+    private final TelegramChatRepository telegramChatRepository;
 
     @Autowired
-    public UserDataServiceImpl(UserDataRepository userDataRepository) {
+    public UserDataServiceImpl(UserDataRepository userDataRepository, TelegramChatRepository telegramChatRepository) {
         this.userDataRepository = userDataRepository;
+        this.telegramChatRepository = telegramChatRepository;
     }
 
 
@@ -26,9 +30,29 @@ public class UserDataServiceImpl implements UserDataService {
     }
 
     @Override
+    public Mono<TelegramChat> createTelegramChat(TelegramChat telegramChat) {
+        return telegramChatRepository.save(telegramChat);
+    }
+
+    @Override
     public Mono<User> getById(Long id) {
         return userDataRepository
                 .findById(id)
                 .switchIfEmpty(Mono.error(NotFoundException.byID(User.class, id)));
+    }
+
+    @Override
+    public Mono<TelegramChat> getTelegramChatById(Long chatId) {
+        return telegramChatRepository
+                .findById(chatId)
+                .switchIfEmpty(Mono.error(NotFoundException.byID(TelegramChat.class, chatId)));
+    }
+
+    @Override
+    public Mono<TelegramChat> getTelegramChatByUser(User user) {
+        return telegramChatRepository
+                .findByUser(user)
+                .switchIfEmpty(Mono.error(
+                        NotFoundException.byParameter(TelegramChat.class, "user ID", user.getId())));
     }
 }

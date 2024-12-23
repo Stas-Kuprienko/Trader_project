@@ -35,7 +35,7 @@ CREATE TABLE person.account (
     UNIQUE(client_id, broker)
 );
 
-CREATE TABLE person.telegram (
+CREATE TABLE person.telegram_chat (
     chat_id BIGINT  PRIMARY KEY,
     user_id BIGINT  NOT NULL    REFERENCES person.users ON DELETE CASCADE,
     created_at DATE NOT NULL    DEFAULT now()

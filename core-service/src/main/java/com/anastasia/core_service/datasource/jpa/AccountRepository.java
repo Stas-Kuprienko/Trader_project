@@ -1,6 +1,7 @@
 package com.anastasia.core_service.datasource.jpa;
 
 import com.anastasia.core_service.entity.user.Account;
+import com.anastasia.trade_project.enums.Broker;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -22,4 +23,15 @@ public interface AccountRepository extends ReactiveCrudRepository<Account, UUID>
             WHERE a.id = :id
             """)
     Mono<Account> findById(@Param("id") @NonNull UUID uuid);
+
+
+    @Query("""
+            SELECT a FROM Account a
+            LEFT JOIN FETCH a.user u
+            LEFT JOIN FETCH a.riskProfile rp
+            WHERE a.broker = :broker AND
+            a.clientId = :clientId
+            """)
+    Mono<Account> findByBrokerAndClientId(@Param("broker") @NonNull Broker broker,
+                                          @Param("clientId") @NonNull String clientId);
 }

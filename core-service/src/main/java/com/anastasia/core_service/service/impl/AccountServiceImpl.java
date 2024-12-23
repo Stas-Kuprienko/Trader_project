@@ -22,7 +22,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Mono<Account> create(Account account) {
-        //TODO
+        if (account.getId() != null) {
+            throw new IllegalArgumentException("Entity to save must not have ID");
+        }
         return accountRepository.save(account);
     }
 
@@ -32,4 +34,6 @@ public class AccountServiceImpl implements AccountService {
                 .filter(a -> a.getUser().getId().equals(userId))
                 .switchIfEmpty(Mono.error(NotFoundException.byID(Account.class, id)));
     }
+
+
 }
