@@ -3,7 +3,6 @@ package com.anastasia.core_service.entity.user;
 import com.anastasia.trade_project.enums.Language;
 import com.anastasia.trade_project.enums.Role;
 import com.anastasia.trade_project.enums.Status;
-import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +21,6 @@ public class User {
     @Id
     private Long id;
 
-    @Email
     private String login;
 
     private Role role;
@@ -34,7 +31,7 @@ public class User {
 
     private Status status;
 
-    private List<Account> accounts = new ArrayList<>();
+    private List<Account> accounts;
 
     @Column("created_at")
     private LocalDate createdAt;
@@ -49,6 +46,7 @@ public class User {
                 Role role,
                 Language language,
                 String name,
+                Status status,
                 List<Account> accounts,
                 LocalDate createdAt,
                 LocalDateTime updatedAt) {
@@ -57,6 +55,7 @@ public class User {
         this.role = role;
         this.language = language;
         this.name = name;
+        this.status = status;
         this.accounts = accounts;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -89,6 +88,7 @@ public class User {
                 ", role=" + role +
                 ", language=" + language +
                 ", name='" + name + '\'' +
+                ", status='" + status + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", updatedAt='" + updatedAt + '\'' +
                 '}';

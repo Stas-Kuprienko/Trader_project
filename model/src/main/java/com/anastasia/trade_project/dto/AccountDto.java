@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
-import java.time.LocalDate;
 
 @Data
 public class AccountDto {
@@ -25,12 +24,22 @@ public class AccountDto {
     private String token;
 
     @JsonProperty("token_expires_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate tokenExpiresAt;
+    @JsonFormat(pattern = "YYYY-MM-DD")
+    @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2})")
+    private String tokenExpiresAt;
 
-    @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-    @JsonProperty("risk_profile_id")
-    private String riskProfileId;
+    @JsonProperty("risk_profile")
+    private RiskProfileDto riskProfile;
+
+    @JsonProperty("created_at")
+    @JsonFormat(pattern = "YYYY-MM-DD")
+    @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2})")
+    private String createdAt;
+
+    @JsonProperty("updated_at")
+    @JsonFormat(pattern = "YYYY-MM-DD HH:MM:SS")
+    @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})")
+    private String updatedAt;
 
 
     @Builder
@@ -39,15 +48,19 @@ public class AccountDto {
                       String clientId,
                       Broker broker,
                       String token,
-                      LocalDate tokenExpiresAt,
-                      String riskProfileId) {
+                      String tokenExpiresAt,
+                      RiskProfileDto riskProfile,
+                      String createdAt,
+                      String updatedAt) {
         this.id = id;
         this.userId = userId;
         this.clientId = clientId;
         this.broker = broker;
         this.token = token;
         this.tokenExpiresAt = tokenExpiresAt;
-        this.riskProfileId = riskProfileId;
+        this.riskProfile = riskProfile;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public AccountDto() {}

@@ -1,9 +1,11 @@
 package com.anastasia.core_service.exception;
 
+import java.util.Map;
+
 public class NotFoundException extends RuntimeException {
 
     private static final String BY_ID = "The requested object (%s) with the ID=%s was not found";
-    private static final String BY_PARAMETER = "The requested object (%s) with the %s=%s was not found";
+    private static final String BY_PARAMETERS = "The requested object (%s) with the %s was not found";
 
 
     public NotFoundException(String message) {
@@ -17,7 +19,20 @@ public class NotFoundException extends RuntimeException {
     }
 
     public static NotFoundException byParameter(Class<?> type, String parameter, Object value) {
-        String message = BY_PARAMETER.formatted(type.getSimpleName(), parameter, value);
+        String message = BY_PARAMETERS.formatted(type.getSimpleName(), parameter + '=' + value);
+        return new NotFoundException(message);
+    }
+
+    public static NotFoundException byParameters(Class<?> type, Map<String, Object> parameters) {
+        StringBuilder params = new StringBuilder();
+        for (var e : parameters.entrySet()) {
+            params.append(e.getKey())
+                    .append('=')
+                    .append(e.getValue())
+                    .append(',');
+        }
+        params.deleteCharAt(params.length() - 1);
+        String message = BY_PARAMETERS.formatted(type.getSimpleName(), params.toString());
         return new NotFoundException(message);
     }
 }
