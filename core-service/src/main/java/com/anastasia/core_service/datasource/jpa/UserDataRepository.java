@@ -13,19 +13,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Repository
-public interface UserDataRepository extends ReactiveCrudRepository<User, Long> {
-
-
-    @Override
-    @NonNull
-    @Query("""
-            SELECT DISTINCT u FROM User u
-            LEFT JOIN FETCH u.accounts a
-            WHERE u.id = :id
-            """)
-    Mono<User> findById(@Param("id") @NonNull Long id);
+public interface UserDataRepository extends ReactiveCrudRepository<User, UUID> {
 
 
     @Modifying
@@ -35,7 +26,7 @@ public interface UserDataRepository extends ReactiveCrudRepository<User, Long> {
             SET name = :name,
             updatedAt = :updatedAt
             WHERE id = :id""")
-    Mono<Void> updateName(@Param("id") @NonNull Long id,
+    Mono<Void> updateName(@Param("id") @NonNull UUID id,
                           @Param("name") @NonNull String name,
                           @Param("updatedAt") @NonNull LocalDateTime updatedAt);
 
@@ -47,7 +38,7 @@ public interface UserDataRepository extends ReactiveCrudRepository<User, Long> {
             SET language = :language,
             updatedAt = :updatedAt
             WHERE id = :id""")
-    Mono<Void> updateLanguage(@Param("id") @NonNull Long id,
+    Mono<Void> updateLanguage(@Param("id") @NonNull UUID id,
                               @Param("language") @NonNull Language language,
                               @Param("updatedAt") @NonNull LocalDateTime updatedAt);
 
@@ -59,7 +50,7 @@ public interface UserDataRepository extends ReactiveCrudRepository<User, Long> {
             SET login = :login,
             updatedAt = :updatedAt
             WHERE id = :id""")
-    Mono<Void> updateLogin(@Param("id") @NonNull Long id,
+    Mono<Void> updateLogin(@Param("id") @NonNull UUID id,
                            @Param("login") @NonNull String login,
                            @Param("updatedAt") @NonNull LocalDateTime updatedAt);
 
@@ -71,7 +62,7 @@ public interface UserDataRepository extends ReactiveCrudRepository<User, Long> {
             SET role = :role,
             updatedAt = :updatedAt
             WHERE id = :id""")
-    Mono<Void> updateRole(@Param("id") @NonNull Long id,
+    Mono<Void> updateRole(@Param("id") @NonNull UUID id,
                           @Param("role") @NonNull Role role,
                           @Param("updatedAt") @NonNull LocalDateTime updatedAt);
 
@@ -83,7 +74,7 @@ public interface UserDataRepository extends ReactiveCrudRepository<User, Long> {
             SET status = :status,
             updatedAt = :updatedAt
             WHERE id = :id""")
-    Mono<Void> updateStatus(@Param("id") @NonNull Long id,
+    Mono<Void> updateStatus(@Param("id") @NonNull UUID id,
                             @Param("status") @NonNull Status status,
                             @Param("updatedAt") @NonNull LocalDateTime updatedAt);
 }

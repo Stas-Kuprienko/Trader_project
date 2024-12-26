@@ -3,9 +3,9 @@ package com.anastasia.core_service.service.converter;
 import com.anastasia.core_service.entity.user.Account;
 import com.anastasia.core_service.entity.user.RiskProfile;
 import com.anastasia.core_service.entity.user.User;
-import com.anastasia.core_service.service.UserDataService;
 import com.anastasia.trade_project.dto.AccountDto;
 import com.anastasia.trade_project.dto.RiskProfileDto;
+import com.anastasia.trade_project.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -16,12 +16,13 @@ import java.util.UUID;
 @Service
 public class AccountConverter implements Converter<Account, AccountDto>, CollectionConverter<Account, AccountDto> {
 
-    private final UserDataService userDataService;
+    private final UserConverter userConverter;
     private final RiskProfileConverter riskProfileConverter;
 
+
     @Autowired
-    public AccountConverter(UserDataService userDataService, RiskProfileConverter riskProfileConverter) {
-        this.userDataService = userDataService;
+    public AccountConverter(UserConverter userConverter, RiskProfileConverter riskProfileConverter) {
+        this.userConverter = userConverter;
         this.riskProfileConverter = riskProfileConverter;
     }
 
@@ -31,7 +32,6 @@ public class AccountConverter implements Converter<Account, AccountDto>, Collect
         return Mono.zip(Mono.just(
                 AccountDto.builder()
                         .id(toStringIfNotNull(account.getId()))
-                        .userId(account.getUser() != null ? account.getUser().getId() : null)
                         .broker(account.getBroker())
                         .clientId(account.getClientId())
                         .token(account.getToken())
@@ -39,10 +39,13 @@ public class AccountConverter implements Converter<Account, AccountDto>, Collect
                         .createdAt(localDateToString(account.getCreatedAt()))
                         .updatedAt(localDateTimeToString(account.getUpdatedAt()))
                         .build()),
+                userConverter.toDto(account.getUser()),
                 riskProfileConverter.toDto(account.getRiskProfile())
         ).map(tuple -> {
             AccountDto accountDto = tuple.getT1();
-            RiskProfileDto riskProfileDto = tuple.getT2();
+            UserDto userDto = tuple.getT2();
+            RiskProfileDto riskProfileDto = tuple.getT3();
+            accountDto.setUser(userDto);
             accountDto.setRiskProfile(riskProfileDto);
             return accountDto;
         });
@@ -50,12 +53,9 @@ public class AccountConverter implements Converter<Account, AccountDto>, Collect
 
     @Override
     public Mono<Account> toEntity(AccountDto dto) {
-        User user = new ProxyUser(dto.getUserId(), userDataService);
-        user.setId(dto.getUserId());
         return Mono.zip(Mono.just(
                 Account.builder()
                         .id(dto.getId() != null ? UUID.fromString(dto.getId()) : null)
-                        .user(user)
                         .broker(dto.getBroker())
                         .clientId(dto.getClientId())
                         .token(dto.getToken())
@@ -63,10 +63,13 @@ public class AccountConverter implements Converter<Account, AccountDto>, Collect
                         .createdAt(stringToLocalDate(dto.getCreatedAt()))
                         .updatedAt(stringToLocalDateTime(dto.getUpdatedAt()))
                         .build()),
+                userConverter.toEntity(dto.getUser()),
                 riskProfileConverter.toEntity(dto.getRiskProfile())
         ).map(tuple -> {
             Account account = tuple.getT1();
-            RiskProfile riskProfile = tuple.getT2();
+            User user = tuple.getT2();
+            RiskProfile riskProfile = tuple.getT3();
+            account.setUser(user);
             account.setRiskProfile(riskProfile);
             return account;
         });

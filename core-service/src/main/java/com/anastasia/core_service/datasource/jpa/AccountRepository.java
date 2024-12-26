@@ -1,6 +1,7 @@
 package com.anastasia.core_service.datasource.jpa;
 
 import com.anastasia.core_service.entity.user.Account;
+import com.anastasia.core_service.entity.user.RiskProfile;
 import com.anastasia.trade_project.enums.Broker;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -57,10 +58,11 @@ public interface AccountRepository extends ReactiveCrudRepository<Account, UUID>
     @Modifying
     @Transactional
     @Query("""
-            UPDATE person.account
-            SET risk_profile_id = :riskProfileId,
-            updated_at = :updatedAt
+            UPDATE Account
+            SET riskProfile = :riskProfile,
+            updatedAt = :updatedAt
             WHERE id = :id""")
-    Mono<Void> updateRiskProfile(@Param("riskProfileId") @NonNull UUID riskProfileId,
+    Mono<Void> updateRiskProfile(@Param("id") @NonNull UUID id,
+                                 @Param("riskProfile") @NonNull RiskProfile riskProfile,
                                  @Param("updatedAt") @NonNull LocalDateTime updatedAt);
 }

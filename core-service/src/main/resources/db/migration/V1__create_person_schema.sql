@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS person;
 
 CREATE TABLE person.users (
-    id BIGSERIAL            PRIMARY KEY,
+    id UUID                 PRIMARY KEY DEFAULT gen_random_uuid(),
     login VARCHAR(255)      NOT NULL    UNIQUE,
     role VARCHAR(31)        NOT NULL    DEFAULT 'USER',
     language VARCHAR(2)     NOT NULL    DEFAULT 'EN',
@@ -24,7 +24,7 @@ CREATE TABLE person.risk_profile (
 
 CREATE TABLE person.account (
     id UUID    PRIMARY KEY  DEFAULT gen_random_uuid(),
-    user_id BIGINT          NOT NULL    REFERENCES person.users ON DELETE CASCADE,
+    user_id UUID            NOT NULL    REFERENCES person.users ON DELETE CASCADE,
     client_id VARCHAR(127)  NOT NULL,
     broker VARCHAR(127)     NOT NULL,
     token VARCHAR(255)      NOT NULL,
@@ -37,6 +37,6 @@ CREATE TABLE person.account (
 
 CREATE TABLE person.telegram_chat (
     chat_id BIGINT  PRIMARY KEY,
-    user_id BIGINT  NOT NULL    REFERENCES person.users ON DELETE CASCADE,
+    user_id UUID    NOT NULL    REFERENCES person.users ON DELETE CASCADE,
     created_at DATE NOT NULL    DEFAULT now()
 );

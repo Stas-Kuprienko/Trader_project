@@ -6,9 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.annotation.PreDestroy;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.keycloak.OAuth2Constants;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
+import org.keycloak.admin.client.resource.RealmResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +36,8 @@ public class CoreServiceConfig {
 
     public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    private Keycloak keycloak;
 
 
     // MAPPING *********** \/
@@ -125,4 +132,39 @@ public class CoreServiceConfig {
         return new KafkaTemplate<>(producerFactory);
     }
     // /\ **************** /\
+
+    // KEYCLOAK ********** \/
+
+    @Bean
+    public Keycloak keycloak(@Value("${project.variables.keycloak.url}") String url,
+                             @Value("${project.variables.keycloak.username}") String username,
+                             @Value("${project.variables.keycloak.password}") String password,
+                             @Value("${project.variables.keycloak.client-id}") String clientId,
+                             @Value("${project.variables.keycloak.client-secret}") String clientSecret) {
+        return this.keycloak = KeycloakBuilder.builder()
+                .serverUrl(url)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+                .username(username)
+                .password(password)
+                .realm("admin-cli")
+                .build();
+    }
+
+    @Bean
+    public RealmResource realmResource(Keycloak keycloak, @Value("${project.variables.keycloak.realm}") String realm) {
+        return keycloak.realm(realm);
+    }
+    // ******************* /\
+
+    // CONTEXT *********** \/
+
+    @PreDestroy
+    public void close() {
+        if (keycloak != null) {
+            keycloak.close();
+        }
+    }
+    // ******************* /\
 }

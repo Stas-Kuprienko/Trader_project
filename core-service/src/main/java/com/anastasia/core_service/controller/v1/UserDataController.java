@@ -6,6 +6,7 @@ import com.anastasia.trade_project.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -30,7 +31,7 @@ public class UserDataController {
     }
 
     @GetMapping("/{id}")
-    public Mono<UserDto> findById(@PathVariable Long id) {
+    public Mono<UserDto> findById(@PathVariable UUID id) {
         return userDataService
                 .getById(id)
                 .flatMap(userConverter::toDto);

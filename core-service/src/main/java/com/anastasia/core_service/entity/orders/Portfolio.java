@@ -1,4 +1,4 @@
-package com.anastasia.core_service.entity.user;
+package com.anastasia.core_service.entity.orders;
 
 import com.anastasia.trade_project.enums.Broker;
 import com.anastasia.trade_project.enums.Market;

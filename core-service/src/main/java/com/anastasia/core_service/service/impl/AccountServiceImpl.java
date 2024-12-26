@@ -2,6 +2,7 @@ package com.anastasia.core_service.service.impl;
 
 import com.anastasia.core_service.datasource.jpa.AccountRepository;
 import com.anastasia.core_service.entity.user.Account;
+import com.anastasia.core_service.entity.user.RiskProfile;
 import com.anastasia.core_service.exception.DataPersistenceException;
 import com.anastasia.core_service.exception.NotFoundException;
 import com.anastasia.core_service.service.AccountService;
@@ -54,12 +55,21 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Mono<Void> updateToken(UUID id, String token, LocalDate tokenExpiresAt) {
-        LocalDateTime updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        return accountRepository.updateToken(id, token, tokenExpiresAt, updatedAt);
+        return accountRepository.updateToken(id, token, tokenExpiresAt, dateTimeNow());
+    }
+
+    @Override
+    public Mono<Void> updateRiskProfile(UUID id, RiskProfile riskProfile) {
+        return accountRepository.updateRiskProfile(id, riskProfile, dateTimeNow());
     }
 
     @Override
     public Mono<Void> delete(UUID id) {
         return accountRepository.deleteById(id);
+    }
+
+
+    private LocalDateTime dateTimeNow() {
+        return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
 }

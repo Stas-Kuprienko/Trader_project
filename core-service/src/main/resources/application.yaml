@@ -14,7 +14,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://${project.variables.keycloak.url}/auth/realms/trade_project
+          issuer-uri: http://${project.variables.keycloak.url}/auth/realms/${project.variables.keycloak.realm}
   r2dbc:
     url: r2dbc:postgresql://${project.variables.datasource.url}/trade_project
     username: ${project.variables.datasource.username}
@@ -52,6 +52,11 @@ project:
   variables:
     keycloak:
       url: <?>
+      username: <?>
+      password: <?>
+      client-id: <?>
+      client-secret: <?>
+      realm: trade_project
     datasource:
       url: <?>
       username: <?>

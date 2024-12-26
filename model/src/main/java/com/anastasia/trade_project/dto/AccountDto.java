@@ -13,8 +13,7 @@ public class AccountDto {
     @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     private String id;
 
-    @JsonProperty("user_id")
-    private Long userId;
+    private UserDto user;
 
     @JsonProperty("client_id")
     private String clientId;
@@ -44,7 +43,7 @@ public class AccountDto {
 
     @Builder
     public AccountDto(String id,
-                      Long userId,
+                      UserDto user,
                       String clientId,
                       Broker broker,
                       String token,
@@ -53,7 +52,7 @@ public class AccountDto {
                       String createdAt,
                       String updatedAt) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.clientId = clientId;
         this.broker = broker;
         this.token = token;

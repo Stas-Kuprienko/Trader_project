@@ -11,15 +11,15 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter @Setter
 @Table("users")
 public class User {
 
     @Id
-    private Long id;
+    private UUID id;
 
     private String login;
 
@@ -31,8 +31,6 @@ public class User {
 
     private Status status;
 
-    private List<Account> accounts;
-
     @Column("created_at")
     private LocalDate createdAt;
 
@@ -41,13 +39,12 @@ public class User {
 
 
     @Builder
-    public User(Long id,
+    public User(UUID id,
                 String login,
                 Role role,
                 Language language,
                 String name,
                 Status status,
-                List<Account> accounts,
                 LocalDate createdAt,
                 LocalDateTime updatedAt) {
         this.id = id;
@@ -56,7 +53,6 @@ public class User {
         this.language = language;
         this.name = name;
         this.status = status;
-        this.accounts = accounts;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
