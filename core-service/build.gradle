@@ -10,6 +10,9 @@ dependencies {
 	//project
 	implementation project(':model')
 
+	//swagger
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$swagger_version"
+
 	//security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'

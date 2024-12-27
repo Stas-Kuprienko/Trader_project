@@ -1,3 +1,3 @@
-package com.anastasia.trade_project.dto.form;
+package com.anastasia.trade_project.form;
 
 public record ErrorDto(String status, String message) {}

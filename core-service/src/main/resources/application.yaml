@@ -14,7 +14,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://${project.variables.keycloak.url}/auth/realms/${project.variables.keycloak.realm}
+          issuer-uri: http://${project.variables.keycloak.url}/auth/realms/trade-project
   r2dbc:
     url: r2dbc:postgresql://${project.variables.datasource.url}/trade_project
     username: ${project.variables.datasource.username}
@@ -46,6 +46,20 @@ grpc:
   server:
     port: -1
 
+springdoc:
+  info:
+    title: Anastasia Trader Project
+    description: API for Core-service
+    version: 1.0.0
+    url:
+  swagger-ui:
+    path: /swagger-ui/index.html
+  api-docs:
+    path: /v3/api-docs
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+  paths-to-match: /api/v1/**
+
 
 project:
 
@@ -56,7 +70,7 @@ project:
       password: <?>
       client-id: <?>
       client-secret: <?>
-      realm: trade_project
+      realm: trade-project
     datasource:
       url: <?>
       username: <?>

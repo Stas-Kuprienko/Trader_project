@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
+import java.util.UUID;
 
 @Data
 public class AccountDto {
 
-    @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-    private String id;
+    private UUID id;
 
     private UserDto user;
 
@@ -42,7 +42,7 @@ public class AccountDto {
 
 
     @Builder
-    public AccountDto(String id,
+    public AccountDto(UUID id,
                       UserDto user,
                       String clientId,
                       Broker broker,

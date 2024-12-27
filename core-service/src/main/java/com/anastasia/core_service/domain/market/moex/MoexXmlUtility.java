@@ -2,7 +2,7 @@ package com.anastasia.core_service.domain.market.moex;
 
 import com.anastasia.core_service.configuration.CoreServiceConfig;
 import com.anastasia.core_service.domain.market.moex.parsing.*;
-import com.anastasia.core_service.exception.IncorrectContentException;
+import com.anastasia.core_service.exception.InternalServiceException;
 import com.anastasia.trade_project.enums.Board;
 import com.anastasia.trade_project.enums.Currency;
 import com.anastasia.trade_project.enums.ExchangeMarket;
@@ -79,7 +79,7 @@ public class MoexXmlUtility {
     private String getNotNullValue(Map<String, Object> row, String key) {
         Object value = row.get(key);
         if (value == null) {
-            throw new IncorrectContentException("Unexpected data of XML from 'MOEX': " + row);
+            throw InternalServiceException.unexpectedData(ExchangeMarket.MOEX.name(), row);
         } else {
             return (String) value;
         }

@@ -10,11 +10,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
+import java.util.UUID;
 
 @Data
 public class UserDto {
 
-    private String id;
+    private UUID id;
 
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$") @NotBlank
     private String login;
@@ -39,7 +40,7 @@ public class UserDto {
 
 
     @Builder
-    public UserDto(String id,
+    public UserDto(UUID id,
                    String login,
                    Role role,
                    Language language,

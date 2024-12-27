@@ -1,7 +1,6 @@
 package com.anastasia.core_service.datasource.jpa;
 
 import com.anastasia.core_service.entity.user.User;
-import com.anastasia.trade_project.enums.Language;
 import com.anastasia.trade_project.enums.Role;
 import com.anastasia.trade_project.enums.Status;
 import org.springframework.data.r2dbc.repository.Modifying;
@@ -17,30 +16,6 @@ import java.util.UUID;
 
 @Repository
 public interface UserDataRepository extends ReactiveCrudRepository<User, UUID> {
-
-
-    @Modifying
-    @Transactional
-    @Query("""
-            UPDATE User
-            SET name = :name,
-            updatedAt = :updatedAt
-            WHERE id = :id""")
-    Mono<Void> updateName(@Param("id") @NonNull UUID id,
-                          @Param("name") @NonNull String name,
-                          @Param("updatedAt") @NonNull LocalDateTime updatedAt);
-
-
-    @Modifying
-    @Transactional
-    @Query("""
-            UPDATE User
-            SET language = :language,
-            updatedAt = :updatedAt
-            WHERE id = :id""")
-    Mono<Void> updateLanguage(@Param("id") @NonNull UUID id,
-                              @Param("language") @NonNull Language language,
-                              @Param("updatedAt") @NonNull LocalDateTime updatedAt);
 
 
     @Modifying

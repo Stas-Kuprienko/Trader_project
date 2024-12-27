@@ -38,5 +38,6 @@ CREATE TABLE person.account (
 CREATE TABLE person.telegram_chat (
     chat_id BIGINT  PRIMARY KEY,
     user_id UUID    NOT NULL    REFERENCES person.users ON DELETE CASCADE,
+    status VARCHAR(63)      NOT NULL    DEFAULT 'ACTIVE' CHECK (status IN('ACTIVE', 'BLOCKED', 'DISABLED')),
     created_at DATE NOT NULL    DEFAULT now()
 );

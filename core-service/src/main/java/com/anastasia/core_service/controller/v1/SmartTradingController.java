@@ -2,11 +2,12 @@ package com.anastasia.core_service.controller.v1;
 
 import com.anastasia.core_service.service.SmartTradingService;
 import com.anastasia.trade_project.dto.StrategyDefinition;
-import com.anastasia.trade_project.dto.form.SmartSubscriptionRequest;
+import com.anastasia.trade_project.form.SmartSubscriptionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/smart")
@@ -28,7 +29,7 @@ public class SmartTradingController {
     @PostMapping("/subscribe")
     public Mono<Void> subscribe(@RequestBody SmartSubscriptionRequest request) {
         //TODO temporary, just for test
-        Long userId = 1L;
+        UUID userId = UUID.randomUUID();
 
         return smartTradingService.subscribe(userId, request);
     }

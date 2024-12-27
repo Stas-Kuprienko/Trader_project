@@ -1,4 +1,4 @@
-package com.anastasia.trade_project.dto.form;
+package com.anastasia.trade_project.form;
 
 import com.anastasia.trade_project.enums.*;
 import lombok.Builder;

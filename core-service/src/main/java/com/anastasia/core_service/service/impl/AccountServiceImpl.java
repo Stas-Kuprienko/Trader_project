@@ -38,14 +38,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Mono<Account> getById(UUID id, Long userId) {
+    public Mono<Account> getById(UUID id, UUID userId) {
         return accountRepository.findById(id)
                 .filter(a -> a.getUser().getId().equals(userId))
                 .switchIfEmpty(Mono.error(NotFoundException.byID(Account.class, id)));
     }
 
     @Override
-    public Mono<Account> getByBrokerAndClientId(Broker broker, String clientId, Long userId) {
+    public Mono<Account> getByBrokerAndClientId(Broker broker, String clientId, UUID userId) {
         return accountRepository.findByBrokerAndClientId(broker, clientId)
                 .filter(a -> a.getUser().getId().equals(userId))
                 .switchIfEmpty(Mono.error(NotFoundException.byParameters(Account.class, Map.of(

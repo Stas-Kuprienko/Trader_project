@@ -4,7 +4,6 @@ import com.anastasia.core_service.entity.user.User;
 import com.anastasia.trade_project.dto.UserDto;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import java.util.UUID;
 
 @Service
 public class UserConverter implements Converter<User, UserDto> {
@@ -13,7 +12,7 @@ public class UserConverter implements Converter<User, UserDto> {
     @Override
     public Mono<UserDto> toDto(User user) {
         return Mono.just(UserDto.builder()
-                .id(toStringIfNotNull(user.getId()))
+                .id(user.getId())
                 .login(user.getLogin())
                 .role(user.getRole())
                 .language(user.getLanguage())
@@ -27,7 +26,7 @@ public class UserConverter implements Converter<User, UserDto> {
     @Override
     public Mono<User> toEntity(UserDto dto) {
         return Mono.just(User.builder()
-                .id(dto.getId() != null ? UUID.fromString(dto.getId()) : null)
+                .id(dto.getId())
                 .login(dto.getLogin())
                 .name(dto.getName())
                 .role(dto.getRole())

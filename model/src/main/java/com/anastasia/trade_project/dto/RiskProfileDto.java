@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
+import java.util.UUID;
 
 @Data
 public class RiskProfileDto {
 
-    @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
-    private String id;
+    private UUID id;
 
     @JsonProperty("deal_loss_percentage")
     private byte dealLossPercentage;
@@ -39,7 +39,7 @@ public class RiskProfileDto {
 
 
     @Builder
-    public RiskProfileDto(String id,
+    public RiskProfileDto(UUID id,
                           byte dealLossPercentage,
                           byte accountLossPercentage,
                           byte futuresInAccountPercentage,

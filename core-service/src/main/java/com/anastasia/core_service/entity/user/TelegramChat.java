@@ -1,7 +1,7 @@
 package com.anastasia.core_service.entity.user;
 
+import com.anastasia.trade_project.enums.Status;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -20,6 +20,8 @@ public class TelegramChat {
 
     private User user;
 
+    private Status status;
+
     @Column("created_at")
     private LocalDate createdAt;
 
@@ -27,9 +29,11 @@ public class TelegramChat {
     @Builder
     public TelegramChat(Long chatId,
                         User user,
+                        Status status,
                         LocalDate createdAt) {
         this.chatId = chatId;
         this.user = user;
+        this.status = status;
         this.createdAt = createdAt;
     }
 
@@ -52,7 +56,9 @@ public class TelegramChat {
     public String toString() {
         return "TelegramChat{" +
                 "chatId=" + chatId +
-                ", createdAt='" + createdAt + '\'' +
+                ", user=" + user +
+                ", status=" + status +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

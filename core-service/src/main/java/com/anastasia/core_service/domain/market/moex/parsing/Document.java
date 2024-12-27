@@ -1,6 +1,7 @@
 package com.anastasia.core_service.domain.market.moex.parsing;
 
-import com.anastasia.core_service.exception.IncorrectContentException;
+import com.anastasia.core_service.exception.InternalServiceException;
+import com.anastasia.trade_project.enums.ExchangeMarket;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Data;
@@ -29,7 +30,7 @@ public class Document {
                 return d.getRows();
             }
         }
-        throw new IncorrectContentException("Unexpected data of XML from 'MOEX': " + data);
+        throw InternalServiceException.unexpectedData(ExchangeMarket.MOEX.name(), data);
     }
 
     public List<Map<String, Object>> marketData() {
@@ -38,7 +39,7 @@ public class Document {
                 return d.getRows();
             }
         }
-        throw new IncorrectContentException("Unexpected data of XML from 'MOEX': " + data);
+        throw InternalServiceException.unexpectedData(ExchangeMarket.MOEX.name(), data);
     }
 
     public Optional<Map<String, Object>> singleSecuritiesData() {

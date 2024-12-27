@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.Collection;
-import java.util.UUID;
 
 @Service
 public class AccountConverter implements Converter<Account, AccountDto>, CollectionConverter<Account, AccountDto> {
@@ -31,7 +30,7 @@ public class AccountConverter implements Converter<Account, AccountDto>, Collect
     public Mono<AccountDto> toDto(Account account) {
         return Mono.zip(Mono.just(
                 AccountDto.builder()
-                        .id(toStringIfNotNull(account.getId()))
+                        .id(account.getId())
                         .broker(account.getBroker())
                         .clientId(account.getClientId())
                         .token(account.getToken())
@@ -55,7 +54,7 @@ public class AccountConverter implements Converter<Account, AccountDto>, Collect
     public Mono<Account> toEntity(AccountDto dto) {
         return Mono.zip(Mono.just(
                 Account.builder()
-                        .id(dto.getId() != null ? UUID.fromString(dto.getId()) : null)
+                        .id(dto.getId())
                         .broker(dto.getBroker())
                         .clientId(dto.getClientId())
                         .token(dto.getToken())
