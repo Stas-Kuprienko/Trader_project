@@ -2,13 +2,14 @@ package com.anastasia.core_service.service;
 
 import com.anastasia.core_service.entity.TelegramChat;
 import com.anastasia.core_service.entity.User;
+import com.anastasia.trade_project.enums.Language;
 import com.anastasia.trade_project.enums.Status;
 import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface UserDataService {
 
-    Mono<User> create(User user);
+    Mono<User> singUp(String login, String password, String name, Language language);
 
     Mono<TelegramChat> createTelegramChat(TelegramChat telegramChat);
 

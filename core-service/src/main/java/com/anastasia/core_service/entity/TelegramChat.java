@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @Getter @Setter
-@Table("telegram_chat")
+@Table(name = "telegram_chat", schema = "person")
 public class TelegramChat {
 
     @Id

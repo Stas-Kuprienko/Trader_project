@@ -137,10 +137,7 @@ public class CoreServiceConfig {
     @Bean
     public Keycloak keycloak(@Value("${project.variables.keycloak.url}") String url,
                              @Value("${project.variables.keycloak.username}") String username,
-                             @Value("${project.variables.keycloak.password}") String password,
-                             @Value("${project.variables.keycloak.realm}") String realm,
-                             @Value("${project.variables.keycloak.client-id}") String clientId,
-                             @Value("${project.variables.keycloak.client-secret}") String clientSecret) {
+                             @Value("${project.variables.keycloak.password}") String password) {
         return this.keycloak = KeycloakBuilder.builder()
                 .serverUrl(url)
                 .clientId("admin-cli")

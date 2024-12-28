@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter @Setter
-@Table("risk_profile")
+@Table(name = "risk_profile", schema = "person")
 public class RiskProfile {
 
     @Id

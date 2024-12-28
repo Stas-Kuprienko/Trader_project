@@ -1,6 +1,5 @@
 package com.anastasia.core_service.controller.v1;
 
-import com.anastasia.core_service.domain.credentials.CredentialsNode;
 import com.anastasia.core_service.service.UserDataService;
 import com.anastasia.core_service.service.converter.UserConverter;
 import com.anastasia.trade_project.dto.UserDto;
@@ -22,18 +21,14 @@ import java.util.UUID;
 @RequestMapping("/api/v1/users")
 public class UserDataController {
 
-    private final UserConverter userConverter;
     private final UserDataService userDataService;
-    private final CredentialsNode credentialsNode;
+    private final UserConverter userConverter;
 
 
     @Autowired
-    public UserDataController(UserConverter userConverter,
-                              UserDataService userDataService,
-                              CredentialsNode credentialsNode) {
-        this.userConverter = userConverter;
+    public UserDataController(UserDataService userDataService, UserConverter userConverter) {
         this.userDataService = userDataService;
-        this.credentialsNode = credentialsNode;
+        this.userConverter = userConverter;
     }
 
 
@@ -43,9 +38,11 @@ public class UserDataController {
                     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @PostMapping
     public Mono<UserDto> signUp(@RequestBody RegistrationForm registration) {
-        return credentialsNode
-                .signUp(registration)
-                .flatMap(userDataService::create)
+        return userDataService
+                .singUp(registration.getLogin(),
+                        registration.getPassword(),
+                        registration.getName(),
+                        registration.getLanguage())
                 .flatMap(userConverter::toDto);
     }
 
