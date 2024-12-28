@@ -2,7 +2,7 @@ package com.anastasia.core_service.domain.smart;
 
 import com.anastasia.core_service.domain.event.NotificationAssistant;
 import com.anastasia.smart_service.Smart;
-import com.anastasia.trade_project.notification.SubscriptionStatus;
+import com.anastasia.trade_project.events.SubscriptionStatus;
 import io.grpc.stub.StreamObserver;
 import reactor.core.publisher.Mono;
 

@@ -20,8 +20,6 @@ public class AccountDto {
 
     private Broker broker;
 
-    private String token;
-
     @JsonProperty("token_expires_at")
     @JsonFormat(pattern = "YYYY-MM-DD")
     @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2})")
@@ -46,7 +44,6 @@ public class AccountDto {
                       UserDto user,
                       String clientId,
                       Broker broker,
-                      String token,
                       String tokenExpiresAt,
                       RiskProfileDto riskProfile,
                       String createdAt,
@@ -55,7 +52,6 @@ public class AccountDto {
         this.user = user;
         this.clientId = clientId;
         this.broker = broker;
-        this.token = token;
         this.tokenExpiresAt = tokenExpiresAt;
         this.riskProfile = riskProfile;
         this.createdAt = createdAt;

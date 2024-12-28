@@ -1,7 +1,7 @@
 package com.anastasia.core_service.domain.event.impl;
 
 import com.anastasia.core_service.domain.event.MessageService;
-import com.anastasia.trade_project.notification.TradeNotification;
+import com.anastasia.trade_project.events.TradeNotification;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;

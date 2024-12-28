@@ -1,7 +1,7 @@
 package com.anastasia.core_service.service;
 
-import com.anastasia.core_service.entity.user.Account;
-import com.anastasia.core_service.entity.user.RiskProfile;
+import com.anastasia.core_service.entity.Account;
+import com.anastasia.core_service.entity.RiskProfile;
 import com.anastasia.trade_project.enums.Broker;
 import reactor.core.publisher.Mono;
 import java.time.LocalDate;

@@ -1,46 +1,36 @@
-package com.anastasia.trade_project.dto;
+package com.anastasia.trade_project.models;
 
 import com.anastasia.trade_project.enums.Board;
 import com.anastasia.trade_project.enums.Broker;
 import com.anastasia.trade_project.enums.Direction;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
+import java.math.BigDecimal;
 
 @Data
-public class StopDto {
+public class Stop {
 
-    @JsonProperty("stop_id")
     private int stopId;
-
-    @JsonProperty("client_id")
     private String clientId;
-
     private Broker broker;
-
     private String ticker;
-
     private Board board;
-
     private int quantity;
-
-    private double price;
-
+    private BigDecimal price;
     private Direction direction;
-
-    private String type;
+    private Type type;
 
 
     @Builder
-    public StopDto(int stopId,
-                   String clientId,
-                   Broker broker,
-                   String ticker,
-                   Board board,
-                   int quantity,
-                   double price,
-                   Direction direction,
-                   String type) {
+    public Stop(int stopId,
+                String clientId,
+                Broker broker,
+                String ticker,
+                Board board,
+                int quantity,
+                BigDecimal price,
+                Direction direction,
+                Type type) {
         this.stopId = stopId;
         this.clientId = clientId;
         this.broker = broker;
@@ -52,5 +42,11 @@ public class StopDto {
         this.type = type;
     }
 
-    public StopDto() {}
+    public Stop() {}
+
+
+    public enum Type {
+        STOP_LOSS,
+        TAKE_PROFIT
+    }
 }

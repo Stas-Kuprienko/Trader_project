@@ -1,6 +1,6 @@
 package com.anastasia.core_service.service.converter;
 
-import com.anastasia.core_service.entity.user.RiskProfile;
+import com.anastasia.core_service.entity.RiskProfile;
 import com.anastasia.trade_project.dto.RiskProfileDto;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

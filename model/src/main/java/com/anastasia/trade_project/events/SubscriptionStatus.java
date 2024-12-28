@@ -1,4 +1,4 @@
-package com.anastasia.trade_project.notification;
+package com.anastasia.trade_project.events;
 
 import com.anastasia.trade_project.enums.Board;
 import com.anastasia.trade_project.enums.Broker;

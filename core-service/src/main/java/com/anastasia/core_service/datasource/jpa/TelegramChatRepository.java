@@ -1,7 +1,7 @@
 package com.anastasia.core_service.datasource.jpa;
 
-import com.anastasia.core_service.entity.user.TelegramChat;
-import com.anastasia.core_service.entity.user.User;
+import com.anastasia.core_service.entity.TelegramChat;
+import com.anastasia.core_service.entity.User;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;

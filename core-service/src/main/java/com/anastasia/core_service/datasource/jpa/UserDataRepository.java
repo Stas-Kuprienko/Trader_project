@@ -1,6 +1,6 @@
 package com.anastasia.core_service.datasource.jpa;
 
-import com.anastasia.core_service.entity.user.User;
+import com.anastasia.core_service.entity.User;
 import com.anastasia.trade_project.enums.Role;
 import com.anastasia.trade_project.enums.Status;
 import org.springframework.data.r2dbc.repository.Modifying;

@@ -1,8 +1,9 @@
-package com.anastasia.trade_project.markets;
+package com.anastasia.trade_project.enums;
 
 public final class TimeFrame {
 
     private TimeFrame() {}
+
 
     public enum IntraDay implements Scope {
         M1, M5, M15, H1

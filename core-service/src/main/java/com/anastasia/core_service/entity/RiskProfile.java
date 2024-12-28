@@ -1,4 +1,4 @@
-package com.anastasia.core_service.entity.user;
+package com.anastasia.core_service.entity;
 
 import lombok.Builder;
 import lombok.Getter;

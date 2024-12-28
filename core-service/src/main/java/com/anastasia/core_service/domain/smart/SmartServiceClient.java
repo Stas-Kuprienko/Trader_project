@@ -1,7 +1,7 @@
 package com.anastasia.core_service.domain.smart;
 
 import com.anastasia.core_service.domain.event.NotificationAssistant;
-import com.anastasia.core_service.entity.user.Account;
+import com.anastasia.core_service.entity.Account;
 import com.anastasia.smart_service.AutoTradeGrpc;
 import com.anastasia.smart_service.Smart;
 import com.anastasia.trade_project.dto.StrategyDefinition;

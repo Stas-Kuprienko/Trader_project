@@ -1,7 +1,7 @@
 package com.anastasia.core_service.datasource.jpa;
 
-import com.anastasia.core_service.entity.user.Account;
-import com.anastasia.core_service.entity.user.RiskProfile;
+import com.anastasia.core_service.entity.Account;
+import com.anastasia.core_service.entity.RiskProfile;
 import com.anastasia.trade_project.enums.Broker;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;

@@ -1,7 +1,7 @@
 package com.anastasia.core_service.service;
 
 import com.anastasia.trade_project.dto.StrategyDefinition;
-import com.anastasia.trade_project.form.SmartSubscriptionRequest;
+import com.anastasia.trade_project.forms.SmartSubscriptionRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.UUID;

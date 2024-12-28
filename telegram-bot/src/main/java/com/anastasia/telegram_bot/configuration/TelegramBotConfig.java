@@ -2,7 +2,7 @@ package com.anastasia.telegram_bot.configuration;
 
 import com.anastasia.telegram_bot.domain.session.ChatSession;
 import com.anastasia.trade_project.core_client.CoreServiceClientV1;
-import com.anastasia.trade_project.notification.TradeNotification;
+import com.anastasia.trade_project.events.TradeNotification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

@@ -2,8 +2,8 @@ package com.anastasia.core_service.service.impl;
 
 import com.anastasia.core_service.datasource.jpa.TelegramChatRepository;
 import com.anastasia.core_service.datasource.jpa.UserDataRepository;
-import com.anastasia.core_service.entity.user.TelegramChat;
-import com.anastasia.core_service.entity.user.User;
+import com.anastasia.core_service.entity.TelegramChat;
+import com.anastasia.core_service.entity.User;
 import com.anastasia.core_service.exception.DataPersistenceException;
 import com.anastasia.core_service.exception.NotFoundException;
 import com.anastasia.core_service.service.UserDataService;

@@ -2,7 +2,7 @@ package com.anastasia.core_service.controller.v1;
 
 import com.anastasia.core_service.service.SmartTradingService;
 import com.anastasia.trade_project.dto.StrategyDefinition;
-import com.anastasia.trade_project.form.SmartSubscriptionRequest;
+import com.anastasia.trade_project.forms.SmartSubscriptionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;

@@ -1,4 +1,4 @@
-package com.anastasia.core_service.entity.orders;
+package com.anastasia.trade_project.models;
 
 import com.anastasia.trade_project.enums.Board;
 import com.anastasia.trade_project.enums.Broker;

@@ -1,6 +1,6 @@
 package com.anastasia.core_service.service.converter;
 
-import com.anastasia.core_service.entity.user.User;
+import com.anastasia.core_service.entity.User;
 import com.anastasia.trade_project.dto.UserDto;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

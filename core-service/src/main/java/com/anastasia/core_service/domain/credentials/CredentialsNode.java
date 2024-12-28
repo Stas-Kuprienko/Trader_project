@@ -1,10 +1,10 @@
 package com.anastasia.core_service.domain.credentials;
 
-import com.anastasia.core_service.entity.user.User;
+import com.anastasia.core_service.entity.User;
 import com.anastasia.core_service.exception.InternalServiceException;
 import com.anastasia.trade_project.enums.Role;
 import com.anastasia.trade_project.enums.Status;
-import com.anastasia.trade_project.form.RegistrationForm;
+import com.anastasia.trade_project.forms.RegistrationForm;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.CredentialRepresentation;

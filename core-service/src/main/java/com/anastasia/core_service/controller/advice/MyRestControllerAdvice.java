@@ -3,7 +3,7 @@ package com.anastasia.core_service.controller.advice;
 import com.anastasia.core_service.exception.InternalServiceException;
 import com.anastasia.core_service.exception.NotFoundException;
 import com.anastasia.core_service.exception.PaginationException;
-import com.anastasia.trade_project.form.ErrorDto;
+import com.anastasia.trade_project.forms.ErrorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 package com.anastasia.core_service.service;
 
-import com.anastasia.core_service.entity.user.TelegramChat;
-import com.anastasia.core_service.entity.user.User;
+import com.anastasia.core_service.entity.TelegramChat;
+import com.anastasia.core_service.entity.User;
 import com.anastasia.trade_project.enums.Status;
 import reactor.core.publisher.Mono;
 import java.util.UUID;

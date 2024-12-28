@@ -1,4 +1,4 @@
-package com.anastasia.trade_project.form;
+package com.anastasia.trade_project.forms;
 
 import com.anastasia.trade_project.enums.Language;
 import jakarta.validation.constraints.Email;

@@ -1,8 +1,8 @@
 package com.anastasia.core_service.service.converter;
 
-import com.anastasia.core_service.entity.user.Account;
-import com.anastasia.core_service.entity.user.RiskProfile;
-import com.anastasia.core_service.entity.user.User;
+import com.anastasia.core_service.entity.Account;
+import com.anastasia.core_service.entity.RiskProfile;
+import com.anastasia.core_service.entity.User;
 import com.anastasia.trade_project.dto.AccountDto;
 import com.anastasia.trade_project.dto.RiskProfileDto;
 import com.anastasia.trade_project.dto.UserDto;
@@ -33,7 +33,6 @@ public class AccountConverter implements Converter<Account, AccountDto>, Collect
                         .id(account.getId())
                         .broker(account.getBroker())
                         .clientId(account.getClientId())
-                        .token(account.getToken())
                         .tokenExpiresAt(localDateToString(account.getTokenExpiresAt()))
                         .createdAt(localDateToString(account.getCreatedAt()))
                         .updatedAt(localDateTimeToString(account.getUpdatedAt()))
@@ -57,7 +56,6 @@ public class AccountConverter implements Converter<Account, AccountDto>, Collect
                         .id(dto.getId())
                         .broker(dto.getBroker())
                         .clientId(dto.getClientId())
-                        .token(dto.getToken())
                         .tokenExpiresAt(stringToLocalDate(dto.getTokenExpiresAt()))
                         .createdAt(stringToLocalDate(dto.getCreatedAt()))
                         .updatedAt(stringToLocalDateTime(dto.getUpdatedAt()))
