@@ -6,6 +6,7 @@ import com.anastasia.core_service.entity.RiskProfile;
 import com.anastasia.core_service.exception.DataPersistenceException;
 import com.anastasia.core_service.exception.NotFoundException;
 import com.anastasia.core_service.service.AccountService;
+import com.anastasia.core_service.utility.CryptoUtility;
 import com.anastasia.trade_project.enums.Broker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,12 @@ import java.util.UUID;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final CryptoUtility cryptoUtility;
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, CryptoUtility cryptoUtility) {
         this.accountRepository = accountRepository;
+        this.cryptoUtility = cryptoUtility;
     }
 
 
@@ -32,6 +35,8 @@ public class AccountServiceImpl implements AccountService {
         if (account.getId() != null) {
             throw DataPersistenceException.entityToSaveHasId(account);
         }
+        String encryptedToken = cryptoUtility.encrypt(account.getToken());
+        account.setToken(encryptedToken);
         LocalDate createdAt = LocalDate.now();
         account.setCreatedAt(createdAt);
         return accountRepository.save(account);
@@ -40,7 +45,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Mono<Account> getById(UUID id, UUID userId) {
         return accountRepository.findById(id)
-                .filter(a -> a.getUser().getId().equals(userId))
+                .filter(account -> account.getUser().getId().equals(userId))
+                .doOnNext(account -> account.setToken(cryptoUtility.decrypt(account.getToken())))
                 .switchIfEmpty(Mono.error(NotFoundException.byID(Account.class, id)));
     }
 
@@ -48,23 +54,26 @@ public class AccountServiceImpl implements AccountService {
     public Mono<Account> getByBrokerAndClientId(Broker broker, String clientId, UUID userId) {
         return accountRepository.findByBrokerAndClientId(broker, clientId)
                 .filter(a -> a.getUser().getId().equals(userId))
+                .doOnNext(account -> account.setToken(cryptoUtility.decrypt(account.getToken())))
                 .switchIfEmpty(Mono.error(NotFoundException.byParameters(Account.class, Map.of(
                         "broker", broker,
                         "clientId", clientId))));
     }
 
     @Override
-    public Mono<Void> updateToken(UUID id, String token, LocalDate tokenExpiresAt) {
-        return accountRepository.updateToken(id, token, tokenExpiresAt, dateTimeNow());
+    public Mono<Void> updateToken(UUID id, UUID userId, String token, LocalDate tokenExpiresAt) {
+        return Mono.just(cryptoUtility.encrypt(token))
+                .flatMap(encryptedToken -> accountRepository
+                        .updateToken(id, encryptedToken, tokenExpiresAt, dateTimeNow()));
     }
 
     @Override
-    public Mono<Void> updateRiskProfile(UUID id, RiskProfile riskProfile) {
+    public Mono<Void> updateRiskProfile(UUID id, UUID userId, RiskProfile riskProfile) {
         return accountRepository.updateRiskProfile(id, riskProfile, dateTimeNow());
     }
 
     @Override
-    public Mono<Void> delete(UUID id) {
+    public Mono<Void> delete(UUID id, UUID userId) {
         return accountRepository.deleteById(id);
     }
 

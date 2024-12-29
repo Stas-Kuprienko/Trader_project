@@ -6,6 +6,7 @@ import com.anastasia.core_service.entity.User;
 import com.anastasia.trade_project.dto.AccountDto;
 import com.anastasia.trade_project.dto.RiskProfileDto;
 import com.anastasia.trade_project.dto.UserDto;
+import com.anastasia.trade_project.forms.NewAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -90,5 +91,16 @@ public class AccountConverter implements Converter<Account, AccountDto>, Collect
             return Flux.fromIterable(dtoCollection)
                     .flatMap(this::toEntity);
         }
+    }
+
+    public Mono<Account> toEntity(NewAccount newAccount) {
+        return Mono.just(
+                Account.builder()
+                        .broker(newAccount.getBroker())
+                        .clientId(newAccount.getClientId())
+                        .token(newAccount.getToken())
+                        .tokenExpiresAt(stringToLocalDate(newAccount.getTokenExpiresAt()))
+                        .build()
+        );
     }
 }

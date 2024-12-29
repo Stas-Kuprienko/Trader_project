@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class RegistrationForm {
+public class NewUser {
 
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$") @NotBlank
     private String login;
@@ -24,15 +24,15 @@ public class RegistrationForm {
 
 
     @Builder
-    public RegistrationForm(String login,
-                            String password,
-                            String name,
-                            Language language) {
+    public NewUser(String login,
+                   String password,
+                   String name,
+                   Language language) {
         this.login = login;
         this.password = password;
         this.name = name;
         this.language = language;
     }
 
-    public RegistrationForm() {}
+    public NewUser() {}
 }

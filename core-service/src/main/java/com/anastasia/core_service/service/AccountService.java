@@ -15,9 +15,9 @@ public interface AccountService {
 
     Mono<Account> getByBrokerAndClientId(Broker broker, String clientId, UUID userId);
 
-    Mono<Void> updateToken(UUID id, String token, LocalDate tokenExpiresAt);
+    Mono<Void> updateToken(UUID id, UUID userId, String token, LocalDate tokenExpiresAt);
 
-    Mono<Void> updateRiskProfile(UUID id, RiskProfile riskProfile);
+    Mono<Void> updateRiskProfile(UUID id, UUID userId, RiskProfile riskProfile);
 
-    Mono<Void> delete(UUID id);
+    Mono<Void> delete(UUID id, UUID userId);
 }
