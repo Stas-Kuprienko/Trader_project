@@ -2,14 +2,23 @@ package com.anastasia.core_service.controller.v1;
 
 import com.anastasia.core_service.domain.market.MarketDataDispatcher;
 import com.anastasia.trade_project.enums.ExchangeMarket;
+import com.anastasia.trade_project.forms.ErrorDto;
 import com.anastasia.trade_project.markets.Futures;
 import com.anastasia.trade_project.markets.MarketPage;
 import com.anastasia.trade_project.markets.Stock;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Tag(name = "Market Data")
 @RestController
 @RequestMapping("/api/v1/market-data")
 public class MarketDataController {
@@ -22,6 +31,9 @@ public class MarketDataController {
     }
 
 
+    @Operation(summary = "All stocks for exchange")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Stock list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Stock.class)))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @GetMapping("/{exchange}/stocks")
     public Flux<Stock> getStockList(@PathVariable("exchange") String exchange,
                                     @RequestParam("page") Integer page,
@@ -37,6 +49,10 @@ public class MarketDataController {
     }
 
 
+    @Operation(summary = "Find stock by ticker")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Stock data", content = @Content(schema = @Schema(implementation = Stock.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+            @ApiResponse(responseCode = "404", description = "Stock is not found", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @GetMapping("/{exchange}/stocks/{ticker}")
     public Mono<Stock> getStock(@PathVariable("exchange") String exchange,
                                 @PathVariable("ticker") String ticker) {
@@ -47,6 +63,9 @@ public class MarketDataController {
     }
 
 
+    @Operation(summary = "All futures for exchange")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Futures list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Futures.class)))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @GetMapping("/{exchange}/futures")
     public Flux<Futures> getFuturesList(@PathVariable("exchange") String exchange,
                                         @RequestParam("page") Integer page,
@@ -61,6 +80,10 @@ public class MarketDataController {
     }
 
 
+    @Operation(summary = "Find futures by ticker")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Futures data", content = @Content(schema = @Schema(implementation = Futures.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+            @ApiResponse(responseCode = "404", description = "Futures is not found", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @GetMapping("/{exchange}/futures/{ticker}")
     public Mono<Futures> getFutures(@PathVariable("exchange") String exchange,
                                     @PathVariable("ticker") String ticker) {

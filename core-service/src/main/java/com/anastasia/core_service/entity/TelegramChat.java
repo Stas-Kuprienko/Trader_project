@@ -9,6 +9,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter @Setter
 @Table(name = "telegram_chat", schema = "person")
@@ -18,7 +19,8 @@ public class TelegramChat {
     @Column("chat_id")
     private Long chatId;
 
-    private User user;
+    @Column("user_id")
+    private UUID userId;
 
     private Status status;
 
@@ -28,11 +30,11 @@ public class TelegramChat {
 
     @Builder
     public TelegramChat(Long chatId,
-                        User user,
+                        UUID userId,
                         Status status,
                         LocalDate createdAt) {
         this.chatId = chatId;
-        this.user = user;
+        this.userId = userId;
         this.status = status;
         this.createdAt = createdAt;
     }
@@ -56,7 +58,7 @@ public class TelegramChat {
     public String toString() {
         return "TelegramChat{" +
                 "chatId=" + chatId +
-                ", user=" + user +
+                ", userId=" + userId +
                 ", status=" + status +
                 ", createdAt=" + createdAt +
                 '}';

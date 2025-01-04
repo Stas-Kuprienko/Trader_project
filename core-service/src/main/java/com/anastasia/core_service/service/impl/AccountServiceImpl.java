@@ -45,7 +45,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Mono<Account> getById(UUID id, UUID userId) {
         return accountRepository.findById(id)
-                .filter(account -> account.getUser().getId().equals(userId))
+                .filter(account -> account.getUserId().equals(userId))
                 .doOnNext(account -> account.setToken(cryptoUtility.decrypt(account.getToken())))
                 .switchIfEmpty(Mono.error(NotFoundException.byID(Account.class, id)));
     }
@@ -53,7 +53,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Mono<Account> getByBrokerAndClientId(Broker broker, String clientId, UUID userId) {
         return accountRepository.findByBrokerAndClientId(broker, clientId)
-                .filter(a -> a.getUser().getId().equals(userId))
+                .filter(a -> a.getUserId().equals(userId))
                 .doOnNext(account -> account.setToken(cryptoUtility.decrypt(account.getToken())))
                 .switchIfEmpty(Mono.error(NotFoundException.byParameters(Account.class, Map.of(
                         "broker", broker,

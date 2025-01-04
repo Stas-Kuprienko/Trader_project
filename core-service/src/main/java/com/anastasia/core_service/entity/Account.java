@@ -19,7 +19,8 @@ public class Account {
     @Id
     private UUID id;
 
-    private User user;
+    @Column("user_id")
+    private UUID userId;
 
     @Column("client_id")
     private String clientId;
@@ -32,7 +33,7 @@ public class Account {
     private LocalDate tokenExpiresAt;
 
     @Column("risk_profile_id")
-    private RiskProfile riskProfile;
+    private UUID riskProfileId;
 
     @Column("created_at")
     private LocalDate createdAt;
@@ -43,21 +44,21 @@ public class Account {
 
     @Builder
     public Account(UUID id,
-                   User user,
+                   UUID userId,
                    String clientId,
                    Broker broker,
                    String token,
                    LocalDate tokenExpiresAt,
-                   RiskProfile riskProfile,
+                   UUID riskProfileId,
                    LocalDate createdAt,
                    LocalDateTime updatedAt) {
         this.id = id;
-        this.user = user;
+        this.userId = userId;
         this.clientId = clientId;
         this.broker = broker;
         this.token = token;
         this.tokenExpiresAt = tokenExpiresAt;
-        this.riskProfile = riskProfile;
+        this.riskProfileId = riskProfileId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

@@ -21,11 +21,6 @@ public class UserDataServiceImpl implements UserDataService {
 
     @Override
     public Mono<UserDto> getUserByChatId(long chatId) {
-        return Mono.just(coreServiceClient
-                        .TELEGRAM_CHAT
-                        .findById(chatId))
-                .map(telegramChatDto -> telegramChatDto
-                        .orElseThrow(NotFoundException::new)
-                        .getUser());
+        return null;
     }
 }

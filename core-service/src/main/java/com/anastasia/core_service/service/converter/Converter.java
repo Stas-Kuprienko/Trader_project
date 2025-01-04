@@ -47,12 +47,4 @@ public interface Converter <ENTITY, DTO> {
             return null;
         }
     }
-
-    default String toStringIfNotNull(Object o) {
-        if (o != null) {
-            return o.toString();
-        } else {
-            return null;
-        }
-    }
 }

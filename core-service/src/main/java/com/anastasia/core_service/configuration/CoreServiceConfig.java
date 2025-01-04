@@ -6,6 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.*;
+import io.swagger.v3.oas.models.servers.Server;
 import jakarta.annotation.PreDestroy;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -27,6 +32,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +41,7 @@ public class CoreServiceConfig {
 
     public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final String OAUTH_2_SCHEME = "oauth2Scheme";
 
     private Keycloak keycloak;
 
@@ -162,4 +169,38 @@ public class CoreServiceConfig {
         }
     }
     // ******************* /\
+
+    // OPEN-API ********** \/
+
+    @Bean
+    public OpenAPI openAPI(@Value("${springdoc.info.title}") String title,
+                           @Value("${springdoc.info.description}") String description,
+                           @Value("${springdoc.info.version}") String version,
+                           @Value("${project.variables.keycloak.url}") String authServerUrl,
+                           @Value("${project.variables.keycloak.realm}") String realm) {
+
+        Info info = new Info()
+                .title(title)
+                .description(description)
+                .version(version);
+
+        SecurityScheme oauth2Scheme = new SecurityScheme()
+                .type(SecurityScheme.Type.OAUTH2)
+                .flows(new OAuthFlows()
+                        .authorizationCode(new OAuthFlow()
+                                .authorizationUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/auth")
+                                .tokenUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/token")
+                                .scopes(new Scopes()
+                                        .addString("openid", "OpenID Connect scope")
+                                        .addString("profile", "Access to user profile"))));
+
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList(OAUTH_2_SCHEME);
+
+        return new OpenAPI()
+                .info(info)
+                .addSecurityItem(securityRequirement)
+                .components(new Components()
+                        .addSecuritySchemes(OAUTH_2_SCHEME, oauth2Scheme));
+    }
+    // /\ **************** /\
 }

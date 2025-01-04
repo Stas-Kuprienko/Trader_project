@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 import java.util.UUID;
@@ -30,12 +29,10 @@ public class UserDto {
 
     @JsonProperty("created_at")
     @JsonFormat(pattern = "YYYY-MM-DD")
-    @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2})")
     private String createdAt;
 
     @JsonProperty("updated_at")
     @JsonFormat(pattern = "YYYY-MM-DD HH:MM:SS")
-    @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})")
     private String updatedAt;
 
 

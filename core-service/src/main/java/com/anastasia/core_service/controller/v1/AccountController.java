@@ -1,9 +1,6 @@
 package com.anastasia.core_service.controller.v1;
 
-import com.anastasia.core_service.entity.Account;
-import com.anastasia.core_service.entity.User;
 import com.anastasia.core_service.service.AccountService;
-import com.anastasia.core_service.service.UserDataService;
 import com.anastasia.core_service.service.converter.AccountConverter;
 import com.anastasia.core_service.utility.JwtUtility;
 import com.anastasia.trade_project.dto.AccountDto;
@@ -32,15 +29,12 @@ public class AccountController {
 
     private final AccountService accountService;
     private final AccountConverter accountConverter;
-    private final UserDataService userDataService;
 
     @Autowired
     public AccountController(AccountService accountService,
-                             AccountConverter accountConverter,
-                             UserDataService userDataService) {
+                             AccountConverter accountConverter) {
         this.accountService = accountService;
         this.accountConverter = accountConverter;
-        this.userDataService = userDataService;
     }
 
 
@@ -49,14 +43,8 @@ public class AccountController {
                     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @PostMapping
     public Mono<AccountDto> createNew(@RequestBody NewAccount newAccount) {
-        return Mono.zip(accountConverter.toEntity(newAccount),
-                        userDataService.getById(newAccount.getUserId()))
-                .flatMap(tuple -> {
-                    Account account = tuple.getT1();
-                    User user = tuple.getT2();
-                    account.setUser(user);
-                    return accountService.create(account);
-                })
+        return accountConverter.toEntity(newAccount)
+                .flatMap(accountService::create)
                 .flatMap(accountConverter::toDto);
     }
 
@@ -74,21 +62,19 @@ public class AccountController {
 
 
     @Operation(summary = "Update account token")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Account token is updated", content = @Content(schema = @Schema(implementation = AccountDto.class))),
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Account token is updated", content = @Content),
                     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
                     @ApiResponse(responseCode = "404", description = "Account is not found", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @PutMapping("/{id}")
-    public Mono<AccountDto> updateToken(@AuthenticationPrincipal Jwt jwt,
+    public Mono<ResponseEntity<?>> updateToken(@AuthenticationPrincipal Jwt jwt,
                                         @PathVariable UUID id,
                                         @RequestBody UpdateAccountToken update) {
         return Mono.just(JwtUtility.extractUserId(jwt))
-                .map(userId -> {
+                .flatMap(userId -> {
                     LocalDate expiresAt = accountConverter.stringToLocalDate(update.getTokenExpiresAt());
-                    accountService.updateToken(id, userId, update.getToken(), expiresAt);
-                    return userId;
+                    return accountService.updateToken(id, userId, update.getToken(), expiresAt);
                 })
-                .flatMap(userId -> accountService.getById(id, userId))
-                .flatMap(accountConverter::toDto);
+                .map(unused -> ResponseEntity.ok().build());
     }
 
 
@@ -97,7 +83,7 @@ public class AccountController {
                     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
                     @ApiResponse(responseCode = "404", description = "Account is not found", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @DeleteMapping("/{id}")
-    public Mono<?> deleteById(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
+    public Mono<ResponseEntity<?>> deleteById(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID id) {
         return Mono.just(JwtUtility.extractUserId(jwt))
                 .flatMap(userId -> accountService.delete(id, userId))
                 .map(unused -> ResponseEntity.noContent().build());

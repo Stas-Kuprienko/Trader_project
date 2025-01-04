@@ -1,11 +1,11 @@
 package com.anastasia.trade_project.core_client;
 
 import com.anastasia.trade_project.dto.TelegramChatDto;
-import com.anastasia.trade_project.dto.UserDto;
-import com.anastasia.trade_project.enums.Language;
-import com.anastasia.trade_project.enums.Role;
+import com.anastasia.trade_project.enums.Status;
 import org.springframework.web.client.RestClient;
+import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 public class TelegramChatResource extends HttpError404Handler {
 
@@ -32,13 +32,6 @@ public class TelegramChatResource extends HttpError404Handler {
     //TODO TEMPORARY SOLUTION !!!!!!!!!!!!!!!!!!!!!!!
 
     public Optional<TelegramChatDto> findById(long chatId) {
-        UserDto user = UserDto.builder()
-                .id(1L)
-                .name("Stanislav")
-                .language(Language.RU)
-                .login("example@email.com")
-                .role(Role.USER)
-                .build();
-        return Optional.of(new TelegramChatDto(chatId, user));
+        return Optional.of(new TelegramChatDto(chatId, UUID.randomUUID(), Status.ACTIVE, LocalDate.now().toString()));
     }
 }
