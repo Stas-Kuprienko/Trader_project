@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: notification-service
+  profiles:
+    active:
+      - local
+  r2dbc:
+    url: r2dbc:postgresql://${project.variables.datasource.url}/trade_project
+    username: ${project.variables.datasource.username}
+    password: ${project.variables.datasource.password}
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://${project.variables.datasource.url}/trade_project
+    user: ${project.variables.datasource.username}
+    password: ${project.variables.datasource.password}
+  kafka:
+    trade-notification-topic: trade-notification-topic
+    subscribe-status-topic: subscribe-status-topic
+    consumer:
+      bootstrap-servers: ${project.variables.kafka.url}
+      group-id: notification-group
+      auto-offset-reset: earliest
+
+telegram:
+  username: ${project.telegram.username}
+  botToken: ${project.telegram.botToken}
+
+
+project:
+  variables:
+    service-url: <?>
+    datasource:
+      url: <?>
+      username: <?>
+      password: <?>
+    kafka:
+      url: <?>
+
+  telegram:
+    username: <?>
+    botToken: <?>

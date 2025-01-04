@@ -1,0 +1,39 @@
+plugins {
+	id 'org.springframework.boot' version '3.3.4'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+
+    //telegram
+    implementation "org.telegram:telegrambots-spring-boot-starter:$telegram_version"
+
+    //migration
+	implementation "org.flywaydb:flyway-core:$flyway_version"
+	implementation "org.flywaydb:flyway-database-postgresql:$flyway_version"
+
+    //datasource
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly "org.postgresql:postgresql:$postgresql_version"
+
+	//project
+	implementation project(':model')
+
+    //web
+    implementation "org.springframework:spring-web:$spring_version"
+
+	//messaging
+	implementation "org.springframework.kafka:spring-kafka:$spring_kafka_version"
+
+	//tests
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
