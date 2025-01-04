@@ -21,9 +21,9 @@ public interface UserDataRepository extends ReactiveCrudRepository<User, UUID> {
     @Modifying
     @Transactional
     @Query("""
-            UPDATE User
+            UPDATE person.users
             SET login = :login,
-            updatedAt = :updatedAt
+            updated_at = :updatedAt
             WHERE id = :id""")
     Mono<Void> updateLogin(@Param("id") @NonNull UUID id,
                            @Param("login") @NonNull String login,
@@ -33,9 +33,9 @@ public interface UserDataRepository extends ReactiveCrudRepository<User, UUID> {
     @Modifying
     @Transactional
     @Query("""
-            UPDATE User
+            UPDATE person.users
             SET role = :role,
-            updatedAt = :updatedAt
+            updated_at = :updatedAt
             WHERE id = :id""")
     Mono<Void> updateRole(@Param("id") @NonNull UUID id,
                           @Param("role") @NonNull Role role,
@@ -45,9 +45,9 @@ public interface UserDataRepository extends ReactiveCrudRepository<User, UUID> {
     @Modifying
     @Transactional
     @Query("""
-            UPDATE User
+            UPDATE person.users
             SET status = :status,
-            updatedAt = :updatedAt
+            updated_at = :updatedAt
             WHERE id = :id""")
     Mono<Void> updateStatus(@Param("id") @NonNull UUID id,
                             @Param("status") @NonNull Status status,

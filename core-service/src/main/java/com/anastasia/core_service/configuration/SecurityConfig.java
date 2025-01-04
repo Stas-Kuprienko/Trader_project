@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .pathMatchers("/api/v1/market", "/api/v1/market/**").permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         .pathMatchers("/api/v1/users/**").authenticated()
+                        .pathMatchers("/api/v1/accounts", "/api/v1/accounts/**").authenticated()
                         .anyExchange().permitAll()
                 )
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)

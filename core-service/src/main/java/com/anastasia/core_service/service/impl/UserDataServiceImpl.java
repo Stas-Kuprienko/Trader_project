@@ -2,6 +2,7 @@ package com.anastasia.core_service.service.impl;
 
 import com.anastasia.core_service.datasource.jpa.TelegramChatRepository;
 import com.anastasia.core_service.datasource.jpa.UserDataRepository;
+import com.anastasia.core_service.datasource.jpa.UserDataCustomRepository;
 import com.anastasia.core_service.domain.credentials.CredentialsNode;
 import com.anastasia.core_service.entity.TelegramChat;
 import com.anastasia.core_service.entity.User;
@@ -25,12 +26,18 @@ import java.util.function.Supplier;
 public class UserDataServiceImpl implements UserDataService {
 
     private final UserDataRepository userDataRepository;
+    private final UserDataCustomRepository userDataCustomRepository;
     private final TelegramChatRepository telegramChatRepository;
     private final CredentialsNode credentialsNode;
 
+
     @Autowired
-    public UserDataServiceImpl(UserDataRepository userDataRepository, TelegramChatRepository telegramChatRepository, CredentialsNode credentialsNode) {
+    public UserDataServiceImpl(UserDataRepository userDataRepository,
+                               UserDataCustomRepository userDataCustomRepository,
+                               TelegramChatRepository telegramChatRepository,
+                               CredentialsNode credentialsNode) {
         this.userDataRepository = userDataRepository;
+        this.userDataCustomRepository = userDataCustomRepository;
         this.telegramChatRepository = telegramChatRepository;
         this.credentialsNode = credentialsNode;
     }
@@ -39,7 +46,10 @@ public class UserDataServiceImpl implements UserDataService {
     @Transactional
     @Override
     public Mono<User> singUp(String login, String password, String name, Language language) {
-        return Mono.just(User.builder()
+        return credentialsNode
+                .signUp(login, password)
+                .map(id -> User.builder()
+                        .id(id)
                         .login(login)
                         .name(name)
                         .language(language)
@@ -47,8 +57,7 @@ public class UserDataServiceImpl implements UserDataService {
                         .status(Status.ACTIVE)
                         .createdAt(LocalDate.now())
                         .build())
-                .flatMap(userDataRepository::save)
-                .flatMap(user -> credentialsNode.signUp(user, password));
+                .flatMap(userDataCustomRepository::insert);
     }
 
     @Override
@@ -75,12 +84,12 @@ public class UserDataServiceImpl implements UserDataService {
     }
 
     @Override
-    public Mono<TelegramChat> getTelegramChatByUser(User user) {
+    public Mono<TelegramChat> getTelegramChatByUser(UUID userId) {
         return telegramChatRepository
-                .findByUser(user)
+                .findByUserId(userId)
                 .filter(telegramChat -> telegramChat.getStatus() == Status.ACTIVE)
                 .switchIfEmpty(Mono.error(
-                        NotFoundException.byParameter(TelegramChat.class, "userID", user.getId())));
+                        NotFoundException.byParameter(TelegramChat.class, "userID", userId)));
     }
 
     @Override

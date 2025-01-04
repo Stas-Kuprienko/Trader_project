@@ -8,6 +8,7 @@ import com.anastasia.trade_project.forms.ErrorDto;
 import com.anastasia.trade_project.forms.NewAccount;
 import com.anastasia.trade_project.forms.UpdateAccountToken;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -49,6 +51,17 @@ public class AccountController {
     }
 
 
+    @Operation(summary = "Find all accounts by user")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Account list", content = @Content(array = @ArraySchema(schema = @Schema(implementation = AccountDto.class)))),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
+    @GetMapping
+    public Flux<AccountDto> findAllByUser(@AuthenticationPrincipal Jwt jwt) {
+        return Mono.just(JwtUtility.extractUserId(jwt))
+                .flatMapMany(accountService::getAllByUserId)
+                .flatMap(accountConverter::toDto);
+    }
+
+
     @Operation(summary = "Find account by ID")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Account data", content = @Content(schema = @Schema(implementation = AccountDto.class))),
                     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -67,8 +80,8 @@ public class AccountController {
                     @ApiResponse(responseCode = "404", description = "Account is not found", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @PutMapping("/{id}")
     public Mono<ResponseEntity<?>> updateToken(@AuthenticationPrincipal Jwt jwt,
-                                        @PathVariable UUID id,
-                                        @RequestBody UpdateAccountToken update) {
+                                               @PathVariable UUID id,
+                                               @RequestBody UpdateAccountToken update) {
         return Mono.just(JwtUtility.extractUserId(jwt))
                 .flatMap(userId -> {
                     LocalDate expiresAt = accountConverter.stringToLocalDate(update.getTokenExpiresAt());

@@ -2,7 +2,6 @@ package com.anastasia.core_service.service.impl;
 
 import com.anastasia.core_service.datasource.jpa.AccountRepository;
 import com.anastasia.core_service.entity.Account;
-import com.anastasia.core_service.entity.RiskProfile;
 import com.anastasia.core_service.exception.DataPersistenceException;
 import com.anastasia.core_service.exception.NotFoundException;
 import com.anastasia.core_service.service.AccountService;
@@ -10,6 +9,7 @@ import com.anastasia.core_service.utility.CryptoUtility;
 import com.anastasia.trade_project.enums.Broker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -61,6 +61,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Flux<Account> getAllByUserId(UUID userId) {
+        return accountRepository
+                .findAllByUserId(userId)
+                .doOnNext(account -> account.setToken(cryptoUtility.decrypt(account.getToken())));
+    }
+
+    @Override
     public Mono<Void> updateToken(UUID id, UUID userId, String token, LocalDate tokenExpiresAt) {
         return Mono.just(cryptoUtility.encrypt(token))
                 .flatMap(encryptedToken -> accountRepository
@@ -68,8 +75,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Mono<Void> updateRiskProfile(UUID id, UUID userId, RiskProfile riskProfile) {
-        return accountRepository.updateRiskProfile(id, riskProfile, dateTimeNow());
+    public Mono<Void> updateRiskProfile(UUID id, UUID userId, UUID riskProfileId) {
+        return accountRepository.updateRiskProfile(id, riskProfileId, dateTimeNow());
     }
 
     @Override

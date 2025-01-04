@@ -17,7 +17,7 @@ public interface UserDataService {
 
     Mono<TelegramChat> getTelegramChatById(Long chatId);
 
-    Mono<TelegramChat> getTelegramChatByUser(User user);
+    Mono<TelegramChat> getTelegramChatByUser(UUID userId);
 
     Mono<User> update(UUID id, User updatable);
 
