@@ -9,6 +9,9 @@ dependencies {
     //telegram
     implementation "org.telegram:telegrambots-spring-boot-starter:$telegram_version"
 
+    //e-mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     //migration
 	implementation "org.flywaydb:flyway-core:$flyway_version"
 	implementation "org.flywaydb:flyway-database-postgresql:$flyway_version"
@@ -17,13 +20,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly "org.postgresql:postgresql:$postgresql_version"
 
+    implementation "javax.xml.bind:jaxb-api:2.3.1"
+
 	//project
 	implementation project(':model')
 
     //web
     implementation "org.springframework:spring-web:$spring_version"
 
-	//messaging
+	//event_driver
 	implementation "org.springframework.kafka:spring-kafka:$spring_kafka_version"
 
 	//tests

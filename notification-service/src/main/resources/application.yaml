@@ -4,8 +4,9 @@ spring:
   profiles:
     active:
       - local
-  r2dbc:
-    url: r2dbc:postgresql://${project.variables.datasource.url}/trade_project
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${project.variables.datasource.url}/trade_project
     username: ${project.variables.datasource.username}
     password: ${project.variables.datasource.password}
   flyway:
@@ -13,6 +14,13 @@ spring:
     url: jdbc:postgresql://${project.variables.datasource.url}/trade_project
     user: ${project.variables.datasource.username}
     password: ${project.variables.datasource.password}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   kafka:
     trade-notification-topic: trade-notification-topic
     subscribe-status-topic: subscribe-status-topic
@@ -20,10 +28,25 @@ spring:
       bootstrap-servers: ${project.variables.kafka.url}
       group-id: notification-group
       auto-offset-reset: earliest
+  mail:
+    host: ${project.variables.mail.smtp.host}
+    port: ${project.variables.mail.port}
+    username: ${project.variables.mail.service.user}
+    password: ${project.variables.mail.service.password}
+    protocol: ${project.variables.mail.protocol}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 telegram:
-  username: ${project.telegram.username}
-  botToken: ${project.telegram.botToken}
+  username: ${project.variables.telegram.username}
+  botToken: ${project.variables.telegram.botToken}
 
 
 project:
@@ -35,7 +58,15 @@ project:
       password: <?>
     kafka:
       url: <?>
+    telegram:
+      username: <?>
+      botToken: <?>
+    mail:
+      protocol: <?>
+      service:
+        user: <?>
+        password: <?>
+      smtp:
+        host: <?>
+      port: <?>
 
-  telegram:
-    username: <?>
-    botToken: <?>
