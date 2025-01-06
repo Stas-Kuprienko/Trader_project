@@ -17,7 +17,7 @@ public class SmartServiceConfig {
     }
 
     @Bean
-    public ScheduledExecutorService scheduler(@Value("${project.variables}") Integer threadPoolSize) {
+    public ScheduledExecutorService scheduler(@Value("${project.variables.thread-pool-size}") Integer threadPoolSize) {
         return Executors.newScheduledThreadPool(threadPoolSize);
     }
 }

@@ -67,9 +67,15 @@ public class NotificationAssistantImpl implements NotificationAssistant {
 
     private SubscriptionStatus convert(Smart.StatusResponse status, SubscriptionStatus.Option option) {
         return SubscriptionStatus.builder()
+                .broker(Broker.valueOf(status.getAccount().getBroker()))
+                .clientId(status.getAccount().getClientId())
+                .ticker(status.getSecurity().getTicker())
+                .board(Board.valueOf(status.getSecurity().getBoard()))
                 .tradeStrategy(status.getStrategy().getName())
                 .tradeScope(TradeScope.valueOf(status.getStrategy().getTradeScope().name()))
                 .option(option)
+                .success(status.getSuccess())
+                .time(LocalDateTime.now())
                 .build();
     }
 }

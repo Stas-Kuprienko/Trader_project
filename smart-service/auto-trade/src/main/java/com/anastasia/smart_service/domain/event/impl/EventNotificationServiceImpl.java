@@ -21,12 +21,12 @@ public class EventNotificationServiceImpl implements EventNotificationService {
 
 
     @Override
-    public void addListener(TradeSubscription subscription, StreamObserver<Smart.SubscribeResponse> responseObserver) {
+    public void addListener(Smart.SubscribeRequest request, StreamObserver<Smart.SubscribeResponse> responseObserver) {
+        TradeSubscription subscription = new TradeSubscription(request.getSecurity(), request.getStrategy());
         listeners.put(subscription, responseObserver);
-        Smart.SubscribeResponse response = Smart.SubscribeResponse.newBuilder()
-                .setStatus(Smart.StatusResponse.newBuilder()
-                        .setSuccess(true)
-                        .build())
+        Smart.SubscribeResponse response = Smart.SubscribeResponse
+                .newBuilder()
+                .setStatus(convert(request, true))
                 .build();
         responseObserver.onNext(response);
     }
@@ -50,5 +50,15 @@ public class EventNotificationServiceImpl implements EventNotificationService {
         if (responseObserver != null) {
             responseObserver.onCompleted();
         }
+    }
+
+
+    private Smart.StatusResponse convert(Smart.SubscribeRequest request, boolean success) {
+        return Smart.StatusResponse.newBuilder()
+                .setAccount(request.getAccount())
+                .setSecurity(request.getSecurity())
+                .setStrategy(request.getStrategy())
+                .setSuccess(success)
+                .build();
     }
 }

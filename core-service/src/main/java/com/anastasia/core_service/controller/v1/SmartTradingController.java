@@ -29,7 +29,7 @@ public class SmartTradingController {
     @PostMapping("/subscribe")
     public Mono<Void> subscribe(@RequestBody SmartSubscriptionRequest request) {
         //TODO temporary, just for test
-        UUID userId = UUID.randomUUID();
+        UUID userId = UUID.fromString("25fca6c8-08fe-4bbe-aa5e-dcb26aa67e26");
 
         return smartTradingService.subscribe(userId, request);
     }

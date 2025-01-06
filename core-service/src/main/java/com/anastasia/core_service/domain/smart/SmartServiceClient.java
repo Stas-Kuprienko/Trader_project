@@ -52,7 +52,7 @@ public class SmartServiceClient {
                 .build();
         Smart.Account accountToRequest = Smart.Account.newBuilder()
                 .setClientId(account.getClientId())
-                .setBroker(account.getBroker().title())
+                .setBroker(account.getBroker().name())
                 .setToken(account.getToken())
                 .build();
         Smart.Strategy strategyToRequest = Smart.Strategy.newBuilder()
