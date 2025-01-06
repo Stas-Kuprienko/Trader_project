@@ -3,6 +3,7 @@ package com.anastasia.trade_project.dto;
 import com.anastasia.trade_project.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class TelegramChatDto {
 
     @JsonProperty("created_at")
     @JsonFormat(pattern = "YYYY-MM-DD")
+    @Schema(pattern = "YYYY-MM-DD")
     private String createdAt;
 
 

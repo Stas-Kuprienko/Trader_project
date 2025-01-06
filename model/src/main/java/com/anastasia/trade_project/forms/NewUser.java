@@ -1,6 +1,7 @@
 package com.anastasia.trade_project.forms;
 
 import com.anastasia.trade_project.enums.Language;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import lombok.Data;
 public class NewUser {
 
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$") @NotBlank
+    @Schema(pattern = "example@email\\.com")
     private String login;
 
     @NotBlank

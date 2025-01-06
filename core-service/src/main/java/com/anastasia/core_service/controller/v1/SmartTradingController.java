@@ -3,6 +3,7 @@ package com.anastasia.core_service.controller.v1;
 import com.anastasia.core_service.service.SmartTradingService;
 import com.anastasia.trade_project.dto.StrategyDefinition;
 import com.anastasia.trade_project.forms.SmartSubscriptionRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -27,7 +28,7 @@ public class SmartTradingController {
     }
 
     @PostMapping("/subscribe")
-    public Mono<Void> subscribe(@RequestBody SmartSubscriptionRequest request) {
+    public Mono<Void> subscribe(@RequestBody @Valid SmartSubscriptionRequest request) {
         //TODO temporary, just for test
         UUID userId = UUID.fromString("25fca6c8-08fe-4bbe-aa5e-dcb26aa67e26");
 

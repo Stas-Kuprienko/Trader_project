@@ -5,6 +5,7 @@ import com.anastasia.trade_project.enums.Role;
 import com.anastasia.trade_project.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -17,6 +18,7 @@ public class UserDto {
     private UUID id;
 
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$") @NotBlank
+    @Schema(pattern = "example@email\\.com")
     private String login;
 
     private Role role;
@@ -29,10 +31,12 @@ public class UserDto {
 
     @JsonProperty("created_at")
     @JsonFormat(pattern = "YYYY-MM-DD")
+    @Schema(pattern = "YYYY-MM-DD")
     private String createdAt;
 
     @JsonProperty("updated_at")
     @JsonFormat(pattern = "YYYY-MM-DD HH:MM:SS")
+    @Schema(pattern = "YYYY-MM-DD HH:MM:SS")
     private String updatedAt;
 
 

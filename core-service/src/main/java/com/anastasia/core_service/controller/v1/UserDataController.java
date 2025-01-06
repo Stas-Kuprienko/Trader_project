@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,7 +43,7 @@ public class UserDataController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "User is registered", content = @Content(schema = @Schema(implementation = UserDto.class))),
                     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @PostMapping
-    public Mono<UserDto> signUp(@RequestBody NewUser newUser) {
+    public Mono<UserDto> signUp(@RequestBody @Valid NewUser newUser) {
         return userDataService
                 .singUp(newUser.getLogin(),
                         newUser.getPassword(),

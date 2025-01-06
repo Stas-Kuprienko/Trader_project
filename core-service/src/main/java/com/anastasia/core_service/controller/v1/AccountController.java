@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,7 +45,7 @@ public class AccountController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Account is created", content = @Content(schema = @Schema(implementation = AccountDto.class))),
                     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @PostMapping
-    public Mono<AccountDto> createNew(@RequestBody NewAccount newAccount) {
+    public Mono<AccountDto> createNew(@RequestBody @Valid NewAccount newAccount) {
         return accountConverter.toEntity(newAccount)
                 .flatMap(accountService::create)
                 .flatMap(accountConverter::toDto);
@@ -81,7 +82,7 @@ public class AccountController {
     @PutMapping("/{id}")
     public Mono<ResponseEntity<?>> updateToken(@AuthenticationPrincipal Jwt jwt,
                                                @PathVariable UUID id,
-                                               @RequestBody UpdateAccountToken update) {
+                                               @RequestBody @Valid UpdateAccountToken update) {
         return Mono.just(JwtUtility.extractUserId(jwt))
                 .flatMap(userId -> {
                     LocalDate expiresAt = accountConverter.stringToLocalDate(update.getTokenExpiresAt());

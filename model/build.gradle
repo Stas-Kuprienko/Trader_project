@@ -7,7 +7,11 @@ dependencies {
     // JSON
     compileOnly "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
     compileOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
+
+    // annotations
     compileOnly "jakarta.validation:jakarta.validation-api:$jakarta_valid_version"
+    compileOnly "io.swagger.core.v3:swagger-annotations-jakarta:$jakarta_swagger_version"
+
 
     // redis
     compileOnly "org.springframework.data:spring-data-redis:$springframework_boot_version"

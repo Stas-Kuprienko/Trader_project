@@ -3,8 +3,8 @@ package com.anastasia.trade_project.forms;
 import com.anastasia.trade_project.enums.Broker;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class NewAccount {
 
     @JsonProperty("token_expires_at")
     @JsonFormat(pattern = "YYYY-MM-DD")
-    @Pattern(regexp = "(\\d{4})-(\\d{2})-(\\d{2})")
+    @Schema(pattern = "YYYY-MM-DD")
     private String tokenExpiresAt;
 
 

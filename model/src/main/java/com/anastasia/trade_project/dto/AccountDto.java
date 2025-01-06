@@ -3,6 +3,7 @@ package com.anastasia.trade_project.dto;
 import com.anastasia.trade_project.enums.Broker;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class AccountDto {
 
     @JsonProperty("token_expires_at")
     @JsonFormat(pattern = "YYYY-MM-DD")
+    @Schema(pattern = "YYYY-MM-DD")
     private String tokenExpiresAt;
 
     @JsonProperty("risk_profile_id")
@@ -29,10 +31,12 @@ public class AccountDto {
 
     @JsonProperty("created_at")
     @JsonFormat(pattern = "YYYY-MM-DD")
+    @Schema(pattern = "YYYY-MM-DD")
     private String createdAt;
 
     @JsonProperty("updated_at")
     @JsonFormat(pattern = "YYYY-MM-DD HH:MM:SS")
+    @Schema(pattern = "YYYY-MM-DD HH:MM:SS")
     private String updatedAt;
 
 
