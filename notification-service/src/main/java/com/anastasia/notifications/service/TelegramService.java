@@ -1,5 +1,6 @@
 package com.anastasia.notifications.service;
 
-public interface TelegramChatService {
+public interface TelegramService {
+
     void sendMessage(String text, Long chatId);
 }

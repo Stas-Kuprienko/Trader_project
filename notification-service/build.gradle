@@ -4,10 +4,8 @@ plugins {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-
-    //telegram
-    implementation "org.telegram:telegrambots-spring-boot-starter:$telegram_version"
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     //e-mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -24,9 +22,6 @@ dependencies {
 
 	//project
 	implementation project(':model')
-
-    //web
-    implementation "org.springframework:spring-web:$spring_version"
 
 	//event_driver
 	implementation "org.springframework.kafka:spring-kafka:$spring_kafka_version"
