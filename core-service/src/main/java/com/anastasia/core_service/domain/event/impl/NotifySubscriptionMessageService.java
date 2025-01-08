@@ -1,7 +1,7 @@
 package com.anastasia.core_service.domain.event.impl;
 
 import com.anastasia.core_service.domain.event.MessageService;
-import com.anastasia.trade_project.events.TradeNotification;
+import com.anastasia.trade_project.events.NotifySubscriptionEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +12,15 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-@Service("messageServiceTradeNotification")
-public class MessageServiceTradeNotification implements MessageService<TradeNotification> {
+@Service("notifySubscriptionMessageService")
+public class NotifySubscriptionMessageService implements MessageService<NotifySubscriptionEvent> {
 
     private final String topic;
-    private final KafkaTemplate<String, TradeNotification> kafkaTemplate;
+    private final KafkaTemplate<String, NotifySubscriptionEvent> kafkaTemplate;
 
     @Autowired
-    public MessageServiceTradeNotification(@Value("${spring.kafka.trade-notification-topic}") String topic,
-                                           KafkaTemplate<String, TradeNotification> kafkaTemplate) {
+    public NotifySubscriptionMessageService(@Value("${spring.kafka.notify-subscription-topic}") String topic,
+                                            KafkaTemplate<String, NotifySubscriptionEvent> kafkaTemplate) {
         this.topic = topic;
         this.kafkaTemplate = kafkaTemplate;
         this.kafkaTemplate.setDefaultTopic(topic);
@@ -28,15 +28,15 @@ public class MessageServiceTradeNotification implements MessageService<TradeNoti
 
 
     @Override
-    public Mono<SendResult<String, TradeNotification>> send(TradeNotification message) {
-        ProducerRecord<String, TradeNotification> record = new ProducerRecord<>(topic, message);
+    public Mono<SendResult<String, NotifySubscriptionEvent>> send(NotifySubscriptionEvent message) {
+        ProducerRecord<String, NotifySubscriptionEvent> record = new ProducerRecord<>(topic, message);
         return Mono.fromFuture(kafkaTemplate.send(record))
                 .doOnNext(result -> log.info("Message is sent to topic '{}'. Result: {}", topic, result.toString()));
     }
 
     @Override
-    public Mono<SendResult<String, TradeNotification>> send(String key, TradeNotification message) {
-        ProducerRecord<String, TradeNotification> record = new ProducerRecord<>(topic, key, message);
+    public Mono<SendResult<String, NotifySubscriptionEvent>> send(String key, NotifySubscriptionEvent message) {
+        ProducerRecord<String, NotifySubscriptionEvent> record = new ProducerRecord<>(topic, key, message);
         return Mono.fromFuture(kafkaTemplate.send(record))
                 .doOnNext(result -> log.info("Message is sent to topic '{}'. Result: {}", topic, result.toString()));
     }

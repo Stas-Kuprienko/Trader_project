@@ -3,11 +3,11 @@ package com.anastasia.notifications.domain.notifiers;
 import com.anastasia.notifications.domain.message.TemplateStore;
 import com.anastasia.notifications.service.EmailService;
 import com.anastasia.notifications.service.TelegramService;
-import com.anastasia.trade_project.events.SubscriptionStatus;
+import com.anastasia.trade_project.events.TradeSubscriptionEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Notifier(eventType = SubscriptionStatus.class)
-public class SubscriptionNotifier implements EventNotifier<SubscriptionStatus> {
+@Notifier(eventType = TradeSubscriptionEvent.class)
+public class TradeSubscriptionNotifier implements EventNotifier<TradeSubscriptionEvent> {
 
     private final TemplateStore templateStore;
     private final TelegramService telegramService;
@@ -15,9 +15,9 @@ public class SubscriptionNotifier implements EventNotifier<SubscriptionStatus> {
 
 
     @Autowired
-    public SubscriptionNotifier(TemplateStore templateStore,
-                                TelegramService telegramService,
-                                EmailService emailService) {
+    public TradeSubscriptionNotifier(TemplateStore templateStore,
+                                     TelegramService telegramService,
+                                     EmailService emailService) {
         this.templateStore = templateStore;
         this.telegramService = telegramService;
         this.emailService = emailService;
@@ -25,12 +25,12 @@ public class SubscriptionNotifier implements EventNotifier<SubscriptionStatus> {
 
 
     @Override
-    public void apply(SubscriptionStatus subscriptionStatus) {
+    public void apply(TradeSubscriptionEvent tradeSubscriptionEvent) {
         //TODO just for test
-        String key = subscriptionStatus.getClass().getSimpleName();
+        String key = tradeSubscriptionEvent.getClass().getSimpleName();
         key += '_' + "EN";
         String template = templateStore.getTemplate(key);
-        emailService.sendHtmlEmail(template, "?");
+        emailService.sendHtmlEmail(template.formatted(tradeSubscriptionEvent.toString()), "?");
     }
 
 

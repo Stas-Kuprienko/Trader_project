@@ -2,7 +2,7 @@ package com.anastasia.telegram_bot.configuration;
 
 import com.anastasia.telegram_bot.domain.session.ChatSession;
 import com.anastasia.trade_project.core_client.CoreServiceClientV1;
-import com.anastasia.trade_project.events.TradeNotification;
+import com.anastasia.trade_project.events.TradeOrderEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -96,13 +96,13 @@ public class TelegramBotConfig {
         config.put(
                 ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         config.put(
-                JsonDeserializer.TRUSTED_PACKAGES, TradeNotification.class.getPackage().toString());
+                JsonDeserializer.TRUSTED_PACKAGES, TradeOrderEvent.class.getPackage().toString());
         config.put(
                 ConsumerConfig.GROUP_ID_CONFIG, groupId);
         config.put(
                 JsonDeserializer.KEY_DEFAULT_TYPE, String.class);
         config.put(
-                JsonDeserializer.VALUE_DEFAULT_TYPE, TradeNotification.class);
+                JsonDeserializer.VALUE_DEFAULT_TYPE, TradeOrderEvent.class);
 
         return new DefaultKafkaConsumerFactory<>(config);
     }

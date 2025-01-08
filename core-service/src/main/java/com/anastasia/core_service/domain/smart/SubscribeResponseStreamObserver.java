@@ -2,7 +2,7 @@ package com.anastasia.core_service.domain.smart;
 
 import com.anastasia.core_service.domain.event.NotificationAssistant;
 import com.anastasia.smart_service.Smart;
-import com.anastasia.trade_project.events.SubscriptionStatus;
+import com.anastasia.trade_project.events.TradeSubscriptionEvent;
 import io.grpc.stub.StreamObserver;
 import reactor.core.publisher.Mono;
 
@@ -25,7 +25,7 @@ public class SubscribeResponseStreamObserver implements StreamObserver<Smart.Sub
                     .fromFuture(notificationAssistant.direct(response.getNotification()))
                     .subscribe();
             case 2 -> Mono
-                    .fromFuture(notificationAssistant.direct(response.getStatus(), SubscriptionStatus.SUBSCRIBE))
+                    .fromFuture(notificationAssistant.direct(response.getStatus(), TradeSubscriptionEvent.SUBSCRIBE))
                     .subscribe();
             case 3 -> Mono
                     .fromFuture(exceptionHandler.apply(response.getException()))

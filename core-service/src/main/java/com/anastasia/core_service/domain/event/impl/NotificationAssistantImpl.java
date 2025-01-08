@@ -8,8 +8,9 @@ import com.anastasia.trade_project.enums.Board;
 import com.anastasia.trade_project.enums.Broker;
 import com.anastasia.trade_project.enums.Direction;
 import com.anastasia.trade_project.enums.TradeScope;
-import com.anastasia.trade_project.events.SubscriptionStatus;
-import com.anastasia.trade_project.events.TradeNotification;
+import com.anastasia.trade_project.events.NotifySubscriptionEvent;
+import com.anastasia.trade_project.events.TradeSubscriptionEvent;
+import com.anastasia.trade_project.events.TradeOrderEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,14 +22,17 @@ import java.util.concurrent.CompletableFuture;
 @Component
 public class NotificationAssistantImpl implements NotificationAssistant {
 
-    private final MessageService<TradeNotification> tradeNotificationMessageService;
-    private final MessageService<SubscriptionStatus> subscribeStatusMessageService;
+    private final MessageService<TradeOrderEvent> tradeOrderMessageService;
+    private final MessageService<TradeSubscriptionEvent> tradeSubscriptionMessageService;
+    private final MessageService<NotifySubscriptionEvent> notifySubscriptionMessageService;
 
     @Autowired
-    public NotificationAssistantImpl(@Qualifier("messageServiceTradeNotification") MessageService<TradeNotification> tradeNotificationMessageService,
-                                     @Qualifier("messageServiceSubscribeStatus") MessageService<SubscriptionStatus> subscribeStatusMessageService) {
-        this.tradeNotificationMessageService = tradeNotificationMessageService;
-        this.subscribeStatusMessageService = subscribeStatusMessageService;
+    public NotificationAssistantImpl(@Qualifier("tradeOrderMessageService") MessageService<TradeOrderEvent> tradeOrderMessageService,
+                                     @Qualifier("tradeSubscriptionMessageService") MessageService<TradeSubscriptionEvent> tradeSubscriptionMessageService,
+                                     @Qualifier("notifySubscriptionMessageService") MessageService<NotifySubscriptionEvent> notifySubscriptionMessageService) {
+        this.tradeOrderMessageService = tradeOrderMessageService;
+        this.tradeSubscriptionMessageService = tradeSubscriptionMessageService;
+        this.notifySubscriptionMessageService = notifySubscriptionMessageService;
     }
 
 
@@ -38,21 +42,28 @@ public class NotificationAssistantImpl implements NotificationAssistant {
                 .getOrderListList()
                 .stream()
                 .map(this::convert)
-                .forEach(tradeNotification -> tradeNotificationMessageService
+                .forEach(tradeNotification -> tradeOrderMessageService
                         .send(tradeNotification)
                         .subscribe(sendResult -> log.info(sendResult.toString()))));
     }
 
     @Override
-    public CompletableFuture<?> direct(Smart.StatusResponse status, SubscriptionStatus.Option option) {
-        return CompletableFuture.runAsync(() -> subscribeStatusMessageService
+    public CompletableFuture<?> direct(Smart.StatusResponse status, TradeSubscriptionEvent.Option option) {
+        return CompletableFuture.runAsync(() -> tradeSubscriptionMessageService
                 .send(convert(status, option))
                 .subscribe(sendResult -> log.info(sendResult.toString())));
     }
 
+    public CompletableFuture<?> direct() {
+        //TODO
+        return CompletableFuture.runAsync(() -> notifySubscriptionMessageService
+                .send(null)
+                .subscribe(sendResult -> log.info(sendResult.toString())));
+    }
 
-    private TradeNotification convert(Smart.Order order) {
-        return TradeNotification.builder()
+
+    private TradeOrderEvent convert(Smart.Order order) {
+        return TradeOrderEvent.builder()
                 .transactionId(order.getTransactionId())
                 .broker(Broker.valueOf(order.getAccount().getBroker()))
                 .clientId(order.getAccount().getClientId())
@@ -65,8 +76,8 @@ public class NotificationAssistantImpl implements NotificationAssistant {
                 .build();
     }
 
-    private SubscriptionStatus convert(Smart.StatusResponse status, SubscriptionStatus.Option option) {
-        return SubscriptionStatus.builder()
+    private TradeSubscriptionEvent convert(Smart.StatusResponse status, TradeSubscriptionEvent.Option option) {
+        return TradeSubscriptionEvent.builder()
                 .broker(Broker.valueOf(status.getAccount().getBroker()))
                 .clientId(status.getAccount().getClientId())
                 .ticker(status.getSecurity().getTicker())

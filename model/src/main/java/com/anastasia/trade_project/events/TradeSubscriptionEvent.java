@@ -11,7 +11,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class SubscriptionStatus {
+public class TradeSubscriptionEvent {
 
     @JsonIgnore
     public static final Option SUBSCRIBE = Option.SUBSCRIBE;
@@ -42,15 +42,15 @@ public class SubscriptionStatus {
 
 
     @Builder
-    public SubscriptionStatus(String tradeStrategy,
-                              TradeScope tradeScope,
-                              Option option,
-                              boolean success,
-                              Broker broker,
-                              String clientId,
-                              String ticker,
-                              Board board,
-                              LocalDateTime time) {
+    public TradeSubscriptionEvent(String tradeStrategy,
+                                  TradeScope tradeScope,
+                                  Option option,
+                                  boolean success,
+                                  Broker broker,
+                                  String clientId,
+                                  String ticker,
+                                  Board board,
+                                  LocalDateTime time) {
         this.tradeStrategy = tradeStrategy;
         this.tradeScope = tradeScope;
         this.option = option;
@@ -62,7 +62,7 @@ public class SubscriptionStatus {
         this.time = time;
     }
 
-    public SubscriptionStatus() {}
+    public TradeSubscriptionEvent() {}
 
 
     public enum Option {

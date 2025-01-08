@@ -10,7 +10,6 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.*;
-import io.swagger.v3.oas.models.servers.Server;
 import jakarta.annotation.PreDestroy;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -32,7 +31,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,7 +101,18 @@ public class CoreServiceConfig {
     // \/ KAFKA ********** \/
 
     @Bean
-    public NewTopic createTradeNotificationTopic(@Value("${spring.kafka.trade-notification-topic}") String topicName,
+    public NewTopic createNotifySubscriptionTopic(@Value("${spring.kafka.notify-subscription-topic}") String topicName,
+                                                  @Value("${spring.kafka.partitions}") Integer partitions,
+                                                  @Value("${spring.kafka.replicas}") Integer replicas) {
+        return TopicBuilder
+                .name(topicName)
+                .partitions(partitions)
+                .replicas(replicas)
+                .build();
+    }
+
+    @Bean
+    public NewTopic createTradeSubscriptionTopic(@Value("${spring.kafka.trade-subscription-topic}") String topicName,
                                                  @Value("${spring.kafka.partitions}") Integer partitions,
                                                  @Value("${spring.kafka.replicas}") Integer replicas) {
         return TopicBuilder
@@ -114,9 +123,9 @@ public class CoreServiceConfig {
     }
 
     @Bean
-    public NewTopic createSubscribeStatusTopic(@Value("${spring.kafka.subscribe-status-topic}") String topicName,
-                                               @Value("${spring.kafka.partitions}") Integer partitions,
-                                               @Value("${spring.kafka.replicas}") Integer replicas) {
+    public NewTopic createTradeOrderTopic(@Value("${spring.kafka.trade-order-topic}") String topicName,
+                                          @Value("${spring.kafka.partitions}") Integer partitions,
+                                          @Value("${spring.kafka.replicas}") Integer replicas) {
         return TopicBuilder
                 .name(topicName)
                 .partitions(partitions)

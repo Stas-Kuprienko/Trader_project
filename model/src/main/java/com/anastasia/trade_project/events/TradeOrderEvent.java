@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class TradeNotification implements Serializable {
+public class TradeOrderEvent implements Serializable {
 
     @JsonProperty("user_id")
     private long userId;
@@ -37,16 +37,16 @@ public class TradeNotification implements Serializable {
 
 
     @Builder
-    public TradeNotification(long userId,
-                             int transactionId,
-                             Broker broker,
-                             String clientId,
-                             String ticker,
-                             Board board,
-                             double price,
-                             long quantity,
-                             Direction direction,
-                             LocalDateTime time) {
+    public TradeOrderEvent(long userId,
+                           int transactionId,
+                           Broker broker,
+                           String clientId,
+                           String ticker,
+                           Board board,
+                           double price,
+                           long quantity,
+                           Direction direction,
+                           LocalDateTime time) {
         this.userId = userId;
         this.transactionId = transactionId;
         this.broker = broker;
@@ -59,5 +59,5 @@ public class TradeNotification implements Serializable {
         this.time = time;
     }
 
-    public TradeNotification() {}
+    public TradeOrderEvent() {}
 }

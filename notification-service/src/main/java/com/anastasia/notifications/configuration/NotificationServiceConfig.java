@@ -1,6 +1,5 @@
 package com.anastasia.notifications.configuration;
 
-import com.anastasia.trade_project.events.TradeNotification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -64,13 +63,13 @@ public class NotificationServiceConfig {
         config.put(
                 ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         config.put(
-                JsonDeserializer.TRUSTED_PACKAGES, TradeNotification.class.getPackage().toString());
+                JsonDeserializer.TRUSTED_PACKAGES, "com.anastasia.trade_project.events");
         config.put(
                 ConsumerConfig.GROUP_ID_CONFIG, groupId);
         config.put(
                 JsonDeserializer.KEY_DEFAULT_TYPE, String.class);
         config.put(
-                JsonDeserializer.VALUE_DEFAULT_TYPE, TradeNotification.class);
+                JsonDeserializer.VALUE_DEFAULT_TYPE, Object.class);
 
         return new DefaultKafkaConsumerFactory<>(config);
     }

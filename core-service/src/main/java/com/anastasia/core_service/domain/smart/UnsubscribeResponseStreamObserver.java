@@ -2,7 +2,7 @@ package com.anastasia.core_service.domain.smart;
 
 import com.anastasia.core_service.domain.event.NotificationAssistant;
 import com.anastasia.smart_service.Smart;
-import com.anastasia.trade_project.events.SubscriptionStatus;
+import com.anastasia.trade_project.events.TradeSubscriptionEvent;
 import io.grpc.stub.StreamObserver;
 
 public class UnsubscribeResponseStreamObserver implements StreamObserver<Smart.UnsubscribeResponse> {
@@ -19,7 +19,7 @@ public class UnsubscribeResponseStreamObserver implements StreamObserver<Smart.U
 
     @Override
     public void onNext(Smart.UnsubscribeResponse response) {
-        notificationAssistant.direct(response.getStatus(), SubscriptionStatus.UNSUBSCRIBE);
+        notificationAssistant.direct(response.getStatus(), TradeSubscriptionEvent.UNSUBSCRIBE);
     }
 
     @Override

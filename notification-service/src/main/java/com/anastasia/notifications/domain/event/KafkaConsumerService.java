@@ -2,8 +2,9 @@ package com.anastasia.notifications.domain.event;
 
 import com.anastasia.notifications.domain.notifiers.EventNotifier;
 import com.anastasia.notifications.domain.notifiers.Notifier;
-import com.anastasia.trade_project.events.SubscriptionStatus;
-import com.anastasia.trade_project.events.TradeNotification;
+import com.anastasia.trade_project.events.NotifySubscriptionEvent;
+import com.anastasia.trade_project.events.TradeSubscriptionEvent;
+import com.anastasia.trade_project.events.TradeOrderEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -23,21 +24,30 @@ public class KafkaConsumerService {
     }
 
 
-    @KafkaListener(topics = "subscribe-status-topic")
-    public void handle(SubscriptionStatus subscription) {
-        log.info("Message is received: " + subscription);
-        EventNotifier<Object> notifier = notifiers.get(subscription.getClass().getSimpleName());
+    @KafkaListener(topics = "notify-subscription-topic")
+    public void handle(NotifySubscriptionEvent notifySubscription) {
+        log.info("Message is received: " + notifySubscription);
+        EventNotifier<Object> notifier = notifiers.get(notifySubscription.getClass().getSimpleName());
         if (notifier != null) {
-            notifier.apply(subscription);
+            notifier.apply(notifySubscription);
         }
     }
 
-    @KafkaListener(topics = "trade-notification-topic")
-    public void handle(TradeNotification tradeNotification) {
-        log.info("Message is received: " + tradeNotification);
-        EventNotifier<Object> notifier = notifiers.get(tradeNotification.getClass().getSimpleName());
+    @KafkaListener(topics = "trade-subscription-topic")
+    public void handle(TradeSubscriptionEvent tradeSubscription) {
+        log.info("Message is received: " + tradeSubscription);
+        EventNotifier<Object> notifier = notifiers.get(tradeSubscription.getClass().getSimpleName());
         if (notifier != null) {
-            notifier.apply(tradeNotification);
+            notifier.apply(tradeSubscription);
+        }
+    }
+
+    @KafkaListener(topics = "trade-order-topic")
+    public void handle(TradeOrderEvent tradeOrder) {
+        log.info("Message is received: " + tradeOrder);
+        EventNotifier<Object> notifier = notifiers.get(tradeOrder.getClass().getSimpleName());
+        if (notifier != null) {
+            notifier.apply(tradeOrder);
         }
     }
 
