@@ -50,6 +50,7 @@ message Account {
   string broker = 1;
   string clientId = 2;
   string token = 3;
+  string id = 4;
 
 }
 

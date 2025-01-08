@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -65,6 +66,7 @@ public class NotificationAssistantImpl implements NotificationAssistant {
     private TradeOrderEvent convert(Smart.Order order) {
         return TradeOrderEvent.builder()
                 .transactionId(order.getTransactionId())
+                .accountId(UUID.fromString(order.getAccount().getId()))
                 .broker(Broker.valueOf(order.getAccount().getBroker()))
                 .clientId(order.getAccount().getClientId())
                 .ticker(order.getSecurity().getTicker())
@@ -80,6 +82,7 @@ public class NotificationAssistantImpl implements NotificationAssistant {
         return TradeSubscriptionEvent.builder()
                 .broker(Broker.valueOf(status.getAccount().getBroker()))
                 .clientId(status.getAccount().getClientId())
+                .accountId(UUID.fromString(status.getAccount().getId()))
                 .ticker(status.getSecurity().getTicker())
                 .board(Board.valueOf(status.getSecurity().getBoard()))
                 .tradeStrategy(status.getStrategy().getName())

@@ -9,12 +9,12 @@ spring:
       - local
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${project.variables.datasource.url}/trade_project
+    url: jdbc:postgresql://${project.variables.datasource.url}/trade_events
     username: ${project.variables.datasource.username}
     password: ${project.variables.datasource.password}
   flyway:
     enabled: true
-    url: jdbc:postgresql://${project.variables.datasource.url}/trade_project
+    url: jdbc:postgresql://${project.variables.datasource.url}/trade_events
     user: ${project.variables.datasource.username}
     password: ${project.variables.datasource.password}
   jpa:

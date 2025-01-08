@@ -8,10 +8,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
-public class TradeSubscriptionEvent {
+public class TradeSubscriptionEvent implements Serializable {
 
     @JsonIgnore
     public static final Option SUBSCRIBE = Option.SUBSCRIBE;
@@ -33,6 +36,9 @@ public class TradeSubscriptionEvent {
     @JsonProperty("client_id")
     private String clientId;
 
+    @JsonProperty("account_id")
+    private UUID accountId;
+
     private String ticker;
 
     private Board board;
@@ -48,6 +54,7 @@ public class TradeSubscriptionEvent {
                                   boolean success,
                                   Broker broker,
                                   String clientId,
+                                  UUID accountId,
                                   String ticker,
                                   Board board,
                                   LocalDateTime time) {
@@ -57,6 +64,7 @@ public class TradeSubscriptionEvent {
         this.success = success;
         this.broker = broker;
         this.clientId = clientId;
+        this.accountId = accountId;
         this.ticker = ticker;
         this.board = board;
         this.time = time;

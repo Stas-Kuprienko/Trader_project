@@ -28,7 +28,7 @@ public class TemplateStore {
     public String getTemplate(String templateName) {
         String value = templates.get(templateName);
         if (value == null) {
-            throw new RuntimeException("Template is not found: " + templateName);
+            throw new ConfigurationException("Template is not found: " + templateName);
         } else {
             return value;
         }

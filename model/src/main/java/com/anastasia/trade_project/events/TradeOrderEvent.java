@@ -7,12 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class TradeOrderEvent implements Serializable {
 
-    @JsonProperty("user_id")
-    private long userId;
+    @JsonProperty("account_id")
+    private UUID accountId;
 
     @JsonProperty("transaction_id")
     private int transactionId;
@@ -37,7 +38,7 @@ public class TradeOrderEvent implements Serializable {
 
 
     @Builder
-    public TradeOrderEvent(long userId,
+    public TradeOrderEvent(UUID accountId,
                            int transactionId,
                            Broker broker,
                            String clientId,
@@ -47,7 +48,7 @@ public class TradeOrderEvent implements Serializable {
                            long quantity,
                            Direction direction,
                            LocalDateTime time) {
-        this.userId = userId;
+        this.accountId = accountId;
         this.transactionId = transactionId;
         this.broker = broker;
         this.clientId = clientId;
