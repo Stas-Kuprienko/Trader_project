@@ -3,7 +3,7 @@ package com.anastasia.core_service.service.impl;
 import com.anastasia.core_service.datasource.jpa.AccountRepository;
 import com.anastasia.core_service.entity.Account;
 import com.anastasia.core_service.exception.DataPersistenceException;
-import com.anastasia.core_service.exception.NotFoundException;
+import com.anastasia.trade_project.exception.NotFoundException;
 import com.anastasia.core_service.service.AccountService;
 import com.anastasia.core_service.utility.CryptoUtility;
 import com.anastasia.trade_project.enums.Broker;

@@ -1,10 +1,14 @@
 package com.anastasia.trade_project.core_client;
 
 import com.anastasia.trade_project.dto.AccountDto;
+import com.anastasia.trade_project.forms.NewAccount;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-public class AccountsResource {
+public class AccountsResource extends HttpError404Handler {
 
     private static final String resourceUrl = "/accounts";
 
@@ -18,19 +22,27 @@ public class AccountsResource {
     }
 
 
-    public AccountDto save(AccountDto account) {
+    public AccountDto createNew(NewAccount newAccount) {
         return restClient
                 .post()
-                .body(account)
+                .body(newAccount)
                 .retrieve()
                 .body(AccountDto.class);
     }
 
-    public AccountDto getById(UUID id) {
-        return restClient
+    public Optional<AccountDto> getById(UUID id) {
+        return catch404(
+                () -> restClient
                 .get()
                 .uri(CoreServiceClientV1.uriById(id))
                 .retrieve()
-                .body(AccountDto.class);
+                .body(AccountDto.class));
+    }
+
+    public List<AccountDto> getAllByUser() {
+        return restClient
+                .get()
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
     }
 }

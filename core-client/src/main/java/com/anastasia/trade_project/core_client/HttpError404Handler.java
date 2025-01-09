@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 abstract class HttpError404Handler {
 
-    protected <R> Optional<R> process(Supplier<R> supplier) {
+    protected <R> Optional<R> catch404(Supplier<R> supplier) {
         try {
             return Optional.of(supplier.get());
         } catch (RestClientResponseException e) {

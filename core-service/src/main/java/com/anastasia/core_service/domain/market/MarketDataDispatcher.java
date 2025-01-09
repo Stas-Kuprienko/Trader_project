@@ -1,6 +1,6 @@
 package com.anastasia.core_service.domain.market;
 
-import com.anastasia.core_service.exception.ConfigurationException;
+import com.anastasia.trade_project.exception.ConfigurationException;
 import com.anastasia.trade_project.enums.ExchangeMarket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

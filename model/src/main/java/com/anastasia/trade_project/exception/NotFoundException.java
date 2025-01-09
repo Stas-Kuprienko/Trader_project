@@ -1,4 +1,4 @@
-package com.anastasia.core_service.exception;
+package com.anastasia.trade_project.exception;
 
 import java.util.Map;
 

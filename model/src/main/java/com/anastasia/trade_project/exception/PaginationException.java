@@ -1,4 +1,4 @@
-package com.anastasia.core_service.exception;
+package com.anastasia.trade_project.exception;
 
 import com.anastasia.trade_project.enums.Sorting;
 import java.util.List;

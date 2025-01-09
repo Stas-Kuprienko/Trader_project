@@ -1,6 +1,6 @@
 package com.anastasia.core_service.utility;
 
-import com.anastasia.core_service.exception.PaginationException;
+import com.anastasia.trade_project.exception.PaginationException;
 import com.anastasia.trade_project.enums.Sorting;
 import com.anastasia.trade_project.markets.Securities;
 import java.util.Comparator;

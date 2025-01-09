@@ -6,7 +6,7 @@ import com.anastasia.core_service.datasource.jpa.UserDataCustomRepository;
 import com.anastasia.core_service.domain.credentials.CredentialsNode;
 import com.anastasia.core_service.entity.TelegramChat;
 import com.anastasia.core_service.entity.User;
-import com.anastasia.core_service.exception.NotFoundException;
+import com.anastasia.trade_project.exception.NotFoundException;
 import com.anastasia.core_service.service.UserDataService;
 import com.anastasia.trade_project.enums.Language;
 import com.anastasia.trade_project.enums.Role;

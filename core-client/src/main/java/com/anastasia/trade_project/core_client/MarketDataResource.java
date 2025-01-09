@@ -48,7 +48,8 @@ public class MarketDataResource extends HttpError404Handler {
     }
 
     public Optional<Stock> stock(ExchangeMarket exchange, String ticker) {
-        return process(() -> restClient.get()
+        return catch404(
+                () -> restClient.get()
                 .uri(STOCK.formatted(exchange, ticker))
                 .retrieve()
                 .body(Stock.class));
@@ -68,7 +69,8 @@ public class MarketDataResource extends HttpError404Handler {
     }
 
     public Optional<Futures> futures(ExchangeMarket exchange, String ticker) {
-        return process(() -> restClient.get()
+        return catch404(
+                () -> restClient.get()
                 .uri(FUTURES.formatted(exchange, ticker))
                 .retrieve()
                 .body(Futures.class));
