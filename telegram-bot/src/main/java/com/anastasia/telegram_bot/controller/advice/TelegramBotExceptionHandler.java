@@ -2,7 +2,6 @@ package com.anastasia.telegram_bot.controller.advice;
 
 import com.anastasia.telegram_bot.exception.UnregisteredUserException;
 import com.anastasia.telegram_bot.utils.ChatBotUtility;
-import com.anastasia.telegram_bot.utils.TwoParamsFunction;
 import jakarta.ws.rs.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
+import java.util.function.BiFunction;
 import static com.anastasia.telegram_bot.controller.advice.TelegramBotExceptionHandler.MessageTextKey.*;
 
 @Slf4j
@@ -24,7 +23,7 @@ public class TelegramBotExceptionHandler {
 
     private final MessageSource messageSource;
     private final String serviceUrl;
-    private final Map<String, TwoParamsFunction<Throwable, Update, Mono<SendMessage>>> functionMap;
+    private final Map<String, BiFunction<Throwable, Update, Mono<SendMessage>>> functionMap;
 
 
     @Autowired
@@ -100,8 +99,8 @@ public class TelegramBotExceptionHandler {
     }
 
 
-    private <E extends Throwable> Map<String, TwoParamsFunction<E, Update, Mono<SendMessage>>> collectExceptionHandlers() {
-        Map<String, TwoParamsFunction<E, Update, Mono<SendMessage>>> map = new HashMap<>();
+    private <E extends Throwable> Map<String, BiFunction<E, Update, Mono<SendMessage>>> collectExceptionHandlers() {
+        Map<String, BiFunction<E, Update, Mono<SendMessage>>> map = new HashMap<>();
         map.put(UnregisteredUserException.class.getSimpleName(), ((exception, update) -> this.unregisteredUserHandle((UnregisteredUserException) exception, update)));
         map.put(NotFoundException.class.getSimpleName(), ((exception, update) -> this.notFoundHandle((NotFoundException) exception, update)));
         map.put(IllegalArgumentException.class.getSimpleName(), ((exception, update) -> this.illegalArgumentHandle((IllegalArgumentException) exception, update)));
