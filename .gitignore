@@ -43,3 +43,4 @@ bin/
 /moex_2.xml
 /smart-service/auto-trade/src/main/resources/application-local.yaml
 /notification-service/src/main/resources/application-local.yaml
+/ui-service/src/main/resources/application-local.yaml

@@ -18,8 +18,7 @@ public class SecurityConfig extends AbstractSecurityWebApplicationInitializer im
             http
                     .authorizeHttpRequests(exchange -> exchange
                             .requestMatchers("/auth/login", "/auth/registrations").permitAll()
-                            .requestMatchers("/**").authenticated()
-                            .anyRequest().authenticated()
+                            .requestMatchers("/**").permitAll()
                     ).oauth2Login(
                             login -> login.loginPage("/login")
                                     .defaultSuccessUrl("/", true)
