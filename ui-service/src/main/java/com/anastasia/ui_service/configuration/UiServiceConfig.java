@@ -29,6 +29,13 @@ public class UiServiceConfig {
 
     public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    public static final String SIGN_UP_PAGE = "sign-up";
+    public static final String LOGIN_PAGE = "login";
+    public static final String MENU_PAGE = "menu";
+    public static final String REDIRECT = "redirect:";
+    public static final String FORWARD = "forward:";
+
     private static final String OAUTH_2_SCHEME = "oauth2Scheme";
 
 

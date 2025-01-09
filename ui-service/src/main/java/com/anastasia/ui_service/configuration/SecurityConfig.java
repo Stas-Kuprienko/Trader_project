@@ -15,14 +15,15 @@ public class SecurityConfig extends AbstractSecurityWebApplicationInitializer im
 
         @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+            String loginPage = "/auth/%s".formatted(UiServiceConfig.LOGIN_PAGE);
             http
                     .authorizeHttpRequests(exchange -> exchange
-                            .requestMatchers("/auth/login", "/auth/registrations").permitAll()
+
                             .requestMatchers("/**").permitAll()
                     ).oauth2Login(
-                            login -> login.loginPage("/login")
-                                    .defaultSuccessUrl("/", true)
-                                    .failureUrl("/login?error=true")
+                            login -> login.loginPage(loginPage)
+                                    .defaultSuccessUrl("/menu", true)
+                                    .failureUrl(loginPage + "?error=true")
                     ).logout(logout -> logout.logoutSuccessUrl("/"));
 
             return http.build();
