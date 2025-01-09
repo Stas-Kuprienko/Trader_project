@@ -1,14 +1,13 @@
 package com.anastasia.trade_project.events;
 
+import com.anastasia.trade_project.models.StrategyDefinition;
 import com.anastasia.trade_project.enums.Board;
 import com.anastasia.trade_project.enums.Broker;
-import com.anastasia.trade_project.enums.TradeScope;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,11 +20,8 @@ public class TradeSubscriptionEvent implements Serializable {
     @JsonIgnore
     public static final Option UNSUBSCRIBE = Option.UNSUBSCRIBE;
 
-    @JsonProperty("trade_strategy")
-    private String tradeStrategy;
-
-    @JsonProperty("trade_scope")
-    private TradeScope tradeScope;
+    @JsonProperty("strategy_definition")
+    private StrategyDefinition strategyDefinition;
 
     private Option option;
 
@@ -36,8 +32,8 @@ public class TradeSubscriptionEvent implements Serializable {
     @JsonProperty("client_id")
     private String clientId;
 
-    @JsonProperty("account_id")
-    private UUID accountId;
+    @JsonProperty("user_id")
+    private UUID userId;
 
     private String ticker;
 
@@ -48,23 +44,21 @@ public class TradeSubscriptionEvent implements Serializable {
 
 
     @Builder
-    public TradeSubscriptionEvent(String tradeStrategy,
-                                  TradeScope tradeScope,
+    public TradeSubscriptionEvent(StrategyDefinition strategyDefinition,
                                   Option option,
                                   boolean success,
                                   Broker broker,
                                   String clientId,
-                                  UUID accountId,
+                                  UUID userId,
                                   String ticker,
                                   Board board,
                                   LocalDateTime time) {
-        this.tradeStrategy = tradeStrategy;
-        this.tradeScope = tradeScope;
+        this.strategyDefinition = strategyDefinition;
         this.option = option;
         this.success = success;
         this.broker = broker;
         this.clientId = clientId;
-        this.accountId = accountId;
+        this.userId = userId;
         this.ticker = ticker;
         this.board = board;
         this.time = time;

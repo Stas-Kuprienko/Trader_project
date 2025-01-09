@@ -12,8 +12,8 @@ import java.util.UUID;
 @Data
 public class TradeOrderEvent implements Serializable {
 
-    @JsonProperty("account_id")
-    private UUID accountId;
+    @JsonProperty("user_id")
+    private UUID userId;
 
     @JsonProperty("transaction_id")
     private int transactionId;
@@ -38,7 +38,7 @@ public class TradeOrderEvent implements Serializable {
 
 
     @Builder
-    public TradeOrderEvent(UUID accountId,
+    public TradeOrderEvent(UUID userId,
                            int transactionId,
                            Broker broker,
                            String clientId,
@@ -48,7 +48,7 @@ public class TradeOrderEvent implements Serializable {
                            long quantity,
                            Direction direction,
                            LocalDateTime time) {
-        this.accountId = accountId;
+        this.userId = userId;
         this.transactionId = transactionId;
         this.broker = broker;
         this.clientId = clientId;

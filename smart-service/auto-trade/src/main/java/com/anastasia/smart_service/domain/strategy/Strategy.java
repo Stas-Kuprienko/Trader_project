@@ -16,6 +16,4 @@ public @interface Strategy {
     String value() default "";
 
     String name();
-
-    String description() default "";
 }

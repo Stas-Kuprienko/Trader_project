@@ -1,10 +1,14 @@
 package com.anastasia.core_service.controller.v1;
 
+import com.anastasia.core_service.domain.market.MarketDataDispatcher;
 import com.anastasia.core_service.service.SmartTradingService;
-import com.anastasia.trade_project.dto.StrategyDefinition;
+import com.anastasia.core_service.utility.JwtUtility;
 import com.anastasia.trade_project.forms.SmartSubscriptionRequest;
+import com.anastasia.trade_project.markets.Securities;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,23 +19,52 @@ import java.util.UUID;
 public class SmartTradingController {
 
     private final SmartTradingService smartTradingService;
+    private final MarketDataDispatcher marketDataDispatcher;
 
     @Autowired
-    public SmartTradingController(SmartTradingService smartTradingService) {
+    public SmartTradingController(SmartTradingService smartTradingService, MarketDataDispatcher marketDataDispatcher) {
         this.smartTradingService = smartTradingService;
+        this.marketDataDispatcher = marketDataDispatcher;
     }
 
 
     @GetMapping("/strategies")
-    public Flux<StrategyDefinition> strategies() {
+    public Flux<String> strategies() {
         return smartTradingService.strategies();
     }
 
-    @PostMapping("/subscribe")
-    public Mono<Void> subscribe(@RequestBody @Valid SmartSubscriptionRequest request) {
-        //TODO temporary, just for test
-        UUID userId = UUID.fromString("25fca6c8-08fe-4bbe-aa5e-dcb26aa67e26");
 
-        return smartTradingService.subscribe(userId, request);
+    @PostMapping("/subscription")
+    public Mono<Void> subscribe(@AuthenticationPrincipal Jwt jwt,
+                                @RequestBody @Valid SmartSubscriptionRequest request) {
+        return Mono.zip(marketDataDispatcher
+                                .marketDataProvider(request.getExchange())
+                                .getSecurities(request.getTicker(), request.getMarket()),
+                        Mono.just(JwtUtility.extractUserId(jwt)))
+                .flatMap(tuple -> {
+                    Securities securities = tuple.getT1();
+                    UUID userId = tuple.getT2();
+                    return smartTradingService
+                            .subscribe(userId, request.getAccountId(), securities, request.getStrategyDefinition());
+                });
     }
+
+
+    @DeleteMapping("/subscription")
+    public Mono<Void> unsubscribe(@AuthenticationPrincipal Jwt jwt,
+                                  @RequestBody @Valid SmartSubscriptionRequest request) {
+        return Mono.zip(marketDataDispatcher
+                                .marketDataProvider(request.getExchange())
+                                .getSecurities(request.getTicker(), request.getMarket()),
+                        Mono.just(JwtUtility.extractUserId(jwt)))
+                .flatMap(tuple -> {
+                    Securities securities = tuple.getT1();
+                    UUID userId = tuple.getT2();
+                    return smartTradingService
+                            .subscribe(userId, request.getAccountId(), securities, request.getStrategyDefinition());
+                });
+    }
+
+
+    
 }

@@ -11,6 +11,7 @@ import com.anastasia.trade_project.enums.TradeScope;
 import com.anastasia.trade_project.events.NotifySubscriptionEvent;
 import com.anastasia.trade_project.events.TradeSubscriptionEvent;
 import com.anastasia.trade_project.events.TradeOrderEvent;
+import com.anastasia.trade_project.models.StrategyDefinition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -66,7 +67,7 @@ public class NotificationAssistantImpl implements NotificationAssistant {
     private TradeOrderEvent convert(Smart.Order order) {
         return TradeOrderEvent.builder()
                 .transactionId(order.getTransactionId())
-                .accountId(UUID.fromString(order.getAccount().getId()))
+                .userId(UUID.fromString(order.getAccount().getUserId()))
                 .broker(Broker.valueOf(order.getAccount().getBroker()))
                 .clientId(order.getAccount().getClientId())
                 .ticker(order.getSecurity().getTicker())
@@ -79,14 +80,17 @@ public class NotificationAssistantImpl implements NotificationAssistant {
     }
 
     private TradeSubscriptionEvent convert(Smart.StatusResponse status, TradeSubscriptionEvent.Option option) {
+        StrategyDefinition strategyDefinition = StrategyDefinition.builder()
+                .name(status.getStrategy().getName())
+                .tradeScope(TradeScope.valueOf(status.getStrategy().getTradeScope().name()))
+                .build();
         return TradeSubscriptionEvent.builder()
                 .broker(Broker.valueOf(status.getAccount().getBroker()))
                 .clientId(status.getAccount().getClientId())
-                .accountId(UUID.fromString(status.getAccount().getId()))
+                .userId(UUID.fromString(status.getAccount().getUserId()))
                 .ticker(status.getSecurity().getTicker())
                 .board(Board.valueOf(status.getSecurity().getBoard()))
-                .tradeStrategy(status.getStrategy().getName())
-                .tradeScope(TradeScope.valueOf(status.getStrategy().getTradeScope().name()))
+                .strategyDefinition(strategyDefinition)
                 .option(option)
                 .success(status.getSuccess())
                 .time(LocalDateTime.now())

@@ -50,7 +50,7 @@ message Account {
   string broker = 1;
   string clientId = 2;
   string token = 3;
-  string id = 4;
+  string userId = 4;
 
 }
 
@@ -76,13 +76,6 @@ message Strategy {
 
 }
 
-message StrategyDefinition {
-
-  string name = 1;
-  string description = 2;
-
-}
-
 enum Direction {
 
   BUY = 0;
@@ -92,7 +85,7 @@ enum Direction {
 
 message StrategiesList {
 
-  repeated StrategyDefinition item = 1;
+  repeated string item = 1;
 
 }
 

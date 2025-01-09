@@ -1,6 +1,5 @@
 package com.anastasia.smart_service.domain.strategy;
 
-import com.anastasia.smart_service.Smart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
@@ -13,12 +12,12 @@ import java.util.Map;
 public class StrategyDispatcher {
 
     private final Map<String, TradeStrategy> strategies;
-    private final List<Smart.StrategyDefinition> strategyDefinitions;
+    private final List<String> strategyNames;
 
     @Autowired
     public StrategyDispatcher(ConfigurableApplicationContext applicationContext) {
         strategies = collectStrategies(applicationContext);
-        strategyDefinitions = collectDefinitions(strategies);
+        strategyNames = collectNames(strategies);
     }
 
 
@@ -31,8 +30,8 @@ public class StrategyDispatcher {
         }
     }
 
-    public List<Smart.StrategyDefinition> strategyList() {
-        return strategyDefinitions;
+    public List<String> strategyList() {
+        return strategyNames;
     }
 
 
@@ -49,16 +48,13 @@ public class StrategyDispatcher {
         return strategyMap;
     }
 
-    private List<Smart.StrategyDefinition> collectDefinitions(Map<String, TradeStrategy> strategies) {
-        List<Smart.StrategyDefinition> definitionList = new ArrayList<>();
+    private List<String> collectNames(Map<String, TradeStrategy> strategies) {
+        List<String> strategyNameList = new ArrayList<>();
         strategies.forEach((key, value) -> {
             Strategy strategy = value.getClass().getAnnotation(Strategy.class);
-            Smart.StrategyDefinition strategyDefinition = Smart.StrategyDefinition.newBuilder()
-                    .setName(strategy.name())
-                    .setDescription(strategy.description())
-                    .build();
-            definitionList.add(strategyDefinition);
+            String strategyName = strategy.name();
+            strategyNameList.add(strategyName);
         });
-        return definitionList;
+        return strategyNameList;
     }
 }

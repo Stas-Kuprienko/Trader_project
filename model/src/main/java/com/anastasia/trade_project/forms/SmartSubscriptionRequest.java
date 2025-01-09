@@ -1,6 +1,7 @@
 package com.anastasia.trade_project.forms;
 
 import com.anastasia.trade_project.enums.*;
+import com.anastasia.trade_project.models.StrategyDefinition;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,12 +25,9 @@ public class SmartSubscriptionRequest {
     @JsonProperty("account_id")
     private UUID accountId;
 
-    @NotBlank
-    private String strategy;
-
     @NotNull
-    @JsonProperty("trade_scope")
-    private TradeScope tradeScope;
+    @JsonProperty("strategy_definition")
+    private StrategyDefinition strategyDefinition;
 
 
     @Builder
@@ -37,14 +35,12 @@ public class SmartSubscriptionRequest {
                                     Market market,
                                     ExchangeMarket exchange,
                                     UUID accountId,
-                                    String strategy,
-                                    TradeScope tradeScope) {
+                                    StrategyDefinition strategyDefinition) {
         this.ticker = ticker;
         this.market = market;
         this.exchange = exchange;
         this.accountId = accountId;
-        this.strategy = strategy;
-        this.tradeScope = tradeScope;
+        this.strategyDefinition = strategyDefinition;
     }
 
     public SmartSubscriptionRequest() {}

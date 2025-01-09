@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .pathMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .pathMatchers("/api/v1/market", "/api/v1/market/**").permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                        .pathMatchers("/api/v1/smart/**").authenticated()
                         .pathMatchers("/api/v1/users/**").authenticated()
                         .pathMatchers("/api/v1/accounts", "/api/v1/accounts/**").authenticated()
                         .anyExchange().permitAll()

@@ -4,7 +4,7 @@ import com.anastasia.core_service.domain.event.NotificationAssistant;
 import com.anastasia.core_service.entity.Account;
 import com.anastasia.smart_service.AutoTradeGrpc;
 import com.anastasia.smart_service.Smart;
-import com.anastasia.trade_project.dto.StrategyDefinition;
+import com.anastasia.trade_project.models.StrategyDefinition;
 import com.anastasia.trade_project.enums.TradeScope;
 import com.anastasia.trade_project.markets.Securities;
 import com.google.protobuf.Empty;
@@ -44,7 +44,7 @@ public class SmartServiceClient {
     }
 
 
-    public Mono<Void> subscribe(Securities securities, Account account, String tradeStrategy, TradeScope tradeScope) {
+    public Mono<Void> subscribe(Securities securities, Account account, StrategyDefinition strategy) {
         Smart.Security securityToRequest = Smart.Security.newBuilder()
                 .setTicker(securities.getTicker())
                 .setBoard(securities.getBoard().name())
@@ -56,8 +56,8 @@ public class SmartServiceClient {
                 .setToken(account.getToken())
                 .build();
         Smart.Strategy strategyToRequest = Smart.Strategy.newBuilder()
-                .setName(tradeStrategy)
-                .setTradeScope(convertTradeScope(tradeScope))
+                .setName(strategy.getName())
+                .setTradeScope(convertTradeScope(strategy.getTradeScope()))
                 .build();
         return Mono.just(Smart.SubscribeRequest.newBuilder()
                         .setSecurity(securityToRequest)
@@ -65,12 +65,13 @@ public class SmartServiceClient {
                         .setStrategy(strategyToRequest)
                         .build())
                 .doOnNext(request ->
-                        subscribeRequestStreamObserver(new TradeSubscription(securities, tradeStrategy, tradeScope))
+                        subscribeRequestStreamObserver(
+                                new TradeSubscription(securities, strategy.getName(), strategy.getTradeScope()))
                         .onNext(request))
                 .then();
     }
 
-    public Mono<Void> unsubscribe(Securities securities, Account account, String tradeStrategy, TradeScope tradeScope) {
+    public Mono<Void> unsubscribe(Securities securities, Account account, StrategyDefinition strategy) {
         Smart.Security securityToRequest = Smart.Security.newBuilder()
                 .setTicker(securities.getTicker())
                 .setBoard(securities.getBoard().name())
@@ -82,8 +83,8 @@ public class SmartServiceClient {
                 .setToken(account.getToken())
                 .build();
         Smart.Strategy strategyToRequest = Smart.Strategy.newBuilder()
-                .setName(tradeStrategy)
-                .setTradeScope(convertTradeScope(tradeScope))
+                .setName(strategy.getName())
+                .setTradeScope(convertTradeScope(strategy.getTradeScope()))
                 .build();
         return Mono.just(Smart.UnsubscribeRequest.newBuilder()
                         .setSecurity(securityToRequest)
@@ -92,16 +93,15 @@ public class SmartServiceClient {
                         .build())
                 .doOnNext(request -> stub
                         .unsubscribe(request, unsubscribeRequestStreamObserver(
-                                new TradeSubscription(securities, tradeStrategy, tradeScope))))
+                                new TradeSubscription(securities, strategy.getName(), strategy.getTradeScope()))))
                 .then();
     }
 
-    public Flux<StrategyDefinition> strategies() {
+    public Flux<String> strategies() {
         return Mono.just(blockingStub.getStrategies(Empty.newBuilder().build()))
                 .flatMapIterable(source -> source
                         .getItemList()
                         .stream()
-                        .map(sd -> new StrategyDefinition(sd.getName(), sd.getDescription()))
                         .toList());
     }
 

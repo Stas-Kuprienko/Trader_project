@@ -35,7 +35,7 @@ public class AutoTradeController extends AutoTradeGrpc.AutoTradeImplBase {
 
     @Override
     public void getStrategies(Empty request, StreamObserver<Smart.StrategiesList> responseObserver) {
-        List<Smart.StrategyDefinition> list = strategyDispatcher.strategyList();
+        List<String> list = strategyDispatcher.strategyList();
         Smart.StrategiesList strategiesList = Smart.StrategiesList.newBuilder()
                 .addAllItem(list)
                 .build();
