@@ -1,7 +1,7 @@
 package com.anastasia.trade_project.core_client.util;
 
 import com.anastasia.trade_project.enums.Sorting;
-import com.anastasia.trade_project.markets.Securities;
+import com.anastasia.trade_project.market.Securities;
 import java.util.Comparator;
 import java.util.List;
 

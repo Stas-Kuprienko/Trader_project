@@ -2,8 +2,8 @@ package com.anastasia.core_service.datasource.cache.redis;
 
 import com.anastasia.core_service.datasource.cache.MarketDataRepository;
 import com.anastasia.trade_project.enums.ExchangeMarket;
-import com.anastasia.trade_project.markets.Futures;
-import com.anastasia.trade_project.markets.Stock;
+import com.anastasia.trade_project.market.Futures;
+import com.anastasia.trade_project.market.Stock;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

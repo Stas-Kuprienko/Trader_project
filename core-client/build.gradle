@@ -12,5 +12,5 @@ dependencies {
     compileOnly "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
 
 	//project
-	compileOnly project(':model')
+	compileOnly project(':common')
 }

@@ -1,4 +1,4 @@
-package com.anastasia.trade_project.markets;
+package com.anastasia.trade_project.market;
 
 import com.anastasia.trade_project.enums.Board;
 import com.anastasia.trade_project.enums.Currency;

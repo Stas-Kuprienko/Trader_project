@@ -2,7 +2,7 @@ package com.anastasia.core_service.utility;
 
 import com.anastasia.trade_project.exception.PaginationException;
 import com.anastasia.trade_project.enums.Sorting;
-import com.anastasia.trade_project.markets.Securities;
+import com.anastasia.trade_project.market.Securities;
 import java.util.Comparator;
 import java.util.List;
 

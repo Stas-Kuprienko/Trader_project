@@ -4,7 +4,7 @@ import com.anastasia.core_service.domain.smart.SmartServiceClient;
 import com.anastasia.core_service.service.AccountService;
 import com.anastasia.core_service.service.SmartTradingService;
 import com.anastasia.trade_project.models.StrategyDefinition;
-import com.anastasia.trade_project.markets.Securities;
+import com.anastasia.trade_project.market.Securities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;

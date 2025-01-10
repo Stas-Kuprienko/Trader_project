@@ -8,7 +8,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	//project
-	implementation project(':model')
+	implementation project(':common')
 
 	//swagger
     implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$swagger_version"

@@ -1,7 +1,7 @@
 package com.anastasia.core_service.service;
 
 import com.anastasia.trade_project.models.StrategyDefinition;
-import com.anastasia.trade_project.markets.Securities;
+import com.anastasia.trade_project.market.Securities;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.UUID;

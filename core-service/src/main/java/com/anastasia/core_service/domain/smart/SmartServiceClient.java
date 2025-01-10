@@ -6,7 +6,7 @@ import com.anastasia.smart_service.AutoTradeGrpc;
 import com.anastasia.smart_service.Smart;
 import com.anastasia.trade_project.models.StrategyDefinition;
 import com.anastasia.trade_project.enums.TradeScope;
-import com.anastasia.trade_project.markets.Securities;
+import com.anastasia.trade_project.market.Securities;
 import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
 import io.grpc.stub.StreamObserver;

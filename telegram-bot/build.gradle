@@ -10,7 +10,7 @@ dependencies {
     implementation "org.telegram:telegrambots-spring-boot-starter:$telegram_version"
 
 	//project
-	implementation project(':model')
+	implementation project(':common')
 	implementation project(':core-client')
 
     //web

@@ -1,9 +1,9 @@
 package com.anastasia.trade_project.core_client;
 
 import com.anastasia.trade_project.enums.ExchangeMarket;
-import com.anastasia.trade_project.markets.Futures;
-import com.anastasia.trade_project.markets.MarketPage;
-import com.anastasia.trade_project.markets.Stock;
+import com.anastasia.trade_project.market.Futures;
+import com.anastasia.trade_project.market.MarketPage;
+import com.anastasia.trade_project.market.Stock;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
 import java.util.List;

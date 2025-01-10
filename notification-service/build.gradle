@@ -21,7 +21,7 @@ dependencies {
     implementation "javax.xml.bind:jaxb-api:2.3.1"
 
 	//project
-	implementation project(':model')
+	implementation project(':common')
 
 	//event_driver
 	implementation "org.springframework.kafka:spring-kafka:$spring_kafka_version"

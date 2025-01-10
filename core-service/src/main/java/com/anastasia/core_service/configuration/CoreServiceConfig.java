@@ -1,7 +1,7 @@
 package com.anastasia.core_service.configuration;
 
-import com.anastasia.trade_project.markets.Futures;
-import com.anastasia.trade_project.markets.Stock;
+import com.anastasia.trade_project.market.Futures;
+import com.anastasia.trade_project.market.Stock;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;

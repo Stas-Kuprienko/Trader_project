@@ -2,10 +2,10 @@ package com.anastasia.core_service.domain.market;
 
 import com.anastasia.trade_project.enums.ExchangeMarket;
 import com.anastasia.trade_project.enums.Market;
-import com.anastasia.trade_project.markets.Futures;
-import com.anastasia.trade_project.markets.MarketPage;
-import com.anastasia.trade_project.markets.Securities;
-import com.anastasia.trade_project.markets.Stock;
+import com.anastasia.trade_project.market.Futures;
+import com.anastasia.trade_project.market.MarketPage;
+import com.anastasia.trade_project.market.Securities;
+import com.anastasia.trade_project.market.Stock;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

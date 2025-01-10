@@ -4,7 +4,7 @@ import com.anastasia.core_service.domain.market.MarketDataDispatcher;
 import com.anastasia.core_service.service.SmartTradingService;
 import com.anastasia.core_service.utility.JwtUtility;
 import com.anastasia.trade_project.forms.SmartSubscriptionRequest;
-import com.anastasia.trade_project.markets.Securities;
+import com.anastasia.trade_project.market.Securities;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
