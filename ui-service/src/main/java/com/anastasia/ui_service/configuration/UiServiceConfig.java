@@ -4,10 +4,6 @@ import com.anastasia.trade_project.core_client.CoreServiceClientV1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -18,12 +14,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
-@EnableWebMvc
 @Configuration
 public class UiServiceConfig {
 
@@ -96,38 +90,4 @@ public class UiServiceConfig {
         return client;
     }
     // /\ ***************** /\
-
-    // OPEN-API ********** \/
-
-    @Bean
-    public OpenAPI openAPI(@Value("${springdoc.info.title}") String title,
-                           @Value("${springdoc.info.description}") String description,
-                           @Value("${springdoc.info.version}") String version,
-                           @Value("${project.variables.keycloak.url}") String authServerUrl,
-                           @Value("${project.variables.keycloak.realm}") String realm) {
-
-        Info info = new Info()
-                .title(title)
-                .description(description)
-                .version(version);
-
-        SecurityScheme oauth2Scheme = new SecurityScheme()
-                .type(SecurityScheme.Type.OAUTH2)
-                .flows(new OAuthFlows()
-                        .authorizationCode(new OAuthFlow()
-                                .authorizationUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/auth")
-                                .tokenUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/token")
-                                .scopes(new Scopes()
-                                        .addString("openid", "OpenID Connect scope")
-                                        .addString("profile", "Access to user profile"))));
-
-        SecurityRequirement securityRequirement = new SecurityRequirement().addList(OAUTH_2_SCHEME);
-
-        return new OpenAPI()
-                .info(info)
-                .addSecurityItem(securityRequirement)
-                .components(new Components()
-                        .addSecuritySchemes(OAUTH_2_SCHEME, oauth2Scheme));
-    }
-    // /\ **************** /\
 }

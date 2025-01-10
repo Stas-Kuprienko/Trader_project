@@ -4,7 +4,6 @@ import com.anastasia.trade_project.dto.UserDto;
 import com.anastasia.trade_project.forms.NewUser;
 import com.anastasia.ui_service.configuration.UiServiceConfig;
 import com.anastasia.ui_service.service.UserDataService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +35,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String loginHandle(@RequestBody @Valid NewUser newUser, Model model) {
+    public String loginHandle(@RequestBody NewUser newUser, Model model) {
         UserDto user = userDataService.signUp(newUser);
         model.addAttribute("user", user);
         return UiServiceConfig.REDIRECT
