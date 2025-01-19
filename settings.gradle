@@ -14,4 +14,3 @@ findProject(':smart-service:analytics')?.name = 'analytics'
 include 'smart-service:analytics'
 findProject(':smart-service:analytics')?.name = 'analytics'
 include 'notification-service'
-

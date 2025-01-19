@@ -1,0 +1,55 @@
+package com.trader_project.telegram_bot.domain.command.impl;
+
+import com.trader_project.telegram_bot.domain.command.BotCommandHandler;
+import com.trader_project.telegram_bot.domain.command.BotCommands;
+import com.trader_project.telegram_bot.domain.command.CommandHandler;
+import com.trader_project.telegram_bot.domain.session.ChatSession;
+import com.trader_project.telegram_bot.domain.session.ChatSessionService;
+import com.trader_project.telegram_bot.utils.ChatBotUtility;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import reactor.core.publisher.Mono;
+import java.util.Locale;
+
+@CommandHandler(command = BotCommands.CLEAR)
+public class ClearCommandHandler extends BotCommandHandler {
+
+    private static final String MESSAGE_KEY = "CLEAR";
+
+    private final MessageSource messageSource;
+    private final ChatSessionService chatSessionService;
+
+
+    @Autowired
+    public ClearCommandHandler(MessageSource messageSource, ChatSessionService chatSessionService) {
+        this.messageSource = messageSource;
+        this.chatSessionService = chatSessionService;
+    }
+
+
+    @Override
+    public Mono<BotApiMethod<?>> handle(Message message, ChatSession session) {
+        Locale locale = ChatBotUtility.getLocale(message);
+        String text = messageSource.getMessage(MESSAGE_KEY, null, locale);
+        return Mono.just(session)
+                .doOnNext(ChatSession::clear)
+                .map(b -> {
+                    chatSessionService.save(session).subscribe();
+                    return createSendMessage(session.getChatId(), text);
+                });
+    }
+
+    @Override
+    public Mono<BotApiMethod<?>> handle(CallbackQuery callbackQuery, ChatSession session, Locale locale) {
+        String textToSend = messageSource.getMessage(MESSAGE_KEY, null, locale);
+        return Mono.just(session)
+                .doOnNext(ChatSession::clear)
+                .map(b -> {
+                    chatSessionService.save(session).subscribe();
+                    return createSendMessage(session.getChatId(), textToSend);
+                });
+    }
+}

@@ -1,6 +1,6 @@
 [EN](readme.md)
 
-# ANASTASIA TRADER PROJECT
+# TRADER PROJECT
 ![Static Badge](https://img.shields.io/badge/https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Spring_Framework-green?style=flat-square&logo=Spring&logoColor=green&label=%7C)
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Gradle-blue?style=flat-square&logo=Gradle&logoColor=darkgreen&label=%7C&labelColor=white&color=grey)
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Docker-blue?style=flat-square&logo=Docker&logoColor=%233399ff&label=%7C&labelColor=white&color=grey)
@@ -12,8 +12,6 @@
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Redis-blue?style=flat-square&logo=redis&logoColor=white&label=%7C&labelColor=red&color=grey)
 ![Static Badge](https://img.shields.io/badge/%20https%3A%2F%2Fimg.shields.io%2Fbadge%2Fany_text-Keycloak-blue?style=flat-square&logo=keycloak&logoColor=%233399ff&label=%7C&labelColor=white&color=grey)
 
-
-<img src="project_files/hello.webp" style="max-width: 96px; width: 96px;">
 
 ## Сервис биржевой торговли, обеспечивающий поддержку автоматических сделок на основе торговых стратегий.
 ### Возможности сервиса:
@@ -35,7 +33,6 @@
 + #### Keycloak
 + #### Docker
 ***
-<img src="project_files/laptop.webp" style="max-width: 96px; width: 96px;">
 
 ## Структура проекта:
 ### Компоненты проекта - это 4 основных приложения (так называемые микросервисы):

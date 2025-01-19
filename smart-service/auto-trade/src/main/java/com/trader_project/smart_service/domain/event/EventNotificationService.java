@@ -1,0 +1,14 @@
+package com.trader_project.smart_service.domain.event;
+
+import com.trader_project.smart_service.Smart;
+import com.trader_project.smart_service.model.TradeSubscription;
+import io.grpc.stub.StreamObserver;
+
+public interface EventNotificationService {
+
+    void addListener(Smart.SubscribeRequest request, StreamObserver<Smart.SubscribeResponse> responseObserver);
+
+    void notify(TradeSubscription subscription, Smart.OrderNotification notification);
+
+    void removeListener(TradeSubscription subscription);
+}
