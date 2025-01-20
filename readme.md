@@ -80,6 +80,16 @@
   + Redis storage
   + Apache Kafka
 ***
++ ### Notification Service:
++ The application responsible for sending notifications to users.
+  Technologies used:
+  + Spring Boot 3
+  + Flyway migration
+  + Postgresql database
+  + Spring Mail
+  + Apache Kafka
+***
+***
 + ### UI Service
 + The frontend application for browser access.
   There has a simple interface and functionality.

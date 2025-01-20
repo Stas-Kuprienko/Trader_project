@@ -49,7 +49,7 @@ grpc:
 
 springdoc:
   info:
-    title: Anastasia Trader Project
+    title: Trader Project
     description: API for Core-service
     version: 1.0.0
     url:

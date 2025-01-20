@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 }
 
-group = 'com.trader_project'
+group = 'com.project'
 version = '1.0-SNAPSHOT'
 
 allprojects {
@@ -15,7 +15,7 @@ allprojects {
 subprojects {
     apply plugin: 'java'
 
-    group = 'com.trader_project'
+    group = 'com.project'
     version = '1.0-SNAPSHOT'
 
     sourceCompatibility = '21'

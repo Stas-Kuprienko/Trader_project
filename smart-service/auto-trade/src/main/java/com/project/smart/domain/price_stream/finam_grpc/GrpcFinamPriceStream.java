@@ -1,0 +1,99 @@
+package com.project.smart.domain.price_stream.finam_grpc;
+
+import com.project.smart.domain.price_stream.PriceStream;
+import com.project.smart.domain.strategy.TradeStrategy;
+import com.project.smart.exception.PriceStreamException;
+import com.project.smart.util.EventDriver;
+import com.project.smart.model.OrderBookRow;
+import com.project.smart.model.finam.OrderBookRowFinam;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
+public class GrpcFinamPriceStream implements PriceStream {
+
+    private static final long DRIVER_DELAY = 1;
+    private static final TimeUnit DRIVER_TIME_UNIT = TimeUnit.SECONDS;
+
+    private final FinamOrderBookEntry orderBookEntry;
+    private final EventDriver driver;
+    private final Set<TradeStrategy> subscribers;
+
+
+    GrpcFinamPriceStream(FinamOrderBookEntry orderBookEntry, EventDriver driver) {
+        this.orderBookEntry = orderBookEntry;
+        this.driver = driver;
+        subscribers = new HashSet<>();
+    }
+
+
+    @Override
+    public OrderBookRow bid() {
+        return checkThenGet(() -> new OrderBookRowFinam(orderBookEntry.getOrderBook().getBids(0)));
+    }
+
+    @Override
+    public OrderBookRow ask() {
+        return checkThenGet(() -> new OrderBookRowFinam(orderBookEntry.getOrderBook().getAsks(0)));
+    }
+
+    @Override
+    public List<OrderBookRowFinam> bids() {
+        return checkThenGetList(() -> orderBookEntry
+                .getOrderBook()
+                .getBidsList()
+                .stream()
+                .map(OrderBookRowFinam::new)
+                .toList());
+    }
+
+    @Override
+    public List<OrderBookRowFinam> asks() {
+        return checkThenGetList(() -> orderBookEntry
+                .getOrderBook()
+                .getAsksList()
+                .stream()
+                .map(OrderBookRowFinam::new)
+                .toList());
+    }
+
+    @Override
+    public void subscribe(TradeStrategy strategy) {
+        if (driver.isDisabled()) {
+            driver.start(DRIVER_DELAY, DRIVER_TIME_UNIT);
+        }
+        subscribers.add(strategy);
+    }
+
+    @Override
+    public void unsubscribe(TradeStrategy strategy) {
+        subscribers.remove(strategy);
+        if (subscribers.isEmpty()) {
+            driver.stop();
+        }
+    }
+
+    @Override
+    public boolean isUseless() {
+        return subscribers.isEmpty();
+    }
+
+    
+    private OrderBookRowFinam checkThenGet(Supplier<OrderBookRowFinam> supplier) {
+        if (orderBookEntry.isActive()) {
+            return supplier.get();
+        } else {
+            throw new PriceStreamException("FinamOrderBookEntry is inactive");
+        }
+    }
+
+    private List<OrderBookRowFinam> checkThenGetList(Supplier<List<OrderBookRowFinam>> supplier) {
+        if (orderBookEntry.isActive()) {
+            return supplier.get();
+        } else {
+            throw new PriceStreamException("FinamOrderBookEntry is inactive");
+        }
+    }
+}

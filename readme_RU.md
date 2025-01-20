@@ -80,6 +80,16 @@
   + Redis storage
   + Apache Kafka
 ***
++ ### Notification Service:
++ Приложение, отвечающее за рассылку уведомлений пользователям.
+  Используемые технологии:
+  + Spring Boot 3
+  + Flyway migration
+  + Postgresql database
+  + Spring Mail
+  + Apache Kafka
+***
+***
 + ### UI Service
 + Интерфейсное приложение для доступа к браузеру.
   Имеет простой дизайн и функциональность.
