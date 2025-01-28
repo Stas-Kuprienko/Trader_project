@@ -97,6 +97,40 @@ services:
       - ./volumes/mysql/data:/var/lib/mysql/
 
 
+  # Database sharding
+  postgres_shard1:
+    container_name: db_shard_1
+    image: postgres:15.3-alpine
+    networks:
+      - my-networks
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=trade_project
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./volumes/postgresql_1/data:/var/lib/postgresql/data
+      - ./create-db.sql:/docker-entrypoint-initdb.d/create_database.sql
+
+  postgres_shard2:
+    container_name: db_shard_2
+    image: postgres:15.3-alpine
+    networks:
+      - my-networks
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=trade_project
+    ports:
+      - '5434:5432'
+    volumes:
+      - ./volumes/postgresql_2/data:/var/lib/postgresql/data
+      - ./create-db.sql:/docker-entrypoint-initdb.d/create_database.sql
+
+
 volumes:
   kafka_data:
     driver: local

@@ -1,6 +1,6 @@
 package com.project.notifications.service.impl;
 
-import com.project.notifications.datasource.SubscriberRepository;
+import com.project.notifications.datasource.jpa.SubscriberRepository;
 import com.project.notifications.entity.Subscriber;
 import com.project.notifications.service.SubscriberService;
 import com.project.events.NotifySubscriptionEvent;

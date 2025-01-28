@@ -8,15 +8,16 @@ spring:
     active:
       - local
   datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${project.variables.datasource.url}/trade_events
-    username: ${project.variables.datasource.username}
-    password: ${project.variables.datasource.password}
+    shard1:
+      url: jdbc:postgresql://${project.variables.datasource.url_1}/trade_project
+      username: ${project.variables.datasource.username_1}
+      password: ${project.variables.datasource.password_1}
+    shard2:
+      url: jdbc:postgresql://${project.variables.datasource.url_2}/trade_project
+      username: ${project.variables.datasource.username_2}
+      password: ${project.variables.datasource.password_2}
   flyway:
-    enabled: true
-    url: jdbc:postgresql://${project.variables.datasource.url}/trade_events
-    user: ${project.variables.datasource.username}
-    password: ${project.variables.datasource.password}
+    enabled: false
   jpa:
     show-sql: true
     hibernate:
@@ -57,9 +58,12 @@ project:
   variables:
     service-url: <?>
     datasource:
-      url: <?>
-      username: <?>
-      password: <?>
+      url_1: <?>
+      url_2: <?>
+      username_1: <?>
+      username_2: <?>
+      password_1: <?>
+      password_2: <?>
     kafka:
       url: <?>
     telegram:

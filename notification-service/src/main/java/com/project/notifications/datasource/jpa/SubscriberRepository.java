@@ -1,4 +1,4 @@
-package com.project.notifications.datasource;
+package com.project.notifications.datasource.jpa;
 
 import com.project.notifications.entity.Subscriber;
 import org.springframework.data.jpa.repository.JpaRepository;
