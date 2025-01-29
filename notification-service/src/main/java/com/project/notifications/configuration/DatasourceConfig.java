@@ -3,10 +3,10 @@ package com.project.notifications.configuration;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -61,14 +61,22 @@ public class DatasourceConfig {
     }
 
 
+    @Bean
+    public HibernatePersistenceProvider persistenceProvider() {
+        return new HibernatePersistenceProvider();
+    }
+
+
     @Bean(name = "shard1EntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean shard1EntityManagerFactory(EntityManagerFactoryBuilder builder,
-                                                                             @Qualifier("shard1DataSource") DataSource dataSource) {
-        return builder
-                .dataSource(dataSource)
-                .packages("com.project.notifications.entity")
-                .persistenceUnit("shard1DataSource")
-                .build();
+    public LocalContainerEntityManagerFactoryBean shard1EntityManagerFactory(@Qualifier("shard1DataSource") DataSource dataSource) {
+        LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
+
+        bean.setDataSource(dataSource);
+        bean.setPackagesToScan("com.project.notifications.entity");
+        bean.setPersistenceProvider(persistenceProvider());
+        bean.setPersistenceUnitName("shard1DataSource");
+
+        return bean;
     }
 
 
@@ -80,14 +88,15 @@ public class DatasourceConfig {
 
 
     @Bean(name = "shard2EntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean shard2EntityManagerFactory(EntityManagerFactoryBuilder builder,
-                                                                             @Qualifier("shard2DataSource") DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean shard2EntityManagerFactory(@Qualifier("shard2DataSource") DataSource dataSource) {
+        LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
 
-        return builder
-                .dataSource(dataSource)
-                .packages("com.project.notifications.entity")
-                .persistenceUnit("shard2DataSource")
-                .build();
+        bean.setDataSource(dataSource);
+        bean.setPackagesToScan("com.project.notifications.entity");
+        bean.setPersistenceProvider(persistenceProvider()   );
+        bean.setPersistenceUnitName("shard2DataSource");
+
+        return bean;
     }
 
 
