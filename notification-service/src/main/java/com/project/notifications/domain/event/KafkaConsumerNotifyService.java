@@ -14,12 +14,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class KafkaConsumerService {
+public class KafkaConsumerNotifyService {
 
     private final ConcurrentHashMap<String, EventNotifier<Object>> notifiers;
 
     @Autowired
-    public KafkaConsumerService(ConfigurableApplicationContext applicationContext) {
+    public KafkaConsumerNotifyService(ConfigurableApplicationContext applicationContext) {
         notifiers = collectNotifiers(applicationContext);
     }
 

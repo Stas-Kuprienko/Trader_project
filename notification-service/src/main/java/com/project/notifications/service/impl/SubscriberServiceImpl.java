@@ -1,14 +1,14 @@
 package com.project.notifications.service.impl;
 
-import com.project.events.NotifySubscriptionEvent;
+import com.project.exception.NotFoundException;
 import com.project.notifications.datasource.jpa.SubscriberRepository;
 import com.project.notifications.datasource.service.ShardResolver;
 import com.project.notifications.entity.Subscriber;
 import com.project.notifications.service.SubscriberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Map;
+
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,18 +27,18 @@ public class SubscriberServiceImpl implements SubscriberService {
 
 
     @Override
-    public Subscriber create(NotifySubscriptionEvent subscriptionEvent) {
-        return null;
+    public void save(Subscriber subscriber) {
+        shardResolver.resolveShard(subscriber.getAccountId().hashCode());
+        repository.save(subscriber);
+        shardResolver.resetShard();
     }
 
     @Override
     public Subscriber getById(UUID accountId) {
-        return null;
-    }
-
-    @Override
-    public void update(UUID accountId, NotifySubscriptionEvent subscriptionEvent) {
-
+        shardResolver.resolveShard(accountId.hashCode());
+        Optional<Subscriber> subscriber = repository.findById(accountId);
+        shardResolver.resetShard();
+        return subscriber.orElseThrow(() -> NotFoundException.byID(Subscriber.class, accountId));
     }
 
     @Override

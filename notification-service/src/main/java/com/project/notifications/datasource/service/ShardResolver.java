@@ -20,9 +20,13 @@ public class ShardResolver {
     }
 
 
-    public void resolveShard(String key) {
-        int shardIndex = Math.abs(key.hashCode() % shardNames.size());
+    public void resolveShard(int hashCode) {
+        int shardIndex = Math.abs(hashCode % shardNames.size());
         String shard = shardNames.get(shardIndex);
         DynamicDataSource.setCurrentShard(shard);
+    }
+
+    public void resetShard() {
+        DynamicDataSource.setCurrentShard(null);
     }
 }
