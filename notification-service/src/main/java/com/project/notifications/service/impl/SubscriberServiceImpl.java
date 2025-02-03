@@ -7,7 +7,6 @@ import com.project.notifications.entity.Subscriber;
 import com.project.notifications.service.SubscriberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,11 +37,14 @@ public class SubscriberServiceImpl implements SubscriberService {
         shardResolver.resolveShard(accountId.hashCode());
         Optional<Subscriber> subscriber = repository.findById(accountId);
         shardResolver.resetShard();
-        return subscriber.orElseThrow(() -> NotFoundException.byID(Subscriber.class, accountId));
+        return subscriber.orElseThrow(
+                () -> NotFoundException.byID(Subscriber.class, accountId));
     }
 
     @Override
     public void delete(UUID accountId) {
-
+        shardResolver.resolveShard(accountId.hashCode());
+        repository.deleteById(accountId);
+        shardResolver.resetShard();
     }
 }

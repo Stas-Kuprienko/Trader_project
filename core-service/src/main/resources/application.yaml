@@ -26,6 +26,7 @@ spring:
     password: ${project.variables.datasource.password}
   kafka:
     bootstrap-servers: ${project.variables.kafka.url}
+    subscriber-topic: subscriber-topic
     notify-subscription-topic: notify-subscription-topic
     trade-subscription-topic: trade-subscription-topic
     trade-order-topic: trade-order-topic
