@@ -1,6 +1,6 @@
 package com.project.core.domain.event;
 
-import com.project.dto.SubscriberDto;
+import com.project.events.SubscriberDto;
 import org.springframework.kafka.support.SendResult;
 import reactor.core.publisher.Mono;
 

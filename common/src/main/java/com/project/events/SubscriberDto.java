@@ -1,4 +1,4 @@
-package com.project.dto;
+package com.project.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

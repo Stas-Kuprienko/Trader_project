@@ -1,7 +1,7 @@
 package com.project.core.domain.event.impl;
 
 import com.project.core.domain.event.SubscribeNotificationService;
-import com.project.dto.SubscriberDto;
+import com.project.events.SubscriberDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.project.notifications.domain.event;
 
-import com.project.dto.SubscriberDto;
+import com.project.events.SubscriberDto;
 import com.project.notifications.converter.SubscriberConverter;
 import com.project.notifications.entity.Subscriber;
 import com.project.notifications.service.SubscriberService;

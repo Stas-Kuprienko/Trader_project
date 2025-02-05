@@ -1,7 +1,7 @@
 package com.project.core.controller.v1;
 
 import com.project.core.domain.event.SubscribeNotificationService;
-import com.project.dto.SubscriberDto;
+import com.project.events.SubscriberDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
