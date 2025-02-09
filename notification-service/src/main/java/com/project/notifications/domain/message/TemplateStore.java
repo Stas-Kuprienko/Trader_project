@@ -1,5 +1,6 @@
 package com.project.notifications.domain.message;
 
+import com.project.enums.Language;
 import com.project.notifications.exception.ConfigurationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,12 @@ public class TemplateStore {
     }
 
 
-    public String getTemplate(String templateName) {
-        String value = templates.get(templateName);
+    public String getTemplate(Class<?> eventClass, Language language) {
+        String key = eventClass.getSimpleName();
+        key += '_' + language.name();
+        String value = templates.get(key);
         if (value == null) {
-            throw new ConfigurationException("Template is not found: " + templateName);
+            throw new ConfigurationException("Template is not found: " + key);
         } else {
             return value;
         }

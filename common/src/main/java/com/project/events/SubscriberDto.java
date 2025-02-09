@@ -1,15 +1,27 @@
 package com.project.events;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.enums.Language;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
-public class SubscriberDto {
+public class SubscriberDto implements Serializable {
+
+    @JsonIgnore
+    public static final Operation SAVE = Operation.SAVE;
+
+    @JsonIgnore
+    public static final Operation DELETE = Operation.DELETE;
+
+
+    private Operation operation;
 
     @JsonProperty("account_id")
     private UUID accountId;
@@ -41,7 +53,8 @@ public class SubscriberDto {
 
 
     @Builder
-    public SubscriberDto(UUID accountId,
+    public SubscriberDto(Operation operation,
+                         UUID accountId,
                          String email,
                          boolean emailNotify,
                          Long telegramId,
@@ -50,6 +63,7 @@ public class SubscriberDto {
                          String name,
                          String createdAt,
                          String updatedAt) {
+        this.operation = operation;
         this.accountId = accountId;
         this.email = email;
         this.emailNotify = emailNotify;
@@ -62,4 +76,9 @@ public class SubscriberDto {
     }
 
     public SubscriberDto() {}
+
+
+    public enum Operation {
+        SAVE, DELETE
+    }
 }

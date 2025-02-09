@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class KafkaConsumerSubscribeService {
+public class KafkaConsumerSubscriberService {
 
     private final SubscriberService subscriberService;
     private final SubscriberConverter subscriberConverter;
 
     @Autowired
-    public KafkaConsumerSubscribeService(SubscriberService subscriberService, SubscriberConverter subscriberConverter) {
+    public KafkaConsumerSubscriberService(SubscriberService subscriberService, SubscriberConverter subscriberConverter) {
         this.subscriberService = subscriberService;
         this.subscriberConverter = subscriberConverter;
     }
@@ -26,7 +26,13 @@ public class KafkaConsumerSubscribeService {
     @KafkaListener(topics = "subscriber-topic")
     public void handle(SubscriberDto dto) {
         log.info("Message is received: " + dto);
-        Subscriber subscriber = subscriberConverter.toEntity(dto);
-        subscriberService.save(subscriber);
+        switch (dto.getOperation()) {
+            case SubscriberDto.Operation.SAVE -> {
+                Subscriber subscriber = subscriberConverter.toEntity(dto);
+                subscriberService.save(subscriber);
+            }
+            case SubscriberDto.Operation.DELETE -> subscriberService.delete(dto.getAccountId());
+        }
+
     }
 }

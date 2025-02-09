@@ -1,10 +1,9 @@
 package com.project.notifications.domain.event;
 
+import com.project.events.TradeOrderEvent;
+import com.project.events.TradeSubscriptionEvent;
 import com.project.notifications.domain.notifiers.EventNotifier;
 import com.project.notifications.domain.notifiers.Notifier;
-import com.project.events.NotifySubscriptionEvent;
-import com.project.events.TradeSubscriptionEvent;
-import com.project.events.TradeOrderEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -23,15 +22,6 @@ public class KafkaConsumerNotifyService {
         notifiers = collectNotifiers(applicationContext);
     }
 
-
-    @KafkaListener(topics = "notify-subscription-topic")
-    public void handle(NotifySubscriptionEvent notifySubscription) {
-        log.info("Message is received: " + notifySubscription);
-        EventNotifier<Object> notifier = notifiers.get(notifySubscription.getClass().getSimpleName());
-        if (notifier != null) {
-            notifier.apply(notifySubscription);
-        }
-    }
 
     @KafkaListener(topics = "trade-subscription-topic")
     public void handle(TradeSubscriptionEvent tradeSubscription) {

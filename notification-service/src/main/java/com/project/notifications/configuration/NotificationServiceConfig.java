@@ -3,7 +3,7 @@ package com.project.notifications.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.project.events.NotifySubscriptionEvent;
+import com.project.events.TradeSubscriptionEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +64,7 @@ public class NotificationServiceConfig {
         config.put(
                 ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
         config.put(
-                JsonDeserializer.TRUSTED_PACKAGES, NotifySubscriptionEvent.class.getPackage().getName());
+                JsonDeserializer.TRUSTED_PACKAGES, TradeSubscriptionEvent.class.getPackage().getName());
         config.put(
                 ConsumerConfig.GROUP_ID_CONFIG, groupId);
         config.put(

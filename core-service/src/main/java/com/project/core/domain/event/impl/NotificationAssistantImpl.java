@@ -7,9 +7,8 @@ import com.project.enums.Board;
 import com.project.enums.Broker;
 import com.project.enums.Direction;
 import com.project.enums.TradeScope;
-import com.project.events.NotifySubscriptionEvent;
-import com.project.events.TradeSubscriptionEvent;
 import com.project.events.TradeOrderEvent;
+import com.project.events.TradeSubscriptionEvent;
 import com.project.models.StrategyDefinition;
 import com.project.smart.Smart;
 import lombok.extern.slf4j.Slf4j;
@@ -26,15 +25,12 @@ public class NotificationAssistantImpl implements NotificationAssistant {
 
     private final MessageService<TradeOrderEvent> tradeOrderMessageService;
     private final MessageService<TradeSubscriptionEvent> tradeSubscriptionMessageService;
-    private final MessageService<NotifySubscriptionEvent> notifySubscriptionMessageService;
 
     @Autowired
     public NotificationAssistantImpl(@Qualifier("tradeOrderMessageService") MessageService<TradeOrderEvent> tradeOrderMessageService,
-                                     @Qualifier("tradeSubscriptionMessageService") MessageService<TradeSubscriptionEvent> tradeSubscriptionMessageService,
-                                     @Qualifier("notifySubscriptionMessageService") MessageService<NotifySubscriptionEvent> notifySubscriptionMessageService) {
+                                     @Qualifier("tradeSubscriptionMessageService") MessageService<TradeSubscriptionEvent> tradeSubscriptionMessageService) {
         this.tradeOrderMessageService = tradeOrderMessageService;
         this.tradeSubscriptionMessageService = tradeSubscriptionMessageService;
-        this.notifySubscriptionMessageService = notifySubscriptionMessageService;
     }
 
 
@@ -56,18 +52,11 @@ public class NotificationAssistantImpl implements NotificationAssistant {
                 .subscribe(sendResult -> log.info(sendResult.toString())));
     }
 
-    public CompletableFuture<?> direct() {
-        //TODO
-        return CompletableFuture.runAsync(() -> notifySubscriptionMessageService
-                .send(null)
-                .subscribe(sendResult -> log.info(sendResult.toString())));
-    }
-
 
     private TradeOrderEvent convert(Smart.Order order) {
         return TradeOrderEvent.builder()
                 .transactionId(order.getTransactionId())
-                .userId(UUID.fromString(order.getAccount().getUserId()))
+                .accountId(UUID.fromString(order.getAccount().getAccountId()))
                 .broker(Broker.valueOf(order.getAccount().getBroker()))
                 .clientId(order.getAccount().getClientId())
                 .ticker(order.getSecurity().getTicker())
@@ -85,9 +74,9 @@ public class NotificationAssistantImpl implements NotificationAssistant {
                 .tradeScope(TradeScope.valueOf(status.getStrategy().getTradeScope().name()))
                 .build();
         return TradeSubscriptionEvent.builder()
+                .accountId(UUID.fromString(status.getAccount().getAccountId()))
                 .broker(Broker.valueOf(status.getAccount().getBroker()))
                 .clientId(status.getAccount().getClientId())
-                .userId(UUID.fromString(status.getAccount().getUserId()))
                 .ticker(status.getSecurity().getTicker())
                 .board(Board.valueOf(status.getSecurity().getBoard()))
                 .strategyDefinition(strategyDefinition)

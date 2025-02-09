@@ -20,6 +20,9 @@ public class TradeSubscriptionEvent implements Serializable {
     @JsonIgnore
     public static final Option UNSUBSCRIBE = Option.UNSUBSCRIBE;
 
+    @JsonProperty("account_id")
+    private UUID accountId;
+
     @JsonProperty("strategy_definition")
     private StrategyDefinition strategyDefinition;
 
@@ -32,9 +35,6 @@ public class TradeSubscriptionEvent implements Serializable {
     @JsonProperty("client_id")
     private String clientId;
 
-    @JsonProperty("user_id")
-    private UUID userId;
-
     private String ticker;
 
     private Board board;
@@ -44,21 +44,21 @@ public class TradeSubscriptionEvent implements Serializable {
 
 
     @Builder
-    public TradeSubscriptionEvent(StrategyDefinition strategyDefinition,
+    public TradeSubscriptionEvent(UUID accountId,
+                                  StrategyDefinition strategyDefinition,
                                   Option option,
                                   boolean success,
                                   Broker broker,
                                   String clientId,
-                                  UUID userId,
                                   String ticker,
                                   Board board,
                                   LocalDateTime time) {
+        this.accountId = accountId;
         this.strategyDefinition = strategyDefinition;
         this.option = option;
         this.success = success;
         this.broker = broker;
         this.clientId = clientId;
-        this.userId = userId;
         this.ticker = ticker;
         this.board = board;
         this.time = time;
