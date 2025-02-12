@@ -5,6 +5,7 @@ plugins {
 
 subprojects {
     dependencies {
+    	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
         //migration
     	implementation "org.flywaydb:flyway-core:$flyway_version"
