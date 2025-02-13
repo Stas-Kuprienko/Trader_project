@@ -16,7 +16,7 @@ spring:
 
 grpc:
   server:
-    port: 9090
+    port: 9099
     security:
       enabled: true
 #      certificate-chain:
