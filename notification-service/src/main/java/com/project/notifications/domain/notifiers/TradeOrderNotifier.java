@@ -32,18 +32,22 @@ public class TradeOrderNotifier implements EventNotifier<TradeOrderEvent> {
     @Override
     public void apply(TradeOrderEvent event) {
         Subscriber subscriber = subscriberService.getById(event.getAccountId());
-        String template = templateStore.getTemplate(event.getClass(), subscriber.getLanguage());
 
         if (subscriber.isEmailNotify() && !subscriber.isTelegramNotify()) {
+            String template = templateStore
+                    .getTemplate(event.getClass(), subscriber.getLanguage(), TemplateStore.Method.EMAIL);
             emailService.sendHtmlEmail(formatting(event, template), subscriber.getEmail());
 
         } else if (subscriber.isTelegramNotify()) {
+            String template = templateStore
+                    .getTemplate(event.getClass(), subscriber.getLanguage(), TemplateStore.Method.TELEGRAM);
             telegramService.sendMessage(formatting(event, template), subscriber.getTelegramId());
         }
     }
 
 
     private String formatting(TradeOrderEvent event, String template) {
+        //TODO
         return template.formatted(event.toString());
     }
 }

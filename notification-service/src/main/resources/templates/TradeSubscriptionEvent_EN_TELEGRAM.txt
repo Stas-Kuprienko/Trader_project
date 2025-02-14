@@ -1,0 +1,2 @@
+You are subscribed to trade strategy:
+    %s

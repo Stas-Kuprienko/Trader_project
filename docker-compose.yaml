@@ -169,17 +169,14 @@ services:
       - my-networks
 
   prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    ports:
-      - '9090:9090'
+    image: "prom/prometheus"
     networks:
       - my-networks
+    ports:
+      - "9090:9090"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
+      - "./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
+
 
 volumes:
   kafka_data:

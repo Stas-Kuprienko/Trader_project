@@ -26,9 +26,9 @@ public class TemplateStore {
     }
 
 
-    public String getTemplate(Class<?> eventClass, Language language) {
+    public String getTemplate(Class<?> eventClass, Language language, Method method) {
         String key = eventClass.getSimpleName();
-        key += '_' + language.name();
+        key += '_' + language.name() + method;
         String value = templates.get(key);
         if (value == null) {
             throw new ConfigurationException("Template is not found: " + key);
@@ -93,5 +93,10 @@ public class TemplateStore {
         } catch (IOException e) {
             throw new ConfigurationException(e);
         }
+    }
+
+
+    public enum Method {
+        EMAIL, TELEGRAM
     }
 }
