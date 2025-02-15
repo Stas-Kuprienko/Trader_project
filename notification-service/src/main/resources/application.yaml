@@ -53,15 +53,6 @@ telegram:
   username: ${project.variables.telegram.username}
   botToken: ${project.variables.telegram.botToken}
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always
-
 
 project:
   variables:

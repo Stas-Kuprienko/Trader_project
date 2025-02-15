@@ -25,11 +25,6 @@ dependencies {
 	//event_driver
 	implementation "org.springframework.kafka:spring-kafka:$spring_kafka_version"
 
-	//metrics
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation "com.github.loki4j:loki-logback-appender:$loki_version"
-    implementation "io.micrometer:micrometer-registry-prometheus:1.14.1"
-
 	//tests
 	testImplementation 'org.springframework.kafka:spring-kafka-test'
 }

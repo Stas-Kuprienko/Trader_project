@@ -30,16 +30,16 @@ public class SmartTradingServiceImpl implements SmartTradingService {
     }
 
     @Override
-    public Mono<Void> subscribe(UUID userId, UUID accountId, Securities securities, StrategyDefinition strategyDetails) {
+    public Mono<Void> subscribe(UUID userId, UUID accountId, Securities securities, StrategyDefinition strategyDefinition) {
         return accountService
                 .getById(accountId, userId)
-                .flatMap(account -> smartServiceClient.subscribe(securities, account, strategyDetails));
+                .flatMap(account -> smartServiceClient.subscribe(securities, account, strategyDefinition));
     }
 
     @Override
-    public Mono<Void> unsubscribe(UUID userId, UUID accountId, Securities securities, StrategyDefinition strategyDetails) {
+    public Mono<Void> unsubscribe(UUID userId, UUID accountId, Securities securities, StrategyDefinition strategyDefinition) {
         return accountService
                 .getById(accountId, userId)
-                .flatMap(account -> smartServiceClient.unsubscribe(securities, account, strategyDetails));
+                .flatMap(account -> smartServiceClient.unsubscribe(securities, account, strategyDefinition));
     }
 }

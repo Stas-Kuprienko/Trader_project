@@ -1,0 +1,17 @@
+plugins {
+	id 'org.springframework.boot' version '3.3.4'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+dependencies {
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server:$cloud_version"
+
+	//metrics
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation "com.github.loki4j:loki-logback-appender:$loki_version"
+    implementation "io.micrometer:micrometer-registry-prometheus:1.14.1"
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

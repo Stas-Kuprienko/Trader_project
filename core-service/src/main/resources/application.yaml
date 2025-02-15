@@ -62,9 +62,15 @@ springdoc:
   default-consumes-media-type: application/json
   paths-to-match: /api/v1/**
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    instance:
+      prefer-ip-address: true
+
 
 project:
-
   variables:
     keycloak:
       url: <?>
